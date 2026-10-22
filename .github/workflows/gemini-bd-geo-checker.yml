@@ -32,8 +32,9 @@ jobs:
         uses: actions/github-script@v7
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # Optional: set a repo variable GEMINI_MODEL to change the model
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.1-pro-preview' }}
+          # Optional: set a repo variable GEMINI_MODEL to change the model.
+          # An exact model id, or a name like 'Gemini 4 Argon' matched against the key's model list.
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-4-argon' }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         with:
           script: |
@@ -112,18 +113,32 @@ jobs:
               return { res, json };
             };
 
-            // Fallback: newest Flash model this key can use (free tier has no Pro quota)
-            const flashModels = async () => {
-              const r = await fetch(`${API}/models?pageSize=200`, { headers });
+            // Models this key can call with generateContent
+            const listModels = async () => {
+              const r = await fetch(`${API}/models?pageSize=1000`, { headers });
               const j = await r.json().catch(() => ({}));
               return (j.models || [])
                 .filter(m => (m.supportedGenerationMethods || []).includes('generateContent'))
-                .map(m => m.name.replace(/^models\//, ''))
-                .filter(n => /^gemini-[\d.]+-flash(-preview)?(-\d\d-\d{4})?$/.test(n))
-                .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+                .map(m => ({ id: m.name.replace(/^models\//, ''), display: m.displayName || '' }));
             };
+            const models = await listModels();
+            console.log('Models available on this key:\n' + models.map(m => `  ${m.id}  (${m.display})`).join('\n'));
 
+            // Fallback: newest Flash model (free tier has no Pro quota)
+            const flashModels = async () => models.map(m => m.id)
+              .filter(n => /^gemini-[\d.]+-flash(-preview)?(-\d\d-\d{4})?$/.test(n))
+              .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+
+            // Resolve GEMINI_MODEL: exact id, else match id / display name (e.g. "Gemini 4 Argon")
+            const norm = t => t.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '');
+            const want = norm(process.env.GEMINI_MODEL);
             let model = process.env.GEMINI_MODEL;
+            if (models.length && !models.some(m => m.id === model)) {
+              const hits = models.filter(m => norm(m.id).includes(want) || norm(m.display).includes(want))
+                .sort((a, b) => a.id.length - b.id.length);
+              if (hits.length) { console.log(`Resolved "${model}" to ${hits[0].id}`); model = hits[0].id; }
+              else core.warning(`"${model}" not found in this key's model list; trying it anyway.`);
+            }
             let { res, json } = await callModel(model);
             const notes = [];
             if (!res.ok && unusable(res.status, json.error?.message)) {
