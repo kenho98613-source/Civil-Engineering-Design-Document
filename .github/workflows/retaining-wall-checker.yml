@@ -1,0 +1,33 @@
+name: Retaining Wall Checker – Windows build
+
+on:
+  push:
+    branches: [main]
+    paths: ['retaining-wall-checker/**', '.github/workflows/retaining-wall-checker.yml']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: retaining-wall-checker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: retaining-wall-checker/src-tauri
+      - run: npm install
+      - run: npx tauri icon app-icon.png
+      - run: npx tauri build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RetainingWallChecker-v9-windows
+          path: |
+            retaining-wall-checker/src-tauri/target/release/retaining-wall-checker.exe
+            retaining-wall-checker/src-tauri/target/release/bundle/nsis/*.exe
+            retaining-wall-checker/src-tauri/target/release/bundle/msi/*.msi

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Retaining Wall Checker",
+  "version": "9.0.0",
+  "identifier": "hk.retainingwall.checker",
+  "build": {
+    "frontendDist": "../src"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Retaining Wall Design & Checker v9.0",
+        "width": 1500,
+        "height": 950,
+        "minWidth": 1000,
+        "minHeight": 650,
+        "maximized": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis", "msi"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "fileAssociations": [
+      {
+        "ext": ["rwall"],
+        "name": "Retaining wall project",
+        "description": "Retaining Wall Checker project",
+        "role": "Editor",
+        "mimeType": "application/json"
+      }
+    ],
+    "windows": {
+      "nsis": { "installMode": "currentUser" }
+    }
+  }
+}
