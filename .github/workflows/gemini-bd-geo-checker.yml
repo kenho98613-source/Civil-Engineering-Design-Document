@@ -90,23 +90,52 @@ jobs:
 
             // 2. Call Gemini with the BD & GEO checker prompt
             const systemPrompt = fs.readFileSync('.github/gemini/bd-geo-checker-prompt.md', 'utf8');
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${process.env.GEMINI_MODEL}:generateContent`;
-            let res, json;
-            for (let attempt = 1; attempt <= 3; attempt++) {
-              res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-                body: JSON.stringify({
-                  systemInstruction: { parts: [{ text: systemPrompt }] },
-                  contents: [{ role: 'user', parts: [{ text: material }] }],
-                  generationConfig: { temperature: 0.2, maxOutputTokens: 16384 }
-                })
-              });
-              json = await res.json().catch(() => ({}));
-              if (res.ok || ![429, 500, 503].includes(res.status)) break;
-              console.log(`Gemini returned ${res.status}, retrying (${attempt}/3)...`);
-              await new Promise(r => setTimeout(r, 5000 * attempt));
+            const API = 'https://generativelanguage.googleapis.com/v1beta';
+            const headers = { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY };
+            const payload = JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents: [{ role: 'user', parts: [{ text: material }] }],
+              generationConfig: { temperature: 0.2, maxOutputTokens: 16384 }
+            });
+            // Model not usable on this key: retired (404) or no quota on this tier (429 with limit 0)
+            const unusable = (status, msg) => status === 404 || (status === 429 && /limit: 0/.test(msg || ''));
+
+            const callModel = async (model) => {
+              let res, json;
+              for (let attempt = 1; attempt <= 3; attempt++) {
+                res = await fetch(`${API}/models/${model}:generateContent`, { method: 'POST', headers, body: payload });
+                json = await res.json().catch(() => ({}));
+                if (res.ok || unusable(res.status, json.error?.message) || ![429, 500, 503].includes(res.status)) break;
+                console.log(`${model} returned ${res.status}, retrying (${attempt}/3)...`);
+                await new Promise(r => setTimeout(r, 5000 * attempt));
+              }
+              return { res, json };
+            };
+
+            // Fallback: newest Flash model this key can use (free tier has no Pro quota)
+            const flashModels = async () => {
+              const r = await fetch(`${API}/models?pageSize=200`, { headers });
+              const j = await r.json().catch(() => ({}));
+              return (j.models || [])
+                .filter(m => (m.supportedGenerationMethods || []).includes('generateContent'))
+                .map(m => m.name.replace(/^models\//, ''))
+                .filter(n => /^gemini-[\d.]+-flash(-preview)?(-\d\d-\d{4})?$/.test(n))
+                .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+            };
+
+            let model = process.env.GEMINI_MODEL;
+            let { res, json } = await callModel(model);
+            const notes = [];
+            if (!res.ok && unusable(res.status, json.error?.message)) {
+              notes.push(`\`${model}\` not usable on this API key (${res.status}); fell back to Flash.`);
+              for (const m of await flashModels()) {
+                console.log(`Trying fallback model ${m}...`);
+                ({ res, json } = await callModel(m));
+                model = m;
+                if (res.ok || !unusable(res.status, json.error?.message)) break;
+              }
             }
+            process.env.GEMINI_MODEL = model; // shown in the review header
             if (!res.ok) {
               const msg = json.error?.message || res.statusText;
               await postReview(`:warning: Gemini API error ${res.status}: ${msg}`);
@@ -117,5 +146,5 @@ jobs:
             const finish = json.candidates?.[0]?.finishReason;
 
             // 3. Post the result as a PR review comment
-            await postReview(text || `:warning: Gemini returned no text (finishReason: ${finish}).`);
+            await postReview((notes.length ? `> ${notes.join(' ')}\n\n` : '') + (text || `:warning: Gemini returned no text (finishReason: ${finish}).`));
             console.log(`Review posted (finishReason: ${finish}).`);
