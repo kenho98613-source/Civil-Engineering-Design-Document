@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Retaining Wall Design &amp; Checker v9.0</title><style>
+<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Retaining Wall Design &amp; Checker v9.1</title><style>
 :root{--bg:#fff;--fg:#1d1f23;--mu:#6a7280;--bd:#d6dae0;--pn:#f4f5f7;--ok:#16a34a;--no:#dc2626;--nc:#6b7280;--rv:#d97706;--ac:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#16181c;--fg:#e6e8eb;--mu:#98a0ab;--bd:#343840;--pn:#20232a;--ac:#60a5fa}}
 :root[data-theme=dark]{--bg:#16181c;--fg:#e6e8eb;--mu:#98a0ab;--bd:#343840;--pn:#20232a;--ac:#60a5fa}
@@ -16,7 +16,7 @@ button{padding:4px 10px;border:1px solid var(--bd);border-radius:6px;background:
 .sum{display:block;margin-bottom:8px}
 #fg svg{touch-action:none}.hd{cursor:grab}.hd.x{cursor:ew-resize}.hd.z{cursor:ns-resize}.hd .hk{fill:#fff;stroke:#2563eb;stroke-width:2;transition:r .1s}.hd:hover .hk{r:7.5;fill:#2563eb}body.drg,body.drg *{cursor:grabbing!important;user-select:none}
 #dtip{position:fixed;pointer-events:none;z-index:50;background:#111827;color:#fff;font:600 12px/1.2 system-ui;padding:4px 7px;border-radius:5px;display:none}@media print{.hd,#dtip{display:none!important}}
-table.reg{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--pn);border:1px solid var(--bd);border-radius:10px;overflow:hidden}table.reg th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--mu);text-align:left;padding:5px 8px;border-bottom:1px solid var(--bd)}table.reg td{padding:5px 8px;border-bottom:1px solid var(--bd);vertical-align:middle}table.reg tr:last-child td{border-bottom:0}table.reg tr[data-jump]{cursor:pointer}table.reg tr[data-jump]:hover td{background:rgba(127,127,127,.07)}
+table.reg td,table.reg th,table.rct td,table.rct th{text-align:left!important;white-space:normal!important}table.rct{width:100%}table.rct td:first-child{width:34px;text-align:center!important;color:var(--mu)}table.reg{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--pn);border:1px solid var(--bd);border-radius:10px;overflow:hidden}table.reg th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--mu);text-align:left;padding:5px 8px;border-bottom:1px solid var(--bd)}table.reg td{padding:5px 8px;border-bottom:1px solid var(--bd);vertical-align:middle}table.reg tr:last-child td{border-bottom:0}table.reg tr[data-jump]{cursor:pointer}table.reg tr[data-jump]:hover td{background:rgba(127,127,127,.07)}
 table.reg tr.off td{opacity:.5}table.reg tr.off td:first-child,table.reg tr.off td:nth-child(2){opacity:1}table.reg input.why{width:100%;box-sizing:border-box;margin-top:3px;padding:2px 5px;border:1px dashed var(--rv);border-radius:4px;background:var(--bg);color:var(--fg);font:inherit;font-size:11.5px}
 .ub{position:relative;display:inline-block;width:110px;height:9px;border-radius:5px;background:rgba(127,127,127,.18);vertical-align:middle;overflow:visible}.ub i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--ok)}.ub i.hi{background:#d99a00}.ub i.no{background:var(--no)}.ub s{position:absolute;left:100%;top:-3px;bottom:-3px;border-left:2px solid var(--fg);opacity:.5}.uv{display:inline-block;min-width:42px;text-align:right;font-variant-numeric:tabular-nums;margin-left:6px;font-weight:600}.card{flex:1;min-width:140px;border:2px solid;border-radius:10px;padding:6px 10px}.card b{font-size:16px}.card small{display:block;color:var(--mu);font-size:10.5px}
 .card.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}.card.no{border-color:var(--no);background:color-mix(in srgb,var(--no) 12%,transparent)}.card.nc,.card.na{border-color:var(--nc);background:color-mix(in srgb,var(--nc) 10%,transparent)}.card.rv{border-color:var(--rv);background:color-mix(in srgb,var(--rv) 12%,transparent)}
@@ -46,14 +46,14 @@ h2{font-size:15px;margin:14px 0 2px}h3{margin:10px 0 2px;font-size:13px}.mu{colo
 .rep .int,.rep #r8,.rep #wn{display:none!important}@media print{.int,#r8,#wn,#tl,#sv,#bn .int,.fo,svg text.scr{display:none!important}svg text.prt{display:inline!important}}
 @media print{html,body{height:auto!important;overflow:visible!important;font-size:11px}.app,main,#in,.pane,.tw,.rcb,.blk,details,.sum,.pr{overflow:visible!important;height:auto!important;max-height:none!important}.app{display:block!important}#in,.tabs,header .tb,header button{display:none!important}.pane,.pr{display:block!important}.pane:empty{display:none!important}main{display:flex!important;flex-direction:column}.pr{order:-1}table{width:100%;table-layout:auto;page-break-inside:auto;font-size:9px}table.sch{table-layout:fixed;page-break-inside:avoid;break-inside:avoid}th,td{white-space:normal!important;word-break:break-word;padding:2px 4px}thead{display:table-header-group}tr,.blk,.rsec{break-inside:avoid;page-break-inside:avoid}h2,h3{break-after:avoid;page-break-after:avoid}#fg,#r5,#r6,#r7{break-before:page;page-break-before:always}svg{max-height:none!important;break-inside:avoid}.rcb{break-inside:auto}}
 </style></head><body>
-<header><h1>Retaining Wall Design &amp; Checker v9.0 <span class="mu">· Hong Kong practice — Geoguide 1 (2020) · CoP Foundations 2017 · CoP SUC 2013 (2020 Ed.) · Wind Code 2019 · CoP DIL 2011 (2021 Ed.)</span></h1><span class="mu" id="sv"></span>
+<header><h1>Retaining Wall Design &amp; Checker v9.1 <span class="mu">· Hong Kong practice — Geoguide 1 (2020) · CoP Foundations 2017 · CoP SUC 2013 (2020 Ed.) · Wind Code 2019 · CoP DIL 2011 (2021 Ed.)</span></h1><span class="mu" id="sv"></span>
 <div class="tb"><button data-a="fopen" title="Open a .rwall project file (Ctrl+O)">📂 Open</button><button data-a="fsave" title="Save the project as a .rwall file (Ctrl+S)">💾 Save</button><button data-a="undo" id="ubt" title="Undo (Ctrl+Z)" disabled>↶ Undo</button><button data-a="redo" id="rbt" title="Redo (Ctrl+Y / Ctrl+Shift+Z)" disabled>↷ Redo</button><button data-a="share" title="Encode all inputs into the page URL (#config=…) and copy it">🔗 Copy Shareable Link</button><button data-a="snap" title="Download a standalone .html with the current inputs as its defaults">📄 Export Snapshot HTML</button><button data-a="reset" title="Clear saved inputs and the URL hash">🔄 Reset to Default</button><button data-a="prev" id="pvb">Preview report</button><button data-a="print" id="pb">Export report (PDF)</button></div></header>
 <div class="app"><aside id="in"></aside><main><div id="bn"></div><div class="sum" id="sm"></div><div class="tabs"><button data-a="tab" data-t="fg" class="on">Figure</button><button data-a="tab" data-t="r5">5. Calculation</button><button data-a="tab" data-t="r6">6. Stability</button><button data-a="tab" data-t="r7">7. Structural</button><button data-a="tab" data-t="tl">🧰 Design tools</button><button data-a="tab" data-t="r8">8. Limitations</button><label style="gap:8px;margin:0 0 0 auto">Force arrow scale <input type="range" min="0.5" max="2" step="0.1" data-p="asc" value="1" style="width:120px"><b id="asv">1.0×</b></label></div><div class="pane on" id="fg"></div><div class="pane" id="r5"></div><div class="pane" id="r6"></div><div class="pane" id="r7"></div><div class="pane" id="tl"></div><div class="pane" id="r8"></div><div class="pr" id="ps"></div><div id="refs"></div></main></div>
 <div class="mdl" id="mdl" hidden></div>
 <script>
 'use strict';
 /* =====================================================================
-   Retaining Wall Design & Checker v9.0
+   Retaining Wall Design & Checker v9.1
    v9: FC2017 Cl 2.5.4 split factors, GG1 Ko (Eq 6.1-6.4), RC Ko/Ka (default Ko) + compaction (GG1 §6.8),
    project factor γproj, check register (tick / untick + reason), canvas drag handles, undo / redo.
    Engine as v7.8 (verified against GG1 / CoP Fdn 2017 / CoP SUC 2013).
@@ -84,10 +84,11 @@ const KEY='rw9',def={ver:9,pn:'',dsn:'',chk:'',jno:'',
  bro:0,brc:'1.5',brF:1.5,bhb:1.1,
  gc:24,fcu:40,fy:500,cvr:50,cvf:40,cvt:50,cvb:75,cbs:'blind',exr:1,exf:2,ext:1,exb:1,rmin:.13,
  rck:'ko',ocr:1,kom:0,koM:.5,hnr:0,cpb:0,cb:{v:{d:12,s:200},h:{d:12,s:200},t:{d:12,s:200},l:{d:12,s:200}},
- gmo:'B',heffm:'250',heff:250,grho:.25,
+ gmo:'B',gmr:'none',gb:2.2,gtw:.6,gH:3.4,gft:1,gfT:.6,gLt:.3,gLh:.3,gnl:1,grc:[],heffm:'250',heff:250,grho:.25,
  asc:1,xrc:1,rc:{}};
 const SNAP=(window.__SNAP&&window.__SNAP.S)?window.__SNAP:null,SKEY=KEY+(SNAP?':'+SNAP.id:''),base0=()=>structuredClone(SNAP?SNAP.S:def);
 function fillDef(o){(function fill(o,d){for(const k in d){if(o[k]==null)o[k]=structuredClone(d[k]);else if(d[k]&&typeof d[k]=='object'&&!Array.isArray(d[k]))fill(o[k],d[k])}})(o,def);
+ if(o.ty=='G'&&o.gbM==null){o.gbM=1;if(o.st&&o.st.length){const n=o.st.length,l=o.st[n-1],f0=o.st[0];o.gft=1;o.gfT=+o.tb;o.gb=+l.t;o.gtw=+(f0.tt>0?Math.min(+f0.tt,+f0.t):+f0.t);o.gH=+(+f0.top-(+l.bot)).toFixed(3);o.gnl=n;o.grc=o.st.map(s=>s.rc?1:0);o.gLt=+o.Lt;o.gLh=+o.Lh}else{o.gft=0;o.gH=+o.tb;o.gb=+o.gw}}if(o.ty=='G')o.gbM=1;
  if(o.acc!='fc'&&o.acc!='gg1')o.acc='fc';o.gmo='B';if(o.ver!==9){o.rck=o.rck||'ko'}o.ver=9;return o}
 let S;try{S=JSON.parse(localStorage.getItem(SKEY))}catch(e){}
 if(!S&&!SNAP){for(const k of['rw8','rw7']){try{const o=JSON.parse(localStorage.getItem(k));if(o&&(o.ver===8||o.ver===7)){S=o;break}}catch(e){}}} // migrate v8 / v7 inputs
@@ -106,13 +107,18 @@ const DESK=!!(window.__TAURI__&&window.__TAURI__.core);let CURF=null;
 const rwTxt=()=>JSON.stringify({app:'rwall',ver:9,saved:new Date().toISOString(),S},null,1),rwName=()=>String(S.pn||S.jno||'retaining-wall').replace(/[^\w\-]+/g,'_')+'.rwall';
 async function fileSave(as){try{const t=rwTxt();
  if(DESK){let p=CURF;if(as||!p){p=await __TAURI__.dialog.save({defaultPath:rwName(),filters:[{name:'Retaining wall project',extensions:['rwall']}]});if(!p)return}
-  await __TAURI__.core.invoke('write_text',{path:p,contents:t});CURF=p;document.title=p.split(/[\\/]/).pop()+' – Retaining Wall Checker v9.0';msg('Saved '+p);return}
+  await __TAURI__.core.invoke('write_text',{path:p,contents:t});CURF=p;document.title=p.split(/[\\/]/).pop()+' – Retaining Wall Checker v9.1';msg('Saved '+p);return}
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.download=rwName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);msg('Saved '+rwName()+' (Downloads)')}catch(e){msg('Save failed: '+e)}}
 function rwLoad(t,name){const o=JSON.parse(t),st=o&&o.S?o.S:o;if(!st||typeof st!='object'||!Array.isArray(st.st))throw new Error('not a .rwall project file');S=fillDef(structuredClone(st));ri();rr();sv();msg('Opened '+name)}
-async function fileOpen(){try{if(DESK){const p=await __TAURI__.dialog.open({multiple:false,filters:[{name:'Retaining wall project',extensions:['rwall','json']}]});if(!p)return;rwLoad(await __TAURI__.core.invoke('read_text',{path:p}),p);CURF=p;document.title=String(p).split(/[\\/]/).pop()+' – Retaining Wall Checker v9.0';return}
+async function fileOpen(){try{if(DESK){const p=await __TAURI__.dialog.open({multiple:false,filters:[{name:'Retaining wall project',extensions:['rwall','json']}]});if(!p)return;rwLoad(await __TAURI__.core.invoke('read_text',{path:p}),p);CURF=p;document.title=String(p).split(/[\\/]/).pop()+' – Retaining Wall Checker v9.1';return}
  const i=document.createElement('input');i.type='file';i.accept='.rwall,.json';i.onchange=()=>{const f=i.files[0];if(f)f.text().then(t=>{try{rwLoad(t,f.name)}catch(e){msg('Could not open: '+e.message)}})};i.click()}catch(e){msg('Open failed: '+e)}}
 /* virtual parameters edited on the figure (derived quantities write back to the base inputs) */
 function setP(p,v){
+ if(isG()){const top=+S.Zb+(S.gft?+S.gfT:0)+(+S.gH);
+  if(p=='@H'){const old=+S.Hr,n=+(+S.Zb+v).toFixed(3);S.Hr=n;if(Math.abs(top-old)<1e-6)S.gH=+(n-(+S.Zb)-(S.gft?+S.gfT:0)).toFixed(3);return}
+  if(p=='st.0.top'){S.gH=+(v-(+S.Zb)-(S.gft?+S.gfT:0)).toFixed(3);return}
+  if(p=='tb'){if(S.gft){S.gH=+Math.max(.1,+S.gH-(v-(+S.gfT))).toFixed(3);S.gfT=v}else S.gH=v;return}
+  if(p=='Lt'){S.gLt=v;return}if(p=='Lh'){S.gLh=v;return}if(p=='gw'){S.gb=v;return}}
  if(p=='@H'){const old=+S.Hr,n=+(+S.Zb+v).toFixed(3);S.Hr=n;if(S.st.length&&Math.abs(+S.st[0].top-old)<1e-6)S.st[0].top=n;if(!S.st.length&&isG()&&Math.abs(+S.Zb+(+S.tb)-old)<1e-6)S.tb=+v.toFixed(3);return}
  if(p=='@Df'){S.Hf=+(+S.Zb+v).toFixed(3);return}
  if(p=='@WL'){S.wl='c';S.wlZ=+v;return}
@@ -133,7 +139,13 @@ const gpF=k=>S.gpon&&S[k]?Math.max(1,+S.gpv||1):1; // project-specific additiona
 const ckOn=id=>!(S.ck&&S.ck[id]&&S.ck[id].off);
 // optional checks that the designer may switch off (with a reason); sliding, overturning, bearing and uplift are locked ON
 const CKL=[['ecc','Eccentricity – middle-third rule'],['rc','Structural – RC / minimum steel'],['plain','Mass concrete lift sections'],['cover','Cover & exposure (CoP Table 4.2)']];
-const sync=()=>{const n=S.st.length;if(!n)return;S.st[n-1].bot=+(S.Zb+S.tb).toFixed(3);for(let i=1;i<n;i++)S.st[i].top=S.st[i-1].bot;if(!isG())S.st.forEach(s=>s.rc=1)};
+// gravity wall: one trapezoidal mass concrete body (bottom width, top width, height, front face battered), optional footing below;
+// the body may be split into equal-height lifts (construction joints) for the plain-concrete joint checks
+const gSync=()=>{const ft=!!S.gft,H=Math.max(+S.gH,.05),b=Math.max(+S.gb,.05),tw=Math.min(Math.max(+S.gtw,.05),b),n=Math.max(1,Math.min(6,Math.round(+S.gnl||1)));
+ if(!ft){S.st=[];S.tb=+H.toFixed(4);S.gw=b;S.Lt=0;S.Lh=0;return}
+ S.tb=+S.gfT;S.Lt=Math.max(0,+S.gLt);S.Lh=Math.max(0,+S.gLh);const z1=+S.Zb+(+S.gfT)+H,w=z=>tw+(b-tw)*(z1-z)/H;S.st=[];
+ for(let i=0;i<n;i++){const zt=z1-H*i/n,zb=z1-H*(i+1)/n;S.st.push({t:+w(zb).toFixed(4),tt:+w(zt).toFixed(4),top:+zt.toFixed(4),bot:+zb.toFixed(4),rc:(S.grc||[])[i]?1:0})}};
+const sync=()=>{if(isG())gSync();const n=S.st.length;if(!n)return;S.st[n-1].bot=+(S.Zb+S.tb).toFixed(3);for(let i=1;i<n;i++)S.st[i].top=S.st[i-1].bot;if(!isG())S.st.forEach(s=>s.rc=1)};
 function geo(){const n=S.st.length,tl=n?+S.st[n-1].t:+S.gw,Lt=S.ty=='L'?0:+S.Lt,hl=S.ty=='Li'?0:+S.Lh,bt=+S.Zb+(+S.tb);
  return{n,tl,Lt,hl,B:Lt+tl+hl,xb:Lt+tl,bt,top:n?+S.st[0].top:bt}}
 
@@ -422,7 +434,8 @@ function plainChecks(){if(!isG())return[];const G=geo(),Pk=params('k'),Kh=Pk.Kah
 function validate(){const E=[],W=[],G=geo();
  if(!isG()&&!S.st.length)E.push('At least one stem is required for this wall type.');
  S.st.forEach((s,i)=>{if(!(s.t>0))E.push(`${isG()?'Lift':'Stem'} ${i+1}: thickness must be > 0.`);if(!(s.top>s.bot))E.push(`${isG()?'Lift':'Stem'} ${i+1}: top level must be above bottom level.`)});
- if(isG())S.st.forEach((s,i)=>{if(s.tt!=null&&!(+s.tt>0&&+s.tt<=+s.t+1e-9))E.push(`Lift ${i+1}: top thickness must be > 0 and ≤ bottom thickness.`)});if(isG()&&!S.st.length&&S.gtw!=null&&!(+S.gtw>0))E.push('Block top width must be > 0.');
+ if(isG()){if(!(+S.gb>0))E.push('Wall body bottom width must be > 0.');if(!(+S.gtw>0)||+S.gtw>+S.gb+1e-9)E.push('Wall body top width must be > 0 and ≤ bottom width.');if(!(+S.gH>0))E.push('Wall body height must be > 0.');if(S.gft&&!(+S.gfT>0))E.push('Footing thickness must be > 0.')}
+if(isG())S.st.forEach((s,i)=>{if(s.tt!=null&&!(+s.tt>0&&+s.tt<=+s.t+1e-9))E.push(`Lift ${i+1}: top thickness must be > 0 and ≤ bottom thickness.`)});if(isG()&&!S.st.length&&S.gtw!=null&&!(+S.gtw>0))E.push('Block top width must be > 0.');
  if(!(S.tb>0))E.push('Base thickness must be > 0.');
  if(+S.dp<0)E.push('Passive neglect depth cannot be negative.');if(S.acc!='gg1'&&S.fon&&S.dfm=='ogl'&&+S.ogl<+S.Zb)E.push('Original ground level is below the foundation base.');if(S.acc!='gg1'&&S.fon&&S.dfm=='ogl'&&+S.ogl>+S.Hf)W.push('qo based on original ground above the final front level (excavation relief). Justify that this overburden existed before excavation (CoP Foundations 2017 Cl 2.2.4).');if(qVal()<0||+S.qin<0)E.push('Surcharge cannot be negative.');
  for(const[k,s]of[['r','Retained'],['f','Foundation']]){if(+S[k].c<0)E.push(`${s} c′ cannot be negative.`);if(!(+S[k].g>0))E.push(`${s} γ must be > 0.`)}
@@ -456,7 +469,7 @@ function validate(){const E=[],W=[],G=geo();
   if(+S.lQv<0||+S.lQh<0)E.push('Line loads cannot be negative.');if(+S.br>0)W.push('Line load: GG1 Fig. 29 is for a level retained surface – β_retained > 0 not covered.');
   W.push('Line load pressures from GG1 Fig. 29 assume a rigid, non-yielding wall (conservative for a yielding wall).')}
  if(S.wl=='c'&&S.bon&&(+S.wlZ<+S.Zb-1e-9||+S.wlZ>+S.Hr+1e-9))W.push('Custom retained WL outside base level – retained ground level; clipped.');
- if(isG()&&S.xrc){if(!(+S.grho>0))E.push('Gravity minimum steel ratio must be > 0.')}
+ if(isG()&&S.xrc&&S.gmr=='cc'){if(!(+S.grho>0))E.push('Gravity minimum steel ratio must be > 0.')}
  if(S.gpon){if(!(+S.gpv>=1))E.push('Project-specific factor γproj must be ≥ 1.0.');W.push(`Project-specific additional factor γproj = ${S.gpv} applied to ${[S.gpS?'sliding':'',S.gpO?'overturning':'',S.gpA?'As,req':''].filter(Boolean).join(', ')||'nothing'} – NOT a code requirement${S.gpsrc?` (source: ${esc(S.gpsrc)})`:' – state the source'}.`)}
  if(S.xrc&&S.cmp&&S.bon&&!(+S.cQ>0))E.push('Compaction line load Q1 must be > 0 (or untick compaction).');
  for(const[id,n]of CKL)if(!ckOn(id)&&!(S.ck[id].why||'').trim())W.push(`Check “${n}” switched OFF without a reason – enter the reason in the check register.`);
@@ -501,12 +514,15 @@ function ri(){const I=(l,p,u,s,ro,v)=>`<label>${l}<span><input type=number step=
   +Ck('Show advanced inputs (hidden items use code defaults)','adv')+`<div id=wn></div>`,'s1')
  /* ---------- STEP 2 ---------- */
  +D(sh(2,'Wall &amp; Foundation Geometry'),I('Retained ground level (top of backfill at wall)','Hr','mPD')+I('Founding level (underside of base)','Zb','mPD')+`<p class=mu>Retained height H = <b id=ht></b> m · wall top <b id=wt></b> mPD</p>`
-  +(G?`<p class=mu>Gravity: delete all lifts for a single mass block (G-1); with lifts, tick a lift as RC if it is reinforced (G-3).</p>`:'')
-  +S.st.map((s,i)=>`<div class=st><b>${G?'Lift':'Stem'} ${i+1}</b>${(G||i)?` <button data-a=del data-i=${i}>−</button>`:''}`+I('Bottom thickness','st.'+i+'.t','m')+I('Top thickness (front face battered)','st.'+i+'.tt','m','','',liftTT(s))+I('Top level','st.'+i+'.top','mPD','',i>0)+I('Bottom level','st.'+i+'.bot','mPD','',i==S.st.length-1)+(G?Ck('Reinforced concrete lift','st.'+i+'.rc'):'')+'</div>').join('')
-  +`<button data-a=add>+ Add ${G?'lift':'stem'}</button><div class=st><b>${G&&!S.st.length?'Mass block':'Base slab'}</b>`+I(G&&!S.st.length?'Block height':'Base thickness','tb','m')
-  +(G&&!S.st.length?I('Block core width','gw','m')+I('Block top width (≤ B, front face battered)','gtw','m','','',blockTW(Gd.B)):'')
+  +(G?`<div class=st><b>Wall body (mass concrete)</b>`+I('Bottom width','gb','m')+I('Top width (front face battered)','gtw','m')+I('Body height','gH','m')
+    +`<p class=mu>Back face vertical; front face batter 1H : ${f(+S.gH/Math.max(+S.gb-Math.min(+S.gtw,+S.gb),1e-6),2)}V.</p>`
+    +A(I('Number of lifts (construction joints, equal height)','gnl','',1)+(S.gft?Array.from({length:Math.max(1,Math.round(+S.gnl||1))},(_,i)=>Ck(`Lift ${i+1} (from top) is reinforced concrete`,'grc.'+i)).join(''):''))+'</div>'
+    +`<div class=st>`+Ck('<b>Footing below wall body</b>','gft')+(S.gft?I('Footing thickness','gfT','m')+I('Toe projection (front)','gLt','m')+I('Heel projection (back)','gLh','m'):`<p class=mu>No footing: the wall body sits directly on the founding level (single mass block).</p>`)
+    +`<p class=mu>Wall top <b id=wt2></b> mPD · base width B = <b id=bB></b> m</p>`+A(I('Unit weight of concrete γc','gc','kN/m³'))+'</div>':'')
+  +(G?'':S.st.map((s,i)=>`<div class=st><b>${G?'Lift':'Stem'} ${i+1}</b>${(G||i)?` <button data-a=del data-i=${i}>−</button>`:''}`+I('Bottom thickness','st.'+i+'.t','m')+I('Top thickness (front face battered)','st.'+i+'.tt','m','','',liftTT(s))+I('Top level','st.'+i+'.top','mPD','',i>0)+I('Bottom level','st.'+i+'.bot','mPD','',i==S.st.length-1)+'</div>').join('')
+  +`<button data-a=add>+ Add stem</button><div class=st><b>Base slab</b>`+I('Base thickness','tb','m')
   +I('Toe length (front)','Lt','m','',S.ty=='L',S.ty=='L'?0:undefined)+I('Heel length (back)','Lh','m','',S.ty=='Li',S.ty=='Li'?0:undefined)
-  +`<p class=mu>Base top <b id=bt></b> mPD · base width B = toe + stem + heel = <b id=bB></b> m</p>`+A(I('Unit weight of concrete γc','gc','kN/m³'))+'</div>'
+  +`<p class=mu>Base top <b id=bt></b> mPD · base width B = toe + stem + heel = <b id=bB></b> m</p>`+A(I('Unit weight of concrete γc','gc','kN/m³'))+'</div>')
   +`<div class=st><b>Shear key</b>`+Ck('Shear key below base (GG1 §9.2.3(2), Fig. 42)','skon')+(S.skon?I('Key depth below base dk','skd','m')+I('Key width Bk','skw','m')+I('Key front face from toe xk','skx','m')
    +`<p class=mu>Sliding checked on the horizontal plane through the key bottom (Fig. 42 mechanism 1): Fr = Ns·tanφ′ + c′(B − Bk) + Nb·tanδb + Rp1. GG1: min depth 0.5 m; deep keys (dk &gt; B/2) should not be used.</p>`:'')+'</div>','s2')
  /* ---------- STEP 3 ---------- */
@@ -540,8 +556,9 @@ function ri(){const I=(l,p,u,s,ro,v)=>`<label>${l}<span><input type=number step=
   +'</div><div class=st>'+Ck('Barrier load on wall top (DIL Table 3.13)','bro')+(S.bro?Se('Category','brc',Object.entries(BCAT),190)+(S.brc=='c'?I('Line load','brF','kN/m'):'')+I('Barrier height above wall top','bhb','m'):'')+'</div>','s4')
  /* ---------- STEP 5 ---------- */
  +D(sh(5,'Concrete &amp; Reinforcement Design'),Ck('<b>Include structural calculation in report</b>','xrc')+I('fcu','fcu','MPa')+Se('fy','fy',[['500','500 MPa (high yield)'],['250','250 MPa (mild steel)']],150)+(!G&&Gd.hl>0?Ck('Include q_inside in heel RC design','qinRC'):'')
-  +(G?`<div class=st><b>Gravity wall – minimum steel (crack control)</b>`+I('Ratio ρ each direction (CoP Cl 9.6.5)','grho','%')
-    +`<p class=mu>CoP 9.6.5: 0.25% (fy 500) / 0.30% (fy 250) of the concrete cross-section in each direction, half near each face → As,min per face = ρ·b·h/2. Face bars must satisfy As ≥ max(As,req from Mu, As,min).</p></div>`:'')
+  +(G?`<div class=st><b>Gravity wall – reinforcement in mass concrete</b>`+Se('Mass concrete lifts / base','gmr',[['none','Unreinforced – plain concrete (CoP 6.2.2.3)'],['cc','Crack-control bars (CoP 9.6.5)']],230)
+    +(S.gmr=='cc'?I('Ratio ρ each direction (CoP Cl 9.6.5)','grho','%')+`<p class=mu>CoP 9.6.5: “where reinforcement is provided” at least 0.25% (fy 500) / 0.30% (fy 250) of the concrete cross-section in each direction, half near each face → As,min per face = ρ·b·h/2. On a thick mass section this gives heavy steel; use only where the project requires bars.</p>`
+     :`<p class=mu>Mass concrete is designed as plain concrete (CoP 6.2.2.3: no tension, axial capacity, shear) – no bars needed. CoP 9.6.5 minimum applies only <i>where reinforcement is provided</i>. Lifts ticked “RC” are still designed as reinforced concrete.</p>`)+`</div>`:'')
   +`<div class=st><b>RC design earth pressure</b> <span class=mu>(GG1 §10.2, Table 20: at-rest + compaction unless movement mobilises active)</span>`+rad('ko','Ko – at rest (default)')+rad('ka','Ka – active (wall free to move – justify)')+rad('env','Envelope of Ka and Ko')
    +`<div id=kopan>`+A(I('OCR (≥ 1)','ocr'))+`<p class=mu>Ko = <b id=kov></b></p>`+A(Ck('Manual override Ko','kom')+I('Ko','koM'))+`</div>`
    +Ck('Compaction-induced pressure (GG1 §6.8, Fig. 27)','cmp')+(S.cmp?I('Compaction plant effective line load Q1','cQ','kN/m')+`<p class=mu id=cmptxt></p>`:'')+`</div>`
@@ -618,8 +635,9 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
   dh=(z,x1,x2,t,ed)=>{o+=ln2(X(x1),Y(z),X(x2),Y(z))+tk(X(x1),Y(z))+tk(X(x2),Y(z));lb.push([X((x1+x2)/2),Y(z)+14,t,'middle',DC,'lv',ed])},
   xc=-((pc+mp>0?(pc+mp)*sc:0)+(pw>0?pw*sc+.15:0)+.55),nm=isG()?'Lift':'Stem';
   S.st.forEach((t,i)=>{dv(xc,t.bot,t.top,`${nm} ${i+1} h = ${f(t.top-t.bot)}`,'end');o+=ln2(X(xc),Y(t.top),X(xb-t.t),Y(t.top),1)+ln2(X(xc),Y(t.bot),X(xb-t.t),Y(t.bot),1);const zm=(+t.top+(+t.bot))/2;o+=ln2(X(xb-t.t),Y(zm),X(xb),Y(zm))+tk(X(xb-t.t),Y(zm))+tk(X(xb),Y(zm));
-   lb.push([X(xb)+8,Y(zm)+4,`${nm} ${i+1} t =`,'start',DC,'lv',{p:`st.${i}.t`,v:+t.t,pt:`${nm} ${i+1} t = ${f(t.t)}${liftTT(t)<t.t?` (top ${f(liftTT(t))})`:''}${isG()&&t.rc?' (RC)':''}`}])});
-  dv(xc,Zb,bt,`${isG()&&!S.st.length?'Block':'Base'} t =`,'end',{p:'tb',v:+S.tb});o+=ln2(X(xc),Y(Zb),X(0),Y(Zb),1)+ln2(X(xc),Y(bt),X(0),Y(bt),1);
+   if(!isG())lb.push([X(xb)+8,Y(zm)+4,`${nm} ${i+1} t =`,'start',DC,'lv',{p:`st.${i}.t`,v:+t.t,pt:`${nm} ${i+1} t = ${f(t.t)}${liftTT(t)<t.t?` (top ${f(liftTT(t))})`:''}${isG()&&t.rc?' (RC)':''}`}])});
+  if(isG()){const zb0=S.st.length?bt:Zb,zt0=top;dh(zb0+.12,xb-(+S.gb),xb,'Body bottom width =',{p:'gb',v:+S.gb});dh(zt0+.25,xb-Math.min(+S.gtw,+S.gb),xb,'Top width =',{p:'gtw',v:Math.min(+S.gtw,+S.gb)});if(!S.st.length)dv(xc,Zb,bt,'Body height =','end',{p:'gH',v:+S.gH})}
+  if(!isG()||S.st.length)dv(xc,Zb,bt,`${isG()?'Footing':'Base'} t =`,'end',{p:'tb',v:+S.tb});o+=ln2(X(xc),Y(Zb),X(0),Y(Zb),1)+ln2(X(xc),Y(bt),X(0),Y(bt),1);
   if(S.bon&&C.hs0>0)dv(xr-.3,Zb,Hr,'Retained H =','end',{p:'@H',v:Hr-Zb,pt:`Retained H = ${f(Hr-Zb)}${C.hs>C.hs0+1e-6?` (on virtual back ${f(C.hs)})`:''}`});
   if(Hf>Zb)dv(xl+.35,Zb,Hf,'Front soil Df =','start',{p:'@Df',v:Hf-Zb});
   if(KG&&KG.dk>0){dv(KG.xk-.12,Zb-KG.dk,Zb,'Key dk =','end',{p:'skd',v:KG.dk})}
@@ -637,11 +655,11 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
  if(!NE){const n=S.st.length,hm=(Zb+bt)/2,hb=bt-Zb,add=(p,ax,k,v,x,z,o2)=>HD.push({p,ax,k,v:+v,x,z,anc:'toe',min:-1e9,max:1e9,d:2,...o2});
   if(S.bon)add('@H','z',1,Hr-Zb,Math.min(xr-.6,B+.7),Hr,{min:+S.tb+.3,lab:'Retained H'});
   if(n&&Math.abs(top-Hr)>.02)add('st.0.top','z',1,top,xb-t0/2,top,{min:+S.st[0].bot+.2,lab:'Wall top'});
-  if(S.ty!='L')add('Lt','x',-1,Lt,0,hm,{anc:'xb',min:0,lab:'Toe'});
-  if(S.ty!='Li')add('Lh','x',1,hl,B,n?hm:Zb+.25*hb,{min:0,lab:'Heel'});
+  const fo=!isG()||S.gft;if(S.ty!='L'&&fo)add('Lt','x',-1,Lt,0,hm,{anc:'xb',min:0,lab:isG()?'Toe projection':'Toe'});
+  if(S.ty!='Li'&&fo)add('Lh','x',1,hl,B,n?hm:Zb+.25*hb,{min:0,lab:'Heel'});
   add('tb','z',1,+S.tb,hl>.3?(xb+B)/2:Lt>.3?Lt/2:xb-.15,bt,{min:.2,max:n?+S.st[n-1].top-.2:1e9,lab:isG()&&!n?'Block height':'Base t'});
-  if(!n)add('gw','x',1,+S.gw,xb,bt-.25*hb,{min:.3,lab:'Block width'});
-  S.st.forEach((t,i)=>{add(`st.${i}.t`,'x',-1,+t.t,xb-(+t.t+liftTT(t))/2,(+t.top+(+t.bot))/2,{anc:'xb',min:.15,lab:`${isG()?'Lift':'Stem'} ${i+1} t`});
+  if(isG()){const zb0=n?bt:Zb;add('gb','x',-1,+S.gb,xb-(+S.gb),zb0+.3*(top-zb0),{anc:'xb',min:.3,lab:'Body bottom width'});add('gtw','x',-1,Math.min(+S.gtw,+S.gb),xb-Math.min(+S.gtw,+S.gb),top-.15,{anc:'xb',min:.1,max:+S.gb,lab:'Body top width'})}
+  else S.st.forEach((t,i)=>{add(`st.${i}.t`,'x',-1,+t.t,xb-(+t.t+liftTT(t))/2,(+t.top+(+t.bot))/2,{anc:'xb',min:.15,lab:`${isG()?'Lift':'Stem'} ${i+1} t`});
    if(i<n-1)add(`st.${i}.bot`,'z',1,+t.bot,xb,+t.bot,{min:+S.st[i+1].bot+.2,max:+t.top-.2,lab:`${isG()?'Lift':'Stem'} ${i+1} bottom`})});
   if(S.bon)add('@WL','z',1,C.wb>0?C.Wb:Zb,xr-1.1,C.wb>0?C.Wb:Zb,{min:Zb,max:Hr,lab:'Design WL'});
   if(S.fon)add('fw','z',1,+S.fw,xl+1.1,Math.max(+S.fw,Zb-.3),{max:Hf,lab:'Front GWL'});
@@ -663,42 +681,45 @@ function calcAll(){sync();const G=geo(),V=validate(),Pk=params('k'),Pf=params('f
  if(runs.length>1)RS=RS.map((a,i)=>{const b=runs[1].els[i],m={...a};if(Math.abs(b.M)>Math.abs(a.M)){m.M=b.M;m.gov=b.gov+' (Ko)'}if(Math.abs(b.V)>Math.abs(a.V))m.V=b.V;m.bad=a.bad||b.bad;return m});
  // merge optional heel no-relief check into heel element
  const hn=RS.find(e=>e.n.startsWith('Heel –')),he=RS.find(e=>e.k=='H'&&!e.n.startsWith('Heel –'));if(hn&&he){he.hnM=hn.M;he.hnV=hn.V;if(S.hnr){if(Math.abs(hn.M)>Math.abs(he.M)){he.M=hn.M;he.gov=hn.gov+' (relief ignored)'}if(Math.abs(hn.V)>Math.abs(he.V))he.V=hn.V}}
- RS=RS.filter(e=>!e.n.startsWith('Heel –'));RS.forEach(dsg);
+ RS=RS.filter(e=>!e.n.startsWith('Heel –'));if(isG()&&S.gmr!='cc')RS=RS.filter(e=>!e.gv);RS.forEach(dsg);
  const PL=plainChecks(),okPlain=PL.every(p=>p.okT&&p.okU&&p.okSl&&p.shOK),CA=coverAll(),crOK=CA.every(o=>o.ok),okRC=RS.every(r=>r.ok);
  const u=utilOf(A,Fc,P,G.B),X=S.xrc,fails=[];
  if(P){if(!A.okS)fails.push('Sliding');if(!A.okO)fails.push('Overturning');if(!A.okB)fails.push('Bearing')}
  else{if(!Fc.okS)fails.push('Sliding');if(!Fc.okO)fails.push('Overturning');if(!Fc.okB)fails.push('Bearing');if(!Fc.okU)fails.push('Uplift')}
  if(ckOn('ecc')&&!(A.okE||A.naE))fails.push('Eccentricity (middle third)');
- if(X&&ckOn('rc')&&RS.length&&!okRC)fails.push(isG()?'Structural (min. steel / RC)':'RC design');if(X&&ckOn('plain')&&PL.length&&!okPlain)fails.push('Mass concrete section');
+ if(X&&ckOn('rc')&&RS.length&&!okRC)fails.push(isG()?(S.gmr=='cc'?'Structural (crack-control steel / RC lifts)':'Structural (RC lifts)'):'RC design');if(X&&ckOn('plain')&&PL.length&&!okPlain)fails.push('Mass concrete section');
  if(X&&ckOn('cover')&&RS.length&&!crOK)fails.push('Cover / exposure');
  return{G,V,Pk,Pf,q,P,A,Fc,gov,Ck,sk,ko,RS,PL,CA,crOK,okRC,okPlain,u,fails,X,vol:concArea(),steel:steelKg(RS)}}
 
 /* ---------------- check register (tick / untick) ---------------- */
-function regRows(R0){const{A,Fc,P,G,RS,PL,crOK,okRC,okPlain,u,X}=R0,rows=[],add=(id,n,cl,st,uu,det,lk)=>rows.push({id,n,cl,st,u:uu,det,lk});
- const off=id=>!ckOn(id),keyS=S.skon?' (shear key, GG1 Fig. 42)':'';
- if(P){add('sl','Sliding'+keyS,'GG1 §9.2.3, Fig. 39','',A.sl.u,`Fa / Fr = ${f(A.sl.Fa??A.sl.s.H)} / ${f(A.sl.Fr)}${A.sl.gp>1?` × γproj ${A.sl.gp}`:''}`,1);
-  add('ot','Overturning','GG1 Fig. 39','',1/Math.max(A.ot.F,1e-9),`FOS ${f(A.ot.F)} ≥ 1.0${A.ot.gp>1?` (incl. γproj ${A.ot.gp})`:''}`,1);
-  add('br','Bearing capacity','GG1 App. A, Fig. A2','',A.br.u,`Qn / Qult = ${f(A.br.b.N)} / ${f(A.br.r.Qu)}`,1)}
- else{add('sl','Sliding'+keyS,'FC 2017 Cl 2.5.4','',Fc.sl.u,`FOS ${f(Fc.sl.F)} ≥ ${f(Fc.sl.Freq)} required`,1);
-  add('ot','Overturning','FC 2017 Cl 2.5.4','',Fc.ot.u,`FOS ${f(Fc.ot.F)} ≥ ${f(Fc.ot.Freq)} required (split factors)`,1);
-  add('up','Uplift','FC 2017 Cl 2.5.4',Fc.up.s.U>0?'':'na',Fc.up.s.U>0?1/Math.max(Fc.up.r,1e-9):null,Fc.up.s.U>0?`W ${f(Fc.up.s.W)} ≥ ${Fc.Fu} × U ${f(Fc.up.s.U)}`:'no uplift',1);
-  add('br','Bearing capacity','FC 2017 Cl 2.2.4','',u.br,Fc.br.F===Infinity?'q ≤ qo':`FOS ${f(Fc.br.F)} ≥ ${f(Fc.Fb,1)}; q ${f(Fc.br.qap,0)} ≤ qa ${f(Fc.br.qa,0)} kPa`,1)}
- add('ecc','Eccentricity – middle third','GG1 §9.2.4',off('ecc')?'nc':A.naE?'na':'',A.naE?null:u.ec,A.naE?'e < 0 – rule need not apply':`e = ${f(A.sls.s.e,3)} ≤ B/6 = ${f(G.B/6,3)} m`,0);
- if(X&&RS.length){const um=Math.max(...RS.map(r=>Math.max(r.uM,r.uV)));add('rc',isG()?'Structural – min. steel / RC':'Structural – RC (stem, toe, heel)','CoP SUC 2013',off('rc')?'nc':okRC,um,`${RS.filter(r=>r.ok).length} / ${RS.length} elements OK`+(okRC?'':' – '+RS.filter(r=>!r.ok).map(r=>r.n).join(', ')),0);
-  add('cover','Cover & exposure','CoP Table 4.1, 4.2',off('cover')?'nc':crOK,null,crOK?'all faces OK':'cover below minimum',0)}
- if(X&&PL.length)add('plain','Mass concrete lift sections','CoP Cl 6.2.2.3',off('plain')?'nc':okPlain,Math.max(...PL.map(p=>p.ua)),`${PL.filter(p=>p.okT&&p.okU&&p.okSl&&p.shOK).length} / ${PL.length} lifts OK`,0);
- rows.forEach(r=>{if(r.st==='')r.st=r.u==null?true:r.u<=1+1e-9});return rows}
-function regHTML(rows){const bar=x=>{if(x==null||!Number.isFinite(x))return x===Infinity?'<span class=mu>∞</span>':'';const ok=x<=1+1e-9,w=Math.min(100,x*100/1.5);return`<div class="ub"><i style="width:${f(w,1)}%;background:${ok?'var(--ok)':'var(--no)'}"></i><s></s></div><b class=uv style="color:${ok?'var(--ok)':'var(--no)'}">${f(100*x,0)}%</b>`};
- return`<div class=reg><table><thead><tr><th title="Tick to include the check">✓</th><th>Check</th><th>Utilisation <span class=mu>(≤ 100%)</span></th><th>Status</th><th>Detail</th><th>Clause</th></tr></thead><tbody>${rows.map(r=>{const offR=r.st=='nc',ck=S.ck[r.id]||{};
-  return`<tr class="${offR?'off':''}" data-jump="${r.id}"><td>${r.lk?'<span title="Code requirement – cannot be switched off">🔒</span>':`<input type=checkbox data-ck="${r.id}"${offR?'':' checked'} title="Untick to exclude (reason required)">`}</td><td><b>${r.n}</b>${offR?`<br><input class=why data-ckw="${r.id}" placeholder="Reason for not checking (printed in report)" value="${esc(ck.why||'')}">`:''}</td><td class=ubc>${offR?'':bar(r.u)}</td><td>${lp(r.st)}</td><td class=mu>${offR?'excluded by designer':r.det}</td><td class=mu>${r.cl}</td></tr>`}).join('')}</tbody></table></div>`}
+/* summary register: stability shows FOS / ratio provided vs required (as in the code); utilisation bar only for structural rows */
+function regRows(R0){const{A,Fc,P,G,RS,PL,crOK,okRC,okPlain,u,X}=R0,rows=[],add=(id,n,cl,st,pv,rq,det,lk,uu)=>rows.push({id,n,cl,st,pv,rq,det,lk,u:uu});
+ const off=id=>!ckOn(id),keyS=S.skon?' (shear key)':'',okS=x=>x<=1+1e-9;
+ if(P){const gS=A.sl.gp||1,gO=A.ot.gp||1,gx=g=>g>1?` (γproj ${f(g,2)})`:'';
+  add('sl','Sliding'+keyS,'GG1 §9.2.3, Fig. 39',okS(A.sl.u),`Fr / Fa = ${f(A.sl.Fr)} / ${f(A.sl.Fa??A.sl.s.H)} = <b>${f(gS/Math.max(A.sl.u,1e-9),2)}</b>`,`≥ ${f(gS,2)}${gx(gS)}`,'factored soil strength (γm), factored surcharge',1);
+  add('ot','Overturning','GG1 Fig. 39',A.ot.F>=1-1e-9,`Mr / Md = <b>${f(A.ot.F*gO,2)}</b>`,`≥ ${f(gO,2)}${gx(gO)}`,'factored parameters',1);
+  add('br','Bearing capacity','GG1 App. A, Fig. A2',okS(A.br.u),`Qult / Qn = ${f(A.br.r.Qu,0)} / ${f(A.br.b.N,0)} = <b>${f(1/Math.max(A.br.u,1e-9),2)}</b>`,'≥ 1.00','strip footing, factored φ′, c′',1)}
+ else{add('sl','Sliding'+keyS,'FC 2017 Cl 2.5.4',Fc.okS,`FOS = <b>${f(Fc.sl.F,2)}</b>`,`≥ ${f(Fc.sl.Freq,2)}`,Fc.sl.Hw>0?`${f(Fc.Fsw,1)} on water, ${f(Fc.Fs,1)} on other loads${Fc.gS>1?`, γproj ${f(Fc.gS,2)}`:''}`:`${Fc.gS>1?`incl. γproj ${f(Fc.gS,2)}`:''}`,1);
+  add('ot','Overturning','FC 2017 Cl 2.5.4',Fc.okO,`FOS = <b>${f(Fc.ot.F,2)}</b>`,`≥ ${f(Fc.ot.Freq,2)}`,`weighted: ${f(Fc.Fow,1)} wind / ${f(Fc.Fog,1)} groundwater / ${f(Fc.Fo,1)} other${Fc.gO>1?`, γproj ${f(Fc.gO,2)}`:''}`,1);
+  add('up','Uplift','FC 2017 Cl 2.5.4',Fc.up.s.U>0?Fc.okU:'na',Fc.up.s.U>0?`W / U = <b>${f(Fc.up.s.W/Fc.up.s.U,2)}</b>`:'no uplift',Fc.up.s.U>0?`≥ ${f(Fc.Fu,2)}`:'–','',1);
+  add('br','Bearing capacity','FC 2017 Cl 2.2.4',Fc.okB,Fc.br.F===Infinity?'q ≤ qo':`FOS = <b>${f(Fc.br.F,2)}</b>`,`≥ ${f(Fc.Fb,2)}`,`q ${f(Fc.br.qap,0)} ≤ qa ${f(Fc.br.qa,0)} kPa`,1)}
+ add('ecc','Eccentricity – middle third','GG1 §9.2.4',off('ecc')?'nc':A.naE?'na':okS(u.ec),A.naE?`e = ${f(A.sls.s.e,3)} m`:`e = <b>${f(A.sls.s.e,3)}</b> m`,A.naE?'rule need not apply (e < 0)':`≤ B/6 = ${f(G.B/6,3)} m`,'unfactored',0);
+ if(X&&RS.length){const um=Math.max(...RS.map(r=>Math.max(r.uM,r.uV)));add('rc',isG()?'Structural – reinforced lifts':'Structural – RC (stem, toe, heel)','CoP SUC 2013',off('rc')?'nc':okRC,`${RS.filter(r=>r.ok).length} / ${RS.length} elements OK`,'all element checks pass',okRC?'':'fails: '+RS.filter(r=>!r.ok).map(r=>r.n).join(', '),0,um);
+  add('cover','Cover & exposure','CoP Table 4.1, 4.2',off('cover')?'nc':crOK,crOK?'all faces OK':'below minimum','CoP minimum cover','',0)}
+ if(X&&PL.length)add('plain','Mass concrete lift sections','CoP Cl 6.2.2.3',off('plain')?'nc':okPlain,`${PL.filter(p=>p.okT&&p.okU&&p.okSl&&p.shOK).length} / ${PL.length} lifts OK`,'no tension; nw ≤ capacity; shear','',0,Math.max(...PL.map(p=>p.ua)));
+ return rows}
+function regHTML(rows){const bar=x=>{if(x==null||!Number.isFinite(x))return'';const ok=x<=1+1e-9,w=Math.min(100,x*100/1.5);return`<div class="ub" title="Structural utilisation (action / capacity)"><i style="width:${f(w,1)}%;background:${ok?'var(--ok)':'var(--no)'}"></i><s></s></div><b class=uv style="color:${ok?'var(--ok)':'var(--no)'}">${f(100*x,0)}%</b>`};
+ return`<div class=reg><table class=reg><thead><tr><th title="Tick to include the check">✓</th><th>Check</th><th>Provided</th><th>Required</th><th>Status</th><th>Clause</th></tr></thead><tbody>${rows.map(r=>{const offR=r.st=='nc',ck=S.ck[r.id]||{};
+  return`<tr class="${offR?'off':''}" data-jump="${r.id}"><td>${r.lk?'<span title="Code requirement – cannot be switched off">🔒</span>':`<input type=checkbox data-ck="${r.id}"${offR?'':' checked'} title="Untick to exclude (reason required)">`}</td><td><b>${r.n}</b>${r.det&&!offR?`<br><small class=mu>${r.det}</small>`:''}${offR?`<br><input class=why data-ckw="${r.id}" placeholder="Reason for not checking (printed in report)" value="${esc(ck.why||'')}">`:''}</td><td>${offR?'<span class=mu>excluded by designer</span>':r.pv+(r.u!=null?' '+bar(r.u):'')}</td><td class=mu>${offR?'':r.rq}</td><td>${lp(r.st)}</td><td class=mu>${r.cl}</td></tr>`}).join('')}</tbody></table>
+ <p class=mu style="margin:4px 2px 0;font-size:11.5px">Stability is checked as in the code: provided FOS (or resistance / action ratio for Geoguide 1 partial factors) against the required value. ${S.acc=='fc'?'Where FC 2017 applies different factors to water, wind and other loads, the required FOS shown is the equivalent single value for this load case.':''} Percentages appear only for structural members (action / capacity).</p></div>`}
 /* ---------------- render ---------------- */
 function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  // panel echoes + generic panel ⇄ state sync (single source of truth)
  const tx=(id,v)=>{const e=$(id);if(e)e.innerHTML=v};
  document.querySelectorAll('#in [data-p]').forEach(el=>{if(el===document.activeElement||el.readOnly)return;const v=gp(el.dataset.p);if(v==null)return;if(el.type=='checkbox')el.checked=!!v;else if(el.type=='radio')el.checked=el.value==v;else if(String(el.value)!==String(v))el.value=v});
- tx('bt',dd(G.bt));tx('bB',dd(G.B));tx('wt',dd(G.top));tx('ht',dd(Math.max(0,S.Hr-S.Zb)));tx('hf2',dd(Math.max(0,S.Hf-S.Zb)));tx('wl',dd(wlLev()));tx('qv',f(q,1));tx('asv',f(S.asc,1)+'×');tx('kov',`${f(koVal(),3)} (${koDesc()})`);if(cmpOn()){const c=cmpInfo(koVal());tx('cmptxt',`p′hm = √(2Q1γ/π) = √(2×${c.Q}×${S.r.g}/π) = <b>${f(c.phm,2)}</b> kPa; zc = ${f(c.zc,2)} m${+S.br>0?' (fill slope: zc = 0, Fig. 27 note 2)':''}; hc = ${f(c.hc,2)} m (with K = ${f(koVal(),3)})`)}
+ tx('bt',dd(G.bt));tx('wt2',dd(G.top));tx('bB',dd(G.B));tx('wt',dd(G.top));tx('ht',dd(Math.max(0,S.Hr-S.Zb)));tx('hf2',dd(Math.max(0,S.Hf-S.Zb)));tx('wl',dd(wlLev()));tx('qv',f(q,1));tx('asv',f(S.asc,1)+'×');tx('kov',`${f(koVal(),3)} (${koDesc()})`);if(cmpOn()){const c=cmpInfo(koVal());tx('cmptxt',`p′hm = √(2Q1γ/π) = √(2×${c.Q}×${S.r.g}/π) = <b>${f(c.phm,2)}</b> kPa; zc = ${f(c.zc,2)} m${+S.br>0?' (fill slope: zc = 0, Fig. 27 note 2)':''}; hc = ${f(c.hc,2)} m (with K = ${f(koVal(),3)})`)}
  const kp=$('kopan');if(kp)kp.style.display=S.rck=='ka'?'none':'';
- const wd=Pk.wd,gtx={T:'toe + stem + heel',L:'stem + heel (no toe)',Li:'toe + stem (no heel)',G:S.st.length?'base + mass concrete lifts (G-3)':'single mass block (G-1)'}[S.ty];
+ const wd=Pk.wd,gtx={T:'toe + stem + heel',L:'stem + heel (no toe)',Li:'toe + stem (no heel)',G:S.st.length?`mass concrete wall body on a footing${S.st.length>1?` (${S.st.length} lifts)`:''}`:'mass concrete wall body, no footing'}[S.ty];
  tx('tyinfo',`Geometry: <b>${gtx}</b>. Earth pressure on the ${planeName()}. Default wall friction: ${wd.src}.`);
  tx('dwtxt',`${wd.src}. Selected δ = ${f(wd.d,1)}°${S.kam!='c'?' – <b>not used</b> (Rankine / manual Ka: δ = 0)':''}${wd.over&&S.kam=='c'?` <span class=warn>– larger than Geoguide 1 Table 14 δmax (${f(wd.dmax,1)}°)</span>`:''}`);
  tx('cvexp',`δb = φcv′ = ${phiCv()}° (Geoguide 1 §5.12: base friction for a wall without shear key = angle of skin friction of rough blinding concrete on soil, taken as the critical-state angle φcv′). Use test results, or the §5.5.2 lower bounds – about 34° granitic, 30° volcanic.${P?` Partial factor: δbf = tan⁻¹(tan${phiCv()}°/${S.gm}) = ${f(Pf.db,1)}°.`:''}${S.skon?' With a shear key the sliding plane passes through undisturbed soil (φ′ of foundation soil, GG1 §5.12, Fig. 42).':''}`);
@@ -800,15 +821,21 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  /* ---- Section 7 ---- */
  const kaTxt=`Ka (${Pk.kaLab}) = ${f(Pk.Ka,3)}, Kah = ${f(Pk.Kah,3)}`,koTxt=`Ko = ${f(ko,3)} (${koDesc()})`,cmpTxt=()=>{if(!cmpOn())return S.cmp?' Compaction-induced pressure: not applied (no backfill or Q1 = 0).':' Compaction-induced pressure: not considered.';const K=S.rck=='ka'?Pk.Kah:ko,c=cmpInfo(K);return` <b>Compaction-induced pressure</b> (GG1 §6.8, Fig. 27; Ingold 1979): roller line load Q1 = ${f(c.Q,1)} kN/m, p′hm = √(2Q1γ/π) = ${f(c.phm,1)} kPa; ${+S.br>0?'fill slope behind wall → zc = 0 (Fig. 27 note 2)':`zc = ${f(c.zc,2)} m, hc = ${f(c.hc,2)} m`}; σ′h = max(K·σ′v, ${+S.br>0?'p′hm':'min(σ′v/K, p′hm)'}) for structural design (GG1 Table 20).`};
  let h7='';
+ const RCT=(r,rows)=>{const sp=s=>{const m=String(s).match(/^(\d+[a-z]?)\s+(.*)$/);return m?[m[1],m[2]]:['',s]},
+  st=rows.map(x=>{const[n,t]=sp(x[0]);return[n,t,x[1],x[2],x[3]]}),ck=rows.filter(x=>x[4]).map(x=>{const[n,t]=sp(x[0]);return[n,t,x[1],x[3]||x[2],x[4]]}),
+  bad=ck.filter(x=>x[4].includes('FAIL'));
+  return`<h4 style="margin:6px 0 2px">Design calculation</h4>`+T(['No.','Step','Formula / clause','Substitution','Result'],st,'rct')
+  +`<h4 style="margin:8px 0 2px">Checks – ${bad.length?`<span style="color:var(--no)">${bad.length} of ${ck.length} fail: ${bad.map(x=>x[1]).join(', ')}</span>`:`all ${ck.length} pass`}</h4>`+T(['Step','Check','Requirement / clause','Result','Status'],ck,'rct')};
  if(S.xrc){h7=`<h2>7. Structural design – CoP SUC 2013 (2020 Ed.)</h2><p><b>Earth pressure for structural design:</b> ${S.rck=='ka'?kaTxt:S.rck=='ko'?koTxt:'envelope of '+kaTxt+' and '+koTxt} (GG1 §10.2 / Table 20: at-rest pressure for walls that do not move enough to mobilise active state).${cmpTxt()} Unfactored soil parameters; ULS by load factors (GG1 §4.3.5).${gpF('gpA')>1?` As,req × γproj ${f(gpF('gpA'),2)} (project-specific).`:''}</p>`
   +T(['Comb.','CoP Table 2.1','Earth & water γf','Imposed (surcharge, barrier)','Wind','Dead adverse / beneficial'],COMBS.map(c=>[c.id,c.n,c.gE,c.gQ||'– (excluded)',c.gW||'–',`${c.gGa} / ${c.gGb}`]))
   +`<p class=mu>Wind and barrier load are applied as separate cases (DIL 3.8.1.1). Toe / heel actions from base pressure re-computed under each factored load set (equilibrium); downward loads on the toe taken at γf = 1.0 (beneficial). Passive resistance excluded from structural equilibrium (conservative).</p>`
-  +(isG()?`<p><b>Basis of minimum reinforcement (gravity wall):</b> CoP Cl 9.6.5 – plain walls: reinforcement to control cracking due to flexure or thermal and hydration shrinkage, wherever provided at least ${S.grho}% of the concrete area in each direction, dispersed half near each face. Full section: As,min per face = ρ·b·h/2. Face bars checked for As ≥ max(As,req from ULS Mu, As,min).${S.st.some(s=>s.rc)?` RC lifts: CoP Cl 9.6.1 / 9.3.1.1(a), ${S.rmin}% × αmin.`:''}</p>`
+  +(isG()&&S.gmr!='cc'?`<p><b>Gravity wall:</b> mass concrete lifts and base are <b>unreinforced</b> and designed as plain concrete (CoP Cl 6.2.2.3, checks in 7.3). CoP Cl 9.6.5 crack-control minimum applies only where reinforcement is provided.${S.st.some(s=>s.rc)?` Lifts ticked RC are designed in 7.1 (CoP Cl 9.6.1 / 9.3.1.1(a), ${S.rmin}% × αmin).`:''}</p>`
+   :isG()?`<p><b>Basis of minimum reinforcement (gravity wall):</b> CoP Cl 9.6.5 – plain walls: reinforcement to control cracking due to flexure or thermal and hydration shrinkage, wherever provided at least ${S.grho}% of the concrete area in each direction, dispersed half near each face. Full section: As,min per face = ρ·b·h/2. Face bars checked for As ≥ max(As,req from ULS Mu, As,min).${S.st.some(s=>s.rc)?` RC lifts: CoP Cl 9.6.1 / 9.3.1.1(a), ${S.rmin}% × αmin.`:''}</p>`
    :`<p><b>Basis of minimum reinforcement:</b> CoP Cl 9.6.1 – “for walls subjected predominantly to out-of-plane bending the rules for slabs apply”. Hence Cl 9.3.1.1(a): ${S.rmin}% × αmin (= ${f(aMin(),3)}, Table 9.1 note 2) for tension reinforcement, ${S.rmin}% total in each direction, secondary ≥ 20% of principal; Cl 9.2.1.3 maximum 4%.</p>`)
   +`<p><b>Exposure and nominal cover</b> (CoP Table 4.1, Table 4.2 for C${S.fcu}; Cl 4.2.4.1(d) for base bottom ${S.cbs=='blind'?'on blinding ≥ 40':'against earth ≥ 75'} mm):</p>`+T(['Face','Exposure condition','Minimum (mm)','Provided (mm)','Check'],CA.map(o=>[o.n,`Cond ${S[o.ex]} – ${['','Mild','Moderate','Severe','Very severe'][S[o.ex]]}`,o.req??'–',o.prov,lp(o.ok)]),'l');
   if(RS.length){const shn=r=>r.st?['Vertical main','Horizontal (each face)','Vertical (front)']:['Main','Distribution (each face)','Opposite face'];
    h7+=`<h3>7.1 Reinforcement schedule</h3>`+T(['Element','Location / face','Bars','Provided','As,prov (mm²/m)','As,req (mm²/m)','Status'],RS.flatMap(r=>{const sh=shn(r);return[[r.n,r.tf,sh[0],`T${r.bm.d}@${r.bm.s}`,f(r.Asp,0),f(Math.max(r.Asr,r.Asm),0),lp(r.okM&&r.okV&&r.okVm)],[r.n,r.gv?'each face':'both faces',sh[1],`T${r.r.d2}@${r.r.s2} EF`,f(r.secProv,0),f(r.secReq,0),lp(r.okSec)],[r.n,r.of,sh[2],`T${r.bo.d}@${r.bo.s}`,f(r.As3,0),r.gv?f(r.Asm,0):'nominal',lp(r.gv?r.okOpp:r.As3<=40*r.h)]]}))
-   +RS.map(r=>`<div class=rcb><h3>${r.n} — h = ${f(r.h,0)} mm ${lp(r.ok)}</h3>${r.bad?`<p class=err>Factored resultant outside base – base pressure invalid for this combination.</p>`:''}`+T(['Step','Formula / clause','Substitution','Result','Check'],[
+   +RS.map(r=>`<div class=rcb><h3>${r.n} — h = ${f(r.h,0)} mm ${lp(r.ok)}</h3>${r.bad?`<p class=err>Factored resultant outside base – base pressure invalid for this combination.</p>`:''}`+RCT(r,[
     ['1 Design actions',`envelope of Comb 1–3${S.rck=='env'?', Ka & Ko':''}`,`governing: ${r.gov}${r.hnM!=null?`; optional check, base-pressure relief ignored: M = ${f(Math.abs(r.hnM),1)}, V = ${f(Math.abs(r.hnV),1)} (${S.hnr?'governs design':'for information'})`:''}`,`M = ${f(Math.abs(r.M),1)} kNm/m; V = ${f(Math.abs(r.V),1)} kN/m`,''],
     ['2 Effective depth',`d = h − c − φ/2${r.rev?' (moment reversed: tension on '+r.tf.toLowerCase()+')':''}`,`${f(r.h,0)} − ${r.cT} − ${r.bm.d}/2`,`d = ${f(r.d,0)} mm`,''],
     ['3 K factor','K = M/(fcu·b·d²) ≤ K′ (eq 6.7, 6.8)',`${f(Math.abs(r.M)*1e6,0)}/(${S.fcu}×1000×${f(r.d,0)}²)`,`K = ${f(r.K,4)}; K′ = ${r.Kp}`,lp(r.okK)],
@@ -821,26 +848,25 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
     ['8 Shear','v = V/bd ≤ vc (Table 6.3); v ≤ min(0.8√fcu, 7) (6.1.2.5(a))',`100As/bd = ${f(r.rho,3)}; (400/d)^¼ = ${f(r.f4,3)} (≥ 0.67); fcu ≤ 80`,`v = ${f(r.v,3)}; vc = ${f(r.vc,3)}; vmax = ${f(r.vmax,2)} N/mm²`,lp(r.okV&&r.okVm)],
     r.gv?['9 Horizontal / distribution','As per face ≥ As,min per face (CoP 9.6.5, each direction)',`T${r.r.d2}@${r.r.s2} EF`,`${f(r.secProv,0)} ≥ ${f(r.secReq,0)}`,lp(r.okSec)]
      :['9 Secondary','ΣAs ≥ max(ρmin·b·h, 0.2·As,main) (9.3.1.1(a))',`2 × T${r.r.d2}@${r.r.s2}`,`${f(r.secProv,0)} ≥ ${f(r.secReq,0)}`,lp(r.okSec)],
-    ['10 Spacing','main ≤ min(2h,250); secondary ≤ min(3h,400); clear ≥ max(φ, 25) (9.3.1.1(b))',`${r.bm.s} / ${r.r.s2} / ${r.bo.s}`,`limits ${f(r.sMain,0)} / ${f(r.sSec,0)}`,lp(r.okS)],
+    ['10 Spacing','main ≤ min(2h,250); secondary ≤ min(3h,400); clear ≥ max(φ, 25) (9.3.1.1(b))',`${r.bm.s} / ${r.r.s2} / ${r.bo.s}`,`main ${r.bm.s} ≤ ${f(r.sMain,0)}; secondary ${r.r.s2} ≤ ${f(r.sSec,0)} mm`,lp(r.okS)],
     ['11 Crack control',r.crk?'clear s ≤ min(47000/fs, 300)/ρreq (9.2.1.4, 9.3.1.1(b))':'h ≤ 200 or ρreq < 0.3% – no further check',r.crk?`fs = ${f(r.fs,0)} N/mm²; ρreq = ${f(r.rq,3)}%`:`ρreq = ${f(r.rq,3)}%`,r.crk?`${f(r.bm.s-r.bm.d,0)} ≤ ${f(r.Sc,0)} mm`:'',lp(r.okCr)],
     ['12 Cover ≥ bar size','Cl 4.2.4.1(b)',`${r.cm} / ${r.co} mm`,'',lp(r.okC)],
     ...(r.gv?[['13 Section classification','CoP Cl 9.2.1.1, Table 9.1',`As,prov ${f(r.Asp,0)} vs Table 9.1 minimum ${f(r.tab9,0)} mm²/m`,r.Asp>=r.tab9?'reinforced section':'plain concrete section with crack-control bars (strength: 7.3)','']]:[])])+'</div>').join('')}
   if(isG()){h7+=`<h3>7.2 Gravity wall – basis of reinforcement</h3>`+T(['Clause','Provision','Application'],[
-    ['CoP 2013 Cl 9.2.1.1','“Sections containing less reinforcement than that given by Table 9.1 should be considered as unreinforced.”','Mass concrete sections designed by the plain-concrete route (7.3); bars provided for crack control.'],
-    ['CoP 2013 Cl 9.6.5','Plain walls: reinforcement to control cracking due to flexure or thermal and hydration shrinkage; wherever provided ≥ 0.25% (fy 500) / 0.30% (fy 250) in each direction, dispersed half near each face.',`ρ = ${S.grho}% each direction.`],
-    ['Minimum steel basis','Full section: As,min per face = ρ·b·h/2 (half of ρ near each face).','Face bars ≥ max(As,req, As,min) – 7.1.'],
+    ['CoP 2013 Cl 9.2.1.1','“Sections containing less reinforcement than that given by Table 9.1 should be considered as unreinforced.”','Mass concrete sections designed by the plain-concrete route (7.3).'],
+    ['CoP 2013 Cl 9.6.5','Plain walls: reinforcement to control cracking due to flexure or thermal and hydration shrinkage; wherever provided ≥ 0.25% (fy 500) / 0.30% (fy 250) in each direction, dispersed half near each face.',S.gmr=='cc'?`Bars provided: ρ = ${S.grho}% each direction; face bars ≥ max(As,req, ρ·b·h/2) – 7.1.`:'Not applicable – no reinforcement provided in mass concrete.'],
     ['CoP 2013 Cl 6.2.2.3','Design of plain walls: linear stress, no tensile strength; axial capacity; shear; slenderness.','Checked in 7.3 for each mass concrete lift.'],
     ['Geoguide 1 §9.3.2 / §4.3.5','Structural design of mass concrete walls seldom governs; structural code to be followed.','External stability – Section 6.']],'l');
    h7+=`<h3>7.3 Plain concrete lift checks (CoP 6.2.2.3; GG1 §9.2.3(2))</h3>`+(PL.length?T(['Lift','Section h (mm)','N_k / e_k (no tension: e ≤ h/6)','ULS: nw ≤ 0.3(h − 2(ex+ea))fcu','le/h ≤ 30','Shear (6.2.2.3(r))','Joint sliding'],PL.map(p=>[
     `Lift ${p.i+1} bottom +${f(p.Ls)} (${tn({k:p.tk})})`,f(p.h*1000,0),`${f(p.Nw,1)} kN/m; e = ${f(p.eK*1000,0)} ≤ ${f(p.h*1000/6,0)} mm ${lp(p.okT)}`,
     `ex = ${f(Math.max(p.a.ex,p.c.ex),0)} mm (≥ h/20, 20), ea = ${f(p.ea,1)} mm; util. ${f(p.ua,3)} ${lp(p.okU)}`,`${f(p.sl,1)} ${lp(p.okSl)}`,
-    `H_ULS ${f(p.HU,1)} kN/m; v_avg ${f(p.vav,3)} N/mm² ${lp(p.shOK)}`,`H/N = ${f(p.mu,3)}`])):'<p class=mu>No mass-concrete lifts (G-1 single block): structural adequacy governed by external stability (Section 6); crack-control bars in 7.1.</p>')
+    `H_ULS ${f(p.HU,1)} kN/m; v_avg ${f(p.vav,3)} N/mm² ${lp(p.shOK)}`,`H/N = ${f(p.mu,3)}`])):'<p class=mu>No mass-concrete lifts (G-1 single block): structural adequacy governed by external stability (Section 6).</p>')
     +`<p class="mu int">Joint sliding: no concrete-to-concrete friction coefficient is given in GG1 or CoP 2013 – the required μ is reported for the Engineer to verify (e.g. keyed / roughened joint). Lifts tagged RC are designed in 7.1; their starter-bar anchorage into mass concrete is NOT CHECKED. In-plane tension due to differential settlement (CoP 6.2.2.3(t)) – NOT CHECKED.</p>`}}
  $('r7').innerHTML=h7;
 
  /* ---- Section 8 ---- */
  const nc=[['Overall / global slope stability','GG1 §9.2.3(1); Geotechnical Manual for Slopes'],['Tilted-base sliding; shear key mechanism 2 (inclined plane) and structural design of the key','GG1 Figs. 41, 42 (key: mechanism 1 checked)'],['Point loads / strip loads on the retained surface','GG1 Fig. 29(b), §7.3.4–7.3.5'],['External stability at each step of a stepped RC wall','GG1 §9.2.3(2), Fig. 40 (mass concrete lifts checked in 7.3)'],['Settlement, tilting, deformation','GG1 §9.2.4'],['Hydraulic failure (piping / heave)','GG1 §8.6'],['Irregular / broken backfill profile, layered retained soil (trial wedge)','GG1 §6.5.6'],['Bearing near slope crest (interpolation)','GG1 Fig. A4; FC 2017 Fig. 2.3'],['Undrained (φ = 0) bearing / short-term case','GG1 Fig. A3'],['Groundwater below founding level within B′ (γ′ interpolation)','FC 2017 Cl 2.2.4 note 6(c)'],['Direct crack-width calculation, early thermal cracking','CoP Cl 7.2.3, 7.2.4'],['Anchorage, laps, curtailment, starter bars','CoP Section 8, Cl 9.2.1.6'],['Deflection','CoP 7.3'],['Vehicle impact on barrier','DIL 2011 Cl 3.8.3'],['Seismic / landslide debris impact','GG1 §7.4; GEO TGN 42'],['Drainage design (filter, weepholes)','GG1 Chapter 8']];
- const rvl=[...V.W,...(S.wo&&S.wsd<.8?['Fence with φ < 0.8 treated as open framework (Wind Code Table 4-2).']:[]),...(PL.length?['Concrete-to-concrete joint friction at mass concrete lifts (μ required reported).']:[]),...(S.gpon?[`Project-specific factor γproj = ${f(Math.max(1,+S.gpv||1),2)} – not a code value; source: ${esc(S.gpsrc||'NOT STATED')}.`]:[]),...(S.rck=='ka'&&X?['RC structural design uses Ka – GG1 §10.2 / Table 20 expects at-rest (Ko) for rigid walls; confirm wall movement justifies active state.']:[]),...(S.kam=='m'||S.kpm=='m'?['Manual Ka / Kp values – Engineer to confirm both characteristic and GG1-factored values.']:[]),...(P&&(S.wo||S.bro)?['GG1 Table 6 does not list wind / barrier loads; treated as variable load with γf = '+S.gq+' in GG1 ULS (assumption).']:[]),'Design water level and drainage basis to be stated (GG1 §8.3, §9.3.5).','Soil parameters to be derived from GI per GG1 Chapter 5.'];
+ const rvl=[...V.W,...(S.wo&&S.wsd<.8?['Fence with φ < 0.8 treated as open framework (Wind Code Table 4-2).']:[]),...(PL.length?['Concrete-to-concrete joint friction at mass concrete lifts (μ required reported).']:[]),...(isG()&&S.gmr!='cc'&&S.st.length&&(geo().Lt>0||geo().hl>0)?['Unreinforced mass concrete base projections (toe / heel): flexural tension not checked by CoP 6.2.2.3 – keep each projection ≤ base thickness or provide bars.']:[]),...(S.gpon?[`Project-specific factor γproj = ${f(Math.max(1,+S.gpv||1),2)} – not a code value; source: ${esc(S.gpsrc||'NOT STATED')}.`]:[]),...(S.rck=='ka'&&X?['RC structural design uses Ka – GG1 §10.2 / Table 20 expects at-rest (Ko) for rigid walls; confirm wall movement justifies active state.']:[]),...(S.kam=='m'||S.kpm=='m'?['Manual Ka / Kp values – Engineer to confirm both characteristic and GG1-factored values.']:[]),...(P&&(S.wo||S.bro)?['GG1 Table 6 does not list wind / barrier loads; treated as variable load with γf = '+S.gq+' in GG1 ULS (assumption).']:[]),'Design water level and drainage basis to be stated (GG1 §8.3, §9.3.5).','Soil parameters to be derived from GI per GG1 Chapter 5.'];
  $('r8').innerHTML=`<h2>8. Internal limitations (not printed)</h2><p class=mu>This tab is for the designer only and is excluded from the report preview and PDF. This calculation covers external stability of a wall on a level base and the structural checks listed in Section 7. It is not a complete retaining wall design.</p>`
   +`<h3>8.1 NOT CHECKED</h3>`+T(['Item','Reference','Status'],[...CKL.filter(([id])=>!ckOn(id)).map(([id,n])=>[`${n} – switched off by user`,`Reason: ${esc((S.ck[id]&&S.ck[id].why)||'NOT STATED')}`,lp('nc')]),...nc.map(([a,b])=>[a,b,lp('nc')])],'l')+`<h3>8.2 REQUIRES VERIFICATION</h3>`+T(['Item','Status'],rvl.map(x=>[x,lp('rv')]),'l');
 
@@ -851,7 +877,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  const gName=({T:'Cantilever – inverted T',L:'L-wall (heel only)',Li:'Reversed L (toe only)',G:isG()&&!S.st.length?'Gravity G-1 (single mass concrete block)':'Gravity G-3 (base + lifts)'})[S.ty],
   wd2=Pk.wd,Fs0=FSo(),vb=planeName();
  const r1=[['Project no.','–',esc(S.pn||'–'),'–','–',IN],['Designer / Checker','–',`${esc(S.dsn||'–')} / ${esc(S.chk||'–')}`,'–','–',IN],['Date of calculation','–',new Date().toLocaleDateString(),'–','–','–'],
-  ...(S.jno?[['Project title','–',esc(S.jno),'–','–',IN]]:[]),['Calculation tool','–','Retaining Wall Design & Checker v9.0','–','–','–'],['Wall type','–',gName,'–',isG()?'GG1 §9.2, §9.3':'GG1 §9.2, Fig. 48','Input'],
+  ...(S.jno?[['Project title','–',esc(S.jno),'–','–',IN]]:[]),['Calculation tool','–','Retaining Wall Design & Checker v9.1','–','–','–'],['Wall type','–',gName,'–',isG()?'GG1 §9.2, §9.3':'GG1 §9.2, Fig. 48','Input'],
   ['Checking method','–',P?'Partial factor (limit state)':'Global factor of safety','–',P?'GG1 §4.3.4, Tables 6 & 7':'CoP Fdn 2017 Cl 2.5.4, 2.2.4',IN],
   ...(P?[['Partial factor on soil strength','γm',S.gm,'–','GG1 Table 7','applied to tanφ′, c′, tanδb first'],['Partial factor on surcharge','γf,Q',S.gq,'–','GG1 Table 6',IN]]
    :[['Groundwater condition','–',fcF().lab,'–','CoP Fdn 2017 Cl 2.5.4',IN],['Required FOS – sliding (other / groundwater)','Fs',`${f(+S.Fs,2)} / ${f(fcF().Fsw,2)}`,'–','CoP Fdn 2017 Cl 2.5.4',IN],['Required FOS – overturning (other / wind / groundwater)','Fo',`${f(+S.Fo,2)} / ${f(+S.Fow,2)} / ${f(fcF().Fog,2)}`,'–','CoP Fdn 2017 Cl 2.5.4',IN],['Required FOS – uplift','Fu',f(fcF().Fu,2),'–','CoP Fdn 2017 Cl 2.5.4',DV],['Required FOS – bearing','Fb',f(+S.Fb,2),'–','CoP Fdn 2017 Cl 2.2.4',IN]]),
@@ -910,7 +936,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   ...(Ck.LL?[`Line loads: GG1 Fig. 29 (Terzaghi 1953, rigid wall) – Q1 = ${f(Ck.LL.Qv,1)} kN/m and Qh = ${f(Ck.LL.Qh,1)} kN/m at x = ${f(Ck.LL.x)} m; treated as variable actions.`]:[]),
   `Wall-top loads: ${S.wo?'fence wind (Wind Code 2019)':''}${S.wo&&S.bro?' and ':''}${S.bro?'barrier load (DIL 2011 Table 3.13)':''}${!S.wo&&!S.bro?'none':' – separate load cases, worst governs (DIL Cl 3.8.1.1)'}.`,
   `Stability: ${P?`Geoguide 1 partial factors (γm = ${S.gm}, γf,Q = ${S.gq}) applied to soil strength before deriving K, δ and δb`:`CoP Foundations 2017 global factors of safety, ${fcF().lab} (sliding ${f(fcF().Fsw,1)} × H(groundwater) + ${f(+S.Fs,1)} × H(other); overturning ${f(+S.Fow,1)} × M(wind) + ${f(fcF().Fog,1)} × M(groundwater) + ${f(+S.Fo,1)} × M(other); uplift ${f(fcF().Fu,1)}; bearing ${f(+S.Fb,1)})`}${S.gpon?`; project-specific factor γproj = ${f(Math.max(1,+S.gpv||1),2)} (${esc(S.gpsrc||'source not stated')})`:''}; bearing capacity per GG1 Fig. A2 / FC 2017 Table 2.3 (strip footing); middle-third rule GG1 §9.2.4.`,
-  ...(X?[isG()?`Structural: mass concrete sections by CoP 6.2.2.3; crack-control face bars ≥ max(As,req, As,min) with As,min per CoP 9.6.5 (${'full section'}); load combinations CoP Table 2.1.`
+  ...(X?[isG()?`Structural: mass concrete sections by CoP 6.2.2.3 (plain concrete)${S.gmr=='cc'?'; crack-control face bars ≥ max(As,req, As,min) with As,min per CoP 9.6.5 (full section)':', unreinforced'}${S.st.some(x=>x.rc)?'; RC lifts to CoP SUC 2013':''}; load combinations CoP Table 2.1.`
    :`Structural design: CoP SUC 2013, load combinations Table 2.1, unfactored soil parameters (GG1 §4.3.5); wall stems designed as slabs in out-of-plane bending (Cl 9.6.1).`]:[])];
   $('ps').innerHTML+=`<section class=rsec><h3>Design assumptions</h3><ol style="margin:2px 0 8px 18px;padding:0">${as.map(a=>`<li>${a}</li>`).join('')}</ol></section>`}
  window.__RES={A,Fc,RS,PL,sk,Pk,Pf,G,V,u,R0};toolsRefresh()}
@@ -1049,7 +1075,7 @@ function doReset(){HASHLIVE=false;try{history.replaceState(null,'',location.href
  S=fillDef(base0());TL.opt=null;TL.torn=null;TL.st={wl:null,q:null};mclose();ri();rr();sv();msg(SNAP?'Reset to snapshot inputs':'Reset to factory defaults')}
 
 /* ---------------- events ---------------- */
-const RERENDER=new Set(['dfm','acc','adv','ty','kam','kpm','dwm','dbm','f.cvm','qcat','wo','bro','brc','rck','fy','cbs','nopp','fsm','skon','lon','wl','gmo','heffm','bon','gwc','gpon','cmp']);
+const RERENDER=new Set(['dfm','acc','adv','ty','kam','kpm','dwm','dbm','f.cvm','qcat','wo','bro','brc','rck','fy','cbs','nopp','fsm','skon','lon','wl','gmo','gmr','heffm','gft','gnl','gb','gtw','gH','bon','gwc','gpon','cmp']);
 function toolInput(t){const k=t.dataset.tp;
  if(k=='swl'){TL.st.wl=+t.value;stressUpdate()}else if(k=='sq'){TL.st.q=+t.value;stressUpdate()}
  else if(k=='opttb')TL.optTb=t.checked;else if(k=='optrc')TL.optRc=t.checked;else if(k=='tbmin')TL.tbMin=+t.value;else if(k=='tbmax')TL.tbMax=+t.value;else if(k=='pname')TL.pname=t.value}
@@ -1059,7 +1085,8 @@ document.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.t
  const p=t.dataset&&t.dataset.p;if(!p||(t.type=='number'&&t.value===''))return;
  const v=t.type=='checkbox'?+t.checked:(t.type=='number'||t.type=='range'||t.dataset.n)?+t.value:t.value;
  if(p=='kam'&&v=='m'){S.kaM=+(LAST.Ka||.33).toFixed(3)}if(p=='kpm'&&v=='m'){S.kpM=+(LAST.kp||3).toFixed(2)}if(p=='kom'&&v==1)S.koM=+koAuto().toFixed(3);
- if(p=='ty'){if((v=='G'||v=='Li')&&S.kam=='r')S.kam='c';if((v=='T'||v=='L')&&S.kam=='c'&&S.dwm=='auto')S.kam='r';if(v=='G'&&S.ty!='G'){S.gc=23;S.st.forEach(s=>s.rc=0)}if(v!='G'&&!S.st.length)S.st.push({t:.4,top:+S.Hr,bot:+S.Zb+(+S.tb),rc:1});if(v!='G'&&S.ty=='G')S.gc=24}
+ if(p=='ty'){if((v=='G'||v=='Li')&&S.kam=='r')S.kam='c';if((v=='T'||v=='L')&&S.kam=='c'&&S.dwm=='auto')S.kam='r';if(v=='G'&&S.ty!='G'){S.gc=23;const Hh=Math.max(1,+S.Hr-(+S.Zb));Object.assign(S,{gft:1,gfT:.6,gLt:.3,gLh:.3,gnl:1,grc:[],gH:+(Hh-.6).toFixed(2),gb:+Math.max(1,.6*Hh).toFixed(2),gtw:.6})}if(v!='G'&&S.ty=='G'){S.gc=24;S.tb=.6;S.st=[{t:.4,top:+S.Hr,bot:+S.Zb+.6,rc:1}];S.Lt=1.2;S.Lh=Math.max(1,+(.5*(S.Hr-S.Zb)).toFixed(2))}}
+ if(p=='gft'){S.gH=+Math.max(.1,+S.gH+(v?-1:1)*(+S.gfT)).toFixed(3)}if(p=='gfT'&&S.gft){S.gH=+Math.max(.1,+S.gH-(+v-(+S.gfT))).toFixed(3)}
  if(p=='fy'){S.rmin=+v==250?.24:.13;S.grho=+v==250?.30:.25}
  if(p=='wl'&&v=='c')S.wlZ=+wlLev().toFixed(2);
  if(p=='skon'&&v){const G=geo();if(!(+S.skx>=0&&+S.skx+(+S.skw)<=G.B))S.skx=+G.Lt.toFixed(2)}
