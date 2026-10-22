@@ -34,7 +34,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # Optional: set a repo variable GEMINI_MODEL to change the model.
           # An exact model id, or a name like 'Gemini 4 Argon' matched against the key's model list.
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-4-argon' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         with:
           script: |
