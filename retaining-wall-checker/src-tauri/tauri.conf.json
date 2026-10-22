@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Retaining Wall Checker",
-  "version": "9.4.0",
+  "version": "9.6.0",
   "identifier": "hk.retainingwall.checker",
   "build": {
     "frontendDist": "../src"
@@ -11,7 +11,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Retaining Wall Design & Checker v9.4",
+        "title": "Retaining Wall Design & Checker v9.6",
         "width": 1500,
         "height": 950,
         "minWidth": 1000,

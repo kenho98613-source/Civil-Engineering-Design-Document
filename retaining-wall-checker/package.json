@@ -1,7 +1,7 @@
 {
   "name": "retaining-wall-checker",
   "private": true,
-  "version": "9.4.0",
+  "version": "9.6.0",
   "scripts": {
     "icons": "tauri icon app-icon.png",
     "dev": "tauri dev",

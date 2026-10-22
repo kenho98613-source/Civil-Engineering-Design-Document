@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Retaining Wall Design &amp; Checker v9.5</title><style>
+<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Retaining Wall Design &amp; Checker v9.6</title><style>
 :root{--bg:#fff;--fg:#1d1f23;--mu:#6a7280;--bd:#d6dae0;--pn:#f4f5f7;--ok:#16a34a;--no:#dc2626;--nc:#6b7280;--rv:#d97706;--ac:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#16181c;--fg:#e6e8eb;--mu:#98a0ab;--bd:#343840;--pn:#20232a;--ac:#60a5fa}}
 :root[data-theme=dark]{--bg:#16181c;--fg:#e6e8eb;--mu:#98a0ab;--bd:#343840;--pn:#20232a;--ac:#60a5fa}
@@ -53,15 +53,18 @@ table.exs :is(td,th){white-space:normal!important;text-align:left!important;vert
 ol.asl{margin:2px 0 8px 18px;padding:0;font-size:11px}@media(max-width:700px){.pg{grid-template-columns:1fr}}
 .rep .int,.rep #r8,.rep #wn,.rep #fg,.rep #sm,.rep #bn{display:none!important}.rep .p2{border-top:2px dashed var(--bd);margin-top:14px;padding-top:6px}.rep .pfig svg{max-height:640px}@media print{.int,#r8,#wn,#tl,#sv,#bn .int,.fo,svg text.scr{display:none!important}svg text.prt{display:inline!important}}
 @media print{html,body{height:auto!important;overflow:visible!important;font-size:10px}.app,main,#in,.pane,.tw,.rcb,.blk,details,.sum,.pr{overflow:visible!important;height:auto!important;max-height:none!important}.app{display:block!important}#in,.tabs,header .tb,header button{display:none!important}.pane,.pr{display:block!important}.pane:empty{display:none!important}main{display:block!important}header{display:none!important}.app{padding:0!important;gap:0!important}#refs{margin-top:6px}#refs p{margin:0}table{width:100%;table-layout:auto;page-break-inside:auto;font-size:8.5px}table.sch{table-layout:fixed;page-break-inside:avoid;break-inside:avoid}th,td{white-space:normal!important;word-break:break-word;padding:1px 3px;line-height:1.15}table{margin:2px 0 6px}.rcb h3{margin:0 0 2px;font-size:11px}table.rct{font-size:8.5px}.blk p{margin:1px 0;line-height:1.3}.blk{padding:4px 10px;margin:5px 0}.rcb{padding:3px 8px;margin:6px 0}h2{margin:8px 0 2px}h3{margin:6px 0 2px}thead{display:table-header-group}tr,.blk,.rsec{break-inside:avoid;page-break-inside:avoid}h2,h3,h4{break-after:avoid;page-break-after:avoid}#fg,#sm,#bn{display:none!important}.p2{break-before:page;page-break-before:always}svg{max-height:none!important;break-inside:avoid}.pfig svg{max-height:128mm!important}.rcb{break-inside:auto}.pt,.blk,table.exs{break-inside:avoid;page-break-inside:avoid}}
+.fgv{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--mu);margin:0 0 4px}.fgv button{padding:2px 10px;border:1px solid var(--bd);background:var(--pn);color:var(--fg);border-radius:12px;cursor:pointer;font-size:12px}.fgv button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+ul.fgn{list-style:none;margin:4px 0 6px;padding:0;font-size:11px;color:var(--mu);line-height:1.35}ul.fgn li{padding-left:16px;text-indent:-16px}ul.fgn li::before{content:attr(data-n);display:inline-block;width:16px;text-indent:0;color:var(--fg)}
+.pfig.f2{margin:4px 0 8px}@media print{.fgv{display:none!important}ul.fgn{font-size:8px;margin:2px 0 4px}.pfig.f2 svg{max-height:95mm}.pfig.f2{break-inside:avoid}}
 </style></head><body>
-<header><h1>Retaining Wall Design &amp; Checker v9.5 <span class="mu">· Hong Kong practice — Geoguide 1 (2020) · CoP Foundations 2017 · CoP SUC 2013 (2020 Ed.) · Wind Code 2019 · CoP DIL 2011 (2021 Ed.)</span></h1><span class="mu" id="sv"></span>
+<header><h1>Retaining Wall Design &amp; Checker v9.6 <span class="mu">· Hong Kong practice — Geoguide 1 (2020) · CoP Foundations 2017 · CoP SUC 2013 (2020 Ed.) · Wind Code 2019 · CoP DIL 2011 (2021 Ed.)</span></h1><span class="mu" id="sv"></span>
 <div class="tb"><button data-a="fopen" title="Open a .rwall project file (Ctrl+O)">📂 Open</button><button data-a="fsave" title="Save the project as a .rwall file (Ctrl+S)">💾 Save</button><button data-a="undo" id="ubt" title="Undo (Ctrl+Z)" disabled>↶ Undo</button><button data-a="redo" id="rbt" title="Redo (Ctrl+Y / Ctrl+Shift+Z)" disabled>↷ Redo</button><button data-a="share" title="Encode all inputs into the page URL (#config=…) and copy it">🔗 Copy Shareable Link</button><button data-a="snap" title="Download a standalone .html with the current inputs as its defaults">📄 Export Snapshot HTML</button><button data-a="reset" title="Clear saved inputs and the URL hash">🔄 Reset to Default</button><button data-a="prev" id="pvb">Preview report</button><button data-a="print" id="pb">Export report (PDF)</button></div></header>
 <div class="app"><aside id="in"></aside><main><div id="bn"></div><div class="sum" id="sm"></div><div class="tabs"><button data-a="tab" data-t="fg" class="on">Figure</button><button data-a="tab" data-t="r5">5. Calculation</button><button data-a="tab" data-t="r6">6. Stability</button><button data-a="tab" data-t="r7">7. Structural</button><button data-a="tab" data-t="tl">🧰 Design tools</button><button data-a="tab" data-t="r8">8. Limitations</button><label style="gap:8px;margin:0 0 0 auto">Force arrow scale <input type="range" min="0.5" max="2" step="0.1" data-p="asc" value="1" style="width:120px"><b id="asv">1.0×</b></label></div><div class="pr" id="ps"></div><div class="pane on" id="fg"></div><div class="pane" id="r5"></div><div class="pane" id="r6"></div><div class="pane" id="r7"></div><div class="pane" id="tl"></div><div class="pane" id="r8"></div><div id="refs"></div></main></div>
 <div class="mdl" id="mdl" hidden></div>
 <script>
 'use strict';
 /* =====================================================================
-   Retaining Wall Design & Checker v9.5
+   Retaining Wall Design & Checker v9.6
    v9: FC2017 Cl 2.5.4 split factors, GG1 Ko (Eq 6.1-6.4), RC Ko/Ka (default Ko) + compaction (GG1 §6.8),
    project factor γproj, check register (tick / untick + reason), canvas drag handles, undo / redo.
    Engine as v7.8 (verified against GG1 / CoP Fdn 2017 / CoP SUC 2013).
@@ -121,10 +124,10 @@ const DESK=!!(window.__TAURI__&&window.__TAURI__.core);let CURF=null;
 const rwTxt=()=>JSON.stringify({app:'rwall',ver:9,saved:new Date().toISOString(),S},null,1),rwName=()=>String(S.pn||S.jno||'retaining-wall').replace(/[^\w\-]+/g,'_')+'.rwall';
 async function fileSave(as){try{const t=rwTxt();
  if(DESK){let p=CURF;if(as||!p){p=await __TAURI__.dialog.save({defaultPath:rwName(),filters:[{name:'Retaining wall project',extensions:['rwall']}]});if(!p)return}
-  await __TAURI__.core.invoke('write_text',{path:p,contents:t});CURF=p;document.title=p.split(/[\\/]/).pop()+' – Retaining Wall Checker v9.5';msg('Saved '+p);return}
+  await __TAURI__.core.invoke('write_text',{path:p,contents:t});CURF=p;document.title=p.split(/[\\/]/).pop()+' – Retaining Wall Checker v9.6';msg('Saved '+p);return}
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.download=rwName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);msg('Saved '+rwName()+' (Downloads)')}catch(e){msg('Save failed: '+e)}}
 function rwLoad(t,name){const o=JSON.parse(t),st=o&&o.S?o.S:o;if(!st||typeof st!='object'||!Array.isArray(st.st))throw new Error('not a .rwall project file');S=fillDef(structuredClone(st));ri();rr();sv();msg('Opened '+name)}
-async function fileOpen(){try{if(DESK){const p=await __TAURI__.dialog.open({multiple:false,filters:[{name:'Retaining wall project',extensions:['rwall','json']}]});if(!p)return;rwLoad(await __TAURI__.core.invoke('read_text',{path:p}),p);CURF=p;document.title=String(p).split(/[\\/]/).pop()+' – Retaining Wall Checker v9.5';return}
+async function fileOpen(){try{if(DESK){const p=await __TAURI__.dialog.open({multiple:false,filters:[{name:'Retaining wall project',extensions:['rwall','json']}]});if(!p)return;rwLoad(await __TAURI__.core.invoke('read_text',{path:p}),p);CURF=p;document.title=String(p).split(/[\\/]/).pop()+' – Retaining Wall Checker v9.6';return}
  const i=document.createElement('input');i.type='file';i.accept='.rwall,.json';i.onchange=()=>{const f=i.files[0];if(f)f.text().then(t=>{try{rwLoad(t,f.name)}catch(e){msg('Could not open: '+e.message)}})};i.click()}catch(e){msg('Open failed: '+e)}}
 /* virtual parameters edited on the figure (derived quantities write back to the base inputs) */
 function setP(p,v){
@@ -658,15 +661,15 @@ function ri0(){const I=(l,p,u,s,ro,v)=>`<label>${l}<span><input type=number step
   +`<div id=cvtxt class=mu></div></div>`
   +(els.length?`<div class=st><b>Reinforcement${G?' (face bars)':''}</b></div>`+els.map(([k,n,a,b,c3])=>`<div class=st><b>${n}</b><div class=r3>${[['',a],['2',b],['3',c3]].map(([x,l])=>`<label class=bb><small class=mu>${SHB[l]||l}</small><span><select data-p="rc.${k}.d${x}" data-n=1>${[10,12,16,20,25,32,40].map(d=>`<option${d==rcv(k)['d'+x]?' selected':''}>${d}</option>`).join('')}</select><input type=number step=25 min=75 max=400 data-p="rc.${k}.s${x}" value="${rcv(k)['s'+x]}"></span></label>`).join('')}</div></div>`).join(''):''),'s5')}
 /* ---------------- figure (characteristic loads; dimension labels are editable inputs bound to S) ---------------- */
-function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=+S.Zb,Hr=+S.Hr,Hf=+S.Hf,Fs=FSo(),sa=S.asc||1,wh=S.wo?+S.wh:0,NE=!!c.noEdit,KG=c.C.KG,
+function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=+S.Zb,Hr=+S.Hr,Hf=+S.Hf,Fs=FSo(),sa=S.asc||1,wh=S.wo?+S.wh:0,NE=!!c.noEdit,KG=c.C.KG,MD=c.mode||(NE?'all':(S.fgm||'all')),SG_=MD!='load',SL_=MD!='geo',NT=[],NM=[],SY='①②③④⑤⑥⑦⑧⑨',nt=t=>{NM.push(t);return SY[NM.length-1]||'('+NM.length+')'},
  CL={a:'#d9534f',p:'#2e9e5b',w:'#3b82f6',g:'#475569',l:'#9333ea',u:'#f59e0b',n:'#111827',e:'#0d9488',r:'#16a34a',x:'#dc2626'},
  P=c.C.it.filter(i=>i.dir=='h'),Pp=c.C.it.filter(i=>i.dir=='p'),Wv=c.C.it.filter(i=>i.dir=='v'),U=c.C.it.filter(i=>i.dir=='u'),
  fmax=Math.max(1,...c.C.it.map(p=>p.F),c.s.N>0?c.s.N:0),lm=1.4*sa,len=v=>Math.max(.28,v/fmax*lm),dkk=KG?KG.dk:0,
- xl=-Math.max(.9+lm+1.8,4.1),xr=B+1.8+lm+1.7+(S.lon&&S.bon?Math.max(0,+S.lx-1):0),y0=Zb-dkk-Math.max(1.4,lm)-2,y1=Math.max(top+wh,Hr,Hf)+lm+.6,W=940,H=600,s0=Math.min((W-20)/(xr-xl),(H-54)/(y1-y0)),FZ_=NE?null:window.FZ,s=FZ_?FZ_.s:s0,xo=FZ_?FZ_.xl+(FZ_.anc=='xb'?xb-FZ_.xb0:0):xl,yo=FZ_?FZ_.y0:y0,X=x=>10+(x-xo)*s,Y=z=>H-12-(z-yo)*s,HD=[],
+ GM=(c.mode||(NE?'all':(S.fgm||'all')))=='geo',xl=GM?-2.9:-Math.max(.9+lm+1.8,4.1),xr=GM?B+2.6+(S.lon&&S.bon?Math.max(0,+S.lx-1):0):B+1.8+lm+1.7+(S.lon&&S.bon?Math.max(0,+S.lx-1):0),ML=(c.mode||(NE?'all':(S.fgm||'all')))=='load',y0=GM?Zb-dkk-(isG()?.9:1.5):ML?Zb-dkk-1.5:Zb-dkk-Math.min(2.6,Math.max(1.4,lm)+1),y1=GM?Math.max(top+wh,Hr,Hf)+.5:Math.max(top+wh,Hr,Hf)+Math.min(lm,1)+.5,W=940,H=600,s0=Math.min((W-20)/(xr-xl),(H-54)/(y1-y0)),FZ_=NE?null:window.FZ,s=FZ_?FZ_.s:s0,xo=FZ_?FZ_.xl+(FZ_.anc=='xb'?xb-FZ_.xb0:0):xl,yo=FZ_?FZ_.y0:y0,X=x=>10+(x-xo)*s,Y=z=>H-12-(z-yo)*s,HD=[],
  rc=(x1,z1,x2,z2,a)=>`<rect x="${f(X(x1),1)}" y="${f(Y(z2),1)}" width="${f((x2-x1)*s,1)}" height="${f(Math.max(0,(z2-z1)*s),1)}" ${a}/>`,
  tx=(x,y,t,a,col,k,cls)=>`<text x="${f(x,1)}" y="${f(y,1)}" text-anchor="${a||'start'}" class="${k||'lb'}${cls?' '+cls:''}"${col?` style="fill:${col}"`:''}>${t}</text>`,
  bx=[[0,0,W,40]],ov=(a,b)=>a[0]<b[2]&&a[2]>b[0]&&a[1]<b[3]&&a[3]>b[1],
- put=(ax,ay,t,an,col,k,ed)=>{if(NE){if(ed)t=ed.pt??`${t} ${f(ed.v,ed.d)}${ed.u??''}`;ed=null}const cw=k=='lv'?5.9:6.9,full=ed?(ed.pt??`${t} ${f(ed.v,ed.d)}${ed.u??''}`):t,ws=ed?t.length*cw+52:0,w=Math.max(full.length*cw,ws)+8,x0=an=='end'?ax-w:an=='middle'?ax-w/2:ax;let d0=0,b=[x0,ay-11,x0+w,ay+4];
+ put=(ax,ay,t,an,col,k,ed)=>{if(NE||MD=='load'){if(ed)t=ed.pt??`${t} ${f(ed.v,ed.d)}${ed.u??''}`;ed=null}const cw=k=='lv'?5.9:6.9,full=ed?(ed.pt??`${t} ${f(ed.v,ed.d)}${ed.u??''}`):t,ws=ed?t.length*cw+52:0,w=Math.max(full.length*cw,ws)+8,x0=an=='end'?ax-w:an=='middle'?ax-w/2:ax;let d0=0,b=[x0,ay-11,x0+w,ay+4];
   for(const d of[0,...Array.from({length:14},(_,i)=>[-(i+1)*15,(i+1)*15]).flat()]){d0=d;b=[x0,ay+d-11,x0+w,ay+d+4];if(!bx.some(z=>ov(z,b)))break}
   bx.push(b);const yy=ay+d0,lead=d0?`<line x1="${f(ax,1)}" y1="${f(ay,1)}" x2="${f(ax+(an=='end'?-3:an=='start'?3:0),1)}" y2="${f(ay+d0+(d0>0?-10:3),1)}" stroke="${col||'#94a3b8'}" stroke-width=".8"/>`:'';
   if(!ed)return lead+tx(ax,yy,t,an,col,k);
@@ -687,73 +690,75 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
   if(pas){o+=`<polygon points="${poly}" fill="#f2e8cf"/><polygon points="${poly}" fill="url(#dots)"/>`+SP(TR)}
   else{o+=`<polygon points="${poly}" fill="#f2e8cf" fill-opacity=".45" stroke="#8a7f5a" stroke-dasharray="5 3" stroke-width="1"/><polygon points="${poly}" fill="url(#hat2)" fill-opacity=".55"/>`;
    if(TR)o+=`<polygon points="${PT(TR)}" fill="#f2e8cf" fill-opacity=".45"/><polygon points="${PT(TR)}" fill="url(#hat2)" fill-opacity=".55"/>`;
-   lb.push([X(xl)+6,Y((Hf+Zb)/2)+4,S.fon?`Front Soil (Embedment Df = ${f(Df)} m — Ignored in Kp Calc, Not On-Grade)`:`Front Soil (Df = ${f(Df)} m — not considered in calculation)`,'start','#8a5a00','lv'])}
-  if(tf){o+=`<line x1="${f(X(xl),1)}" y1="${f(Y(zf(xl)),1)}" x2="${f(X(xF),1)}" y2="${f(Y(Hf),1)}" stroke="#8a7f5a" stroke-width="1.2"/>`;lb.push([X(xl)+6,Y(zf(xl))-20,`β_front = ${f(S.bf,1)}°`,'start',null,'lv'])}
+   if(SG_)lb.push([X(xl)+6,Y((Hf+Zb)/2)+4,'Front soil '+nt(S.fon?`Front soil (Df = ${f(Df)} m): passive resistance ignored (hatched).`:`Front soil (Df = ${f(Df)} m): not considered in the calculation.`),'start','#8a5a00','lv'])}
+  if(tf){o+=`<line x1="${f(X(xl),1)}" y1="${f(Y(zf(xl)),1)}" x2="${f(X(xF),1)}" y2="${f(Y(Hf),1)}" stroke="#8a7f5a" stroke-width="1.2"/>`;if(SG_)lb.push([X(xl)+6,Y(zf(xl))-20,`β_f = ${f(S.bf,1)}°`,'start',null,'lv'])}
   if(S.fon&&C.wf>0){o+=wat(xl,Zb,0,Zb+C.wf)+WP(reg(c.G.fr,'f',Zb,Math.min(Hf,Zb+C.wf)))}o+=tf?'':ln(xl,xF,Hf,'#8a7f5a');
-  if(S.fon&&S.dp>0){const zd=Math.max(Zb,Hf-S.dp);o+=rc(xl,zd,xF,Hf,'fill="#d97706" fill-opacity=".10"')+ln(xl,xF,zd,'#b45309',1);lb.push([X(xl)+6,Y(zd)+12,`Unplanned excavation ${f(Math.min(S.dp,Df))} m (GG1 Fig. 39 n.2) – ${pas?'passive taken below +'+f(zd):'passive ignored'}`,'start','#b45309','lv'])}}
+  if(S.fon&&S.dp>0){const zd=Math.max(Zb,Hf-S.dp);o+=rc(xl,zd,xF,Hf,'fill="#d97706" fill-opacity=".10"')+ln(xl,xF,zd,'#b45309',1);if(SG_)lb.push([X(xl)+6,Y(zd)+12,'Unplanned exc. '+nt(`Unplanned excavation ${f(Math.min(S.dp,Df))} m (GG1 Fig. 39 note 2)${pas?': passive taken below +'+f(zd)+' mPD':''}.`),'start','#b45309','lv'])}}
  const mq=S.bon?K*q:0,ms=S.bon?K*(S.r.g*C.h1+C.gR*C.wb):0,mw=S.bon?g*C.wb:0,pc=pas?2*C.P.cP*C.sk:0,mp=pas?C.P.Kp*(Fs.g*C.d1+C.gFs*C.ws):0,pw=pas?g*C.wf:0,sc=.7/Math.max(mq,ms,mw,pc+mp,pw,1e-6),
- colp=(b0,dir,pts,k,items)=>{if(pts.every(q=>q[0]<1e-6))return'';const zt=pts[0][1],zl=pts[pts.length-1][1];
-  items.forEach(p=>fr.push({a:[X(b0+dir*len(p.F)),Y(Zb+p.arm),X(b0),Y(Zb+p.arm)],k,t:`${p.n} ${f(p.F,1)}`,an:dir>0?'start':'end',dy:4,pri:1}));
+ colp=(b0,dir,pts,k,items,id)=>{if(!SL_||pts.every(q=>q[0]<1e-6))return'';const zt=pts[0][1],zl=pts[pts.length-1][1],F_=items.reduce((t,p)=>t+p.F,0),z_=F_>0?items.reduce((t,p)=>t+p.F*p.arm,0)/F_:0;
+  if(F_>1e-9)fr.push({a:[X(b0+dir*len(F_)),Y(Zb+z_),X(b0),Y(Zb+z_)],k,t:`${id} ${f(F_,1)}`,an:dir>0?'start':'end',dy:4,pri:1});
   return`<polygon points="${PT([[b0,Zb+zt],...pts.map(([q,z])=>[b0+dir*q*sc,Zb+z]),[b0,Zb+zl]])}" fill="${CL[k]}" fill-opacity=".16" stroke="${CL[k]}" stroke-width="1"/><line x1="${f(X(b0),1)}" x2="${f(X(b0),1)}" y1="${f(Y(Zb+zt),1)}" y2="${f(Y(Zb+zl),1)}" stroke="${CL[k]}" stroke-dasharray="3 3" stroke-width=".8"/>`},
  A=P.filter(p=>p.cat!='wind'&&p.cat!='bar'),bs=B+(mq>0?mq*sc+.12:0),bw=bs+(ms>0?ms*sc+.12:0),bp=-(pc+mp)*sc-.15;
- o+=colp(B,1,[[mq,C.hs],[mq,0]],'a',A.filter(p=>p.cat=='sur'))+colp(bs,1,[[0,C.hs],[K*S.r.g*C.h1,C.wb],[ms,0]],'a',A.filter(p=>p.cat=='soil'))+colp(bw,1,[[0,C.wb],[mw,0]],'w',A.filter(p=>p.cat=='water'))
- +colp(0,-1,[[pc,C.hf],[pc+C.P.Kp*Fs.g*C.d1,C.ws],[pc+mp,0]],'p',Pp.filter(p=>p.cat=='pas'))+colp(pc+mp>0?bp:0,-1,[[0,C.wf],[pw,0]],'w',Pp.filter(p=>p.cat=='pwat'));
+ o+=colp(B,1,[[mq,C.hs],[mq,0]],'a',A.filter(p=>p.cat=='sur'),'ΣPq')+colp(bs,1,[[0,C.hs],[K*S.r.g*C.h1,C.wb],[ms,0]],'a',A.filter(p=>p.cat=='soil'),'ΣPa')+colp(bw,1,[[0,C.wb],[mw,0]],'w',A.filter(p=>p.cat=='water'),'Pw')
+ +colp(0,-1,[[pc,C.hf],[pc+C.P.Kp*Fs.g*C.d1,C.ws],[pc+mp,0]],'p',Pp.filter(p=>p.cat=='pas'),'ΣPp')+colp(pc+mp>0?bp:0,-1,[[0,C.wf],[pw,0]],'w',Pp.filter(p=>p.cat=='pwat'),'Pwf');
  {const tb=S.bon?Math.tan(S.br*R):0,zs=x=>Hr+(x-xbH)*tb,QB='fill="#3b82f6" fill-opacity=".18" stroke="#3b82f6" stroke-width=".8"',band=(x1,x2)=>`<polygon points="${PT([[x1,zs(x1)],[x2,zs(x2)],[x2,zs(x2)+.22],[x1,zs(x1)+.22]])}" ${QB}/>`;
   if(S.bon&&tb>0)o+=`<polygon points="${PT([[xbH,Hr],[xr,zs(xr)],[xr,Hr]])}" fill="#f2e8cf"/><polygon points="${PT([[xbH,Hr],[xr,zs(xr)],[xr,Hr]])}" fill="url(#dots)"/>`;
-  if(S.bon&&q>0){const x0=B;o+=band(x0,xr);lb.push([X((x0+xr)/2),Y(zs((x0+xr)/2)+.22)-5,`q_out = ${f(q,1)} kPa`,'middle',CL.w,'lv'])}
+  if(S.bon&&q>0){const x0=B;o+=band(x0,xr);lb.push([X((x0+xr)/2),Y(zs((x0+xr)/2)+.22)-5,`q = ${f(q,1)} kPa`,'middle',CL.w,'lv'])}
   if(S.bon&&C.qi>0){o+=band(xbH,B);lb.push([X(xbH)+4,Y(zs(xb)+.22)-5,`q_in = ${f(C.qi,1)} kPa`,'start',CL.w,'lv'])}
   if(S.bon&&tb>0)lb.push([X(xr)-6,Y(zs(xr))-20,`β = ${f(S.br,1)}°`,'end',null,'lv']);
   // line loads (GG1 Fig. 29)
-  if(C.LL&&(C.LL.Qv>0||C.LL.Qh>0)){const xq=planeX(c.G)+C.LL.x,zq=zs(xq);if(C.LL.Qv>0){fr.push({a:[X(xq),Y(zq+.25+len(C.LL.Qv)),X(xq),Y(zq+.24)],k:'l',t:`Q1 = ${f(C.LL.Qv,1)} kN/m`,an:'middle',dy:-6,pri:0})}
+  if(SL_&&C.LL&&(C.LL.Qv>0||C.LL.Qh>0)){const xq=planeX(c.G)+C.LL.x,zq=zs(xq);if(C.LL.Qv>0){fr.push({a:[X(xq),Y(zq+.25+len(C.LL.Qv)),X(xq),Y(zq+.24)],k:'l',t:`Q1 = ${f(C.LL.Qv,1)} kN/m`,an:'middle',dy:-6,pri:0})}
    if(C.LL.Qh>0)fr.push({a:[X(xq+len(C.LL.Qh)),Y(zq+.12),X(xq),Y(zq+.12)],k:'l',t:`Qh = ${f(C.LL.Qh,1)} kN/m`,an:'start',dy:-6,pri:0});
    o+=`<line x1="${f(X(planeX(c.G)),1)}" y1="${f(Y(zq)+14,1)}" x2="${f(X(xq),1)}" y2="${f(Y(zq)+14,1)}" stroke="#9333ea" stroke-width=".8" stroke-dasharray="2 2"/>`;lb.push([X((planeX(c.G)+xq)/2),Y(zq)+26,'x =','middle','#9333ea','lv',{p:'lx',v:C.LL.x,u:' m'}])}}
- if(S.bon){if(C.wb>0)o+=ln(B,xr,C.Wb,CL.w,1);lb.push([X(xr)-6,Y(C.wb>0?C.Wb:Zb)-6,'Design WL +','end',CL.w,'lv',{p:'@WL',v:C.Wb,pt:C.wb>0?`Design WL +${f(C.Wb)}`:'No design WL (drained)'}])}
- if(S.fon&&C.wf>0){o+=ln(xl,0,Zb+C.wf,CL.w,1)}if(S.fon)lb.push([X(xl)+6,Y(Zb+C.wf)-6,'Front GWL +','start',CL.w,'lv',{p:'fw',v:+S.fw,pt:C.wf>0?`Front GWL +${f(Zb+C.wf)}`:`Front GWL +${f(+S.fw)} (below base)`}]);
+ if(S.bon){if(C.wb>0)o+=ln(B,xr,C.Wb,CL.w,1);if(SG_)lb.push([X(xr)-6,Y(C.wb>0?C.Wb:Zb)-6,'WL +','end',CL.w,'lv',{p:'@WL',v:C.Wb,pt:C.wb>0?`WL +${f(C.Wb)}`:'No WL (drained)'}])}
+ if(S.fon&&C.wf>0){o+=ln(xl,0,Zb+C.wf,CL.w,1)}if(S.fon&&SG_)lb.push([X(xl)+6,Y(Zb+C.wf)-6,'GWL +','start',CL.w,'lv',{p:'fw',v:+S.fw,pt:C.wf>0?`GWL +${f(Zb+C.wf)}`:`GWL +${f(+S.fw)} (below base)`}]);
  const pg=(pts,a)=>`<polygon points="${PT(pts)}" ${a}/>`,gbf_=isG()?Math.max(0,+S.gbf||0):0,gbr_=isG()?Math.max(0,+S.gbr||0):0;
  o+=(isG()?pg([[0,Zb],[B,Zb],[B-gbr_,bt],[gbf_,bt]],CONC):rc(0,Zb,B,bt,CONC))+c.G.SG.filter(g=>g.h>1e-9).map(g=>pg([[g.xf0,g.bot],[g.xb0,g.bot],[g.xb1,g.top],[g.xf1,g.top]],g.s.rc&&isG()?'fill="#b9c7d6" stroke="#334155" stroke-width="1.3"':CONC)).join('');
  if(KG&&KG.dk>0)o+=rc(KG.xk,Zb-KG.dk,KG.xk+KG.Bk,Zb,CONC);
- const t0=c.G.ttw,fx0=c.G.ftx;if(S.wo||S.bro)o+=rc(fx0,top,fx0+.1,top+Math.max(wh,S.bro?+S.bhb:0),`fill="${CL.l}" fill-opacity=".5"`);
- if(c.s.N>0){const ux=x=>C.uf+(C.ub-C.uf)*x/B,qb=qDist(c.s.N,c.s.e,B),qm=Math.max(qb(0),qb(B)),sq=.7/Math.max(qm,ux(0),ux(B),1e-6),xs=[...Array(21)].map((_,i)=>B*i/20),Pt=(g1,g2)=>xs.map(x=>f(X(x),1)+','+f(Y(Zb-g1(x)*sq),1)).join(' ')+' '+xs.slice().reverse().map(x=>f(X(x),1)+','+f(Y(Zb-g2(x)*sq),1)).join(' ');
+ const t0=c.G.ttw,fx0=c.G.ftx;if(S.wo||S.bro){o+=rc(fx0,top,fx0+.1,top+Math.max(wh,S.bro?+S.bhb:0),`fill="${CL.l}" fill-opacity=".5"`);if(SG_)lb.push([X(fx0+.1)+6,Y(top+Math.max(wh,S.bro?+S.bhb:0)*.6),S.wo?`Fence ${f(wh)}`:`Barrier`,'start',CL.l,'lv'])}
+ if(SL_&&c.s.N>0){const ux=x=>C.uf+(C.ub-C.uf)*x/B,qb=qDist(c.s.N,c.s.e,B),qm=Math.max(qb(0),qb(B)),sq=.7/Math.max(qm,ux(0),ux(B),1e-6),xs=[...Array(21)].map((_,i)=>B*i/20),Pt=(g1,g2)=>xs.map(x=>f(X(x),1)+','+f(Y(Zb-g1(x)*sq),1)).join(' ')+' '+xs.slice().reverse().map(x=>f(X(x),1)+','+f(Y(Zb-g2(x)*sq),1)).join(' ');
   o+=`<polygon points="${Pt(()=>0,ux)}" fill="${CL.u}" fill-opacity=".22" stroke="${CL.u}" stroke-width="1"/><polygon points="${Pt(ux,x=>ux(x)+qb(x))}" fill="${CL.e}" fill-opacity=".2" stroke="${CL.e}" stroke-width="1"/>`;
   const sB=c.sB,qB=sB&&sB.N>0?qDist(sB.N,sB.e,B):null,qBm=qB?Math.max(qB(0),qB(B)):0,dif=qB&&Math.abs(qBm-qm)>.05,
    xl_=[c.fa&&c.fa.sheel===0&&C.qi>0?'q_in':'',c.fa&&c.fa.pvq===0&&C.it.some(i=>i.cat=='pvq')?'Pv2':''].filter(Boolean).join(' & ')||'q_in';
-  if(dif)o+=`<polyline points="${xs.map(x=>f(X(x),1)+','+f(Y(Zb-(ux(x)+qB(x))*sq),1)).join(' ')}" fill="none" stroke="${CL.e}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
-  [0,B].forEach(x=>{const mx=qb(x)>=qb(B-x);lb.push([X(x),Y(Zb-(ux(x)+qb(x))*sq)+13,mx?`q_max = ${f(qb(x),1)} kPa${dif?` (middle third, without ${xl_})`:''}`:`q_min = ${f(qb(x),1)} kPa`,'middle',CL.e,'lv']);
-   if(dif&&qB(x)>=qB(B-x))lb.push([X(x),Y(Zb-(ux(x)+qb(x))*sq)+27,`q_max = ${f(qBm,1)} kPa (bearing, with ${xl_}) - - -`,'middle',CL.e,'lv'])})}
+  if(dif&&MD=='load')o+=`<polyline points="${xs.map(x=>f(X(x),1)+','+f(Y(Zb-(ux(x)+qB(x))*sq),1)).join(' ')}" fill="none" stroke="${CL.e}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
+  [0,B].forEach(x=>{const mx=qb(x)>=qb(B-x);lb.push([X(x),Y(Zb-(ux(x)+qb(x))*sq)+13,mx?`q_max ${f(qb(x),0)}`:`q_min ${f(qb(x),0)}`,'middle',CL.e,'lv'])});
+  NT.push(`Effective base pressure (kPa) for the middle-third case${dif?` (without ${xl_})${MD=='load'?'; dashed = bearing case with '+xl_:'; bearing case with '+xl_}, q_max = ${f(qBm,1)} kPa`:''}; uplift shaded orange.`)}
  // middle third (GG1 §9.2.4) and resultant R at the base
- {const mt=Math.abs(c.s.e)<=B/6+1e-9&&c.s.N>0;o+=`<rect x="${f(X(B/3),1)}" y="${f(Y(Zb)-3,1)}" width="${f(B/3*s,1)}" height="6" fill="#16a34a" fill-opacity=".55" stroke="#15803d" stroke-width=".8"/>`;
-  lb.push([X(B/2),Y(Zb)+(KG?-18:-8),`middle third ${f(B/3)}–${f(2*B/3)} m`,'middle','#15803d','lv']);
+ if(SL_){const mt=Math.abs(c.s.e)<=B/6+1e-9&&c.s.N>0;o+=`<rect x="${f(X(B/3),1)}" y="${f(Y(Zb)-3,1)}" width="${f(B/3*s,1)}" height="6" fill="#16a34a" fill-opacity=".55" stroke="#15803d" stroke-width=".8"/>`;
+  NT.push(`Green band = middle third of the base, ${f(B/3)}–${f(2*B/3)} m from the toe (GG1 §9.2.4).`);
   if(c.s.N>0&&Number.isFinite(c.s.xbar)){const Hn=c.s.H-(S.ppO?c.s.Hp:0),Rm=Math.hypot(Hn,c.s.N),L=Math.max(.6,len(Rm)),ux2=Hn/Rm,uy=c.s.N/Rm,xe=cl(c.s.xbar,-.5,B+.5);
-   fr.push({a:[X(xe+ux2*L),Y(Zb+uy*L),X(xe),Y(Zb)],k:mt?'r':'x',t:`R = ${f(Rm,0)} kN/m (e = ${f(c.s.e,3)} m ${c.s.e<0?'< 0':mt?'≤ B/6':'> B/6'}, middle-third case)`,an:'start',dy:-4,pri:6})}}
- {const DC='#64748b',ln2=(x1,y1,x2,y2,d)=>`<line x1="${f(x1,1)}" y1="${f(y1,1)}" x2="${f(x2,1)}" y2="${f(y2,1)}" stroke="${DC}" stroke-width=".8"${d?' stroke-dasharray="2 2"':''}/>`,
+   fr.push({a:[X(xe+ux2*L),Y(Zb+uy*L),X(xe),Y(Zb)],k:mt?'r':'x',t:`R ${f(Rm,0)} (e = ${f(c.s.e,2)} ${c.s.e<0?'< 0':mt?'≤ B/6':'> B/6'})`,an:'start',dy:-4,pri:6})}}
+ if(SG_){const DC='#64748b',ln2=(x1,y1,x2,y2,d)=>`<line x1="${f(x1,1)}" y1="${f(y1,1)}" x2="${f(x2,1)}" y2="${f(y2,1)}" stroke="${DC}" stroke-width=".8"${d?' stroke-dasharray="2 2"':''}/>`,
   tk=(x,y,hz)=>hz?ln2(x-3.5,y,x+3.5,y):ln2(x,y-3.5,x,y+3.5),
   dv=(x,z1,z2,t,an,ed)=>{o+=ln2(X(x),Y(z1),X(x),Y(z2))+tk(X(x),Y(z1),1)+tk(X(x),Y(z2),1);lb.push([X(x)+(an=='end'?-6:6),Y((z1+z2)/2)+4,t,an,DC,'lv',ed])},
   dh=(z,x1,x2,t,ed)=>{o+=ln2(X(x1),Y(z),X(x2),Y(z))+tk(X(x1),Y(z))+tk(X(x2),Y(z));lb.push([X((x1+x2)/2),Y(z)+14,t,'middle',DC,'lv',ed])},
   xc=-((pc+mp>0?(pc+mp)*sc:0)+(pw>0?pw*sc+.15:0)+.55),nm=isG()?'Lift':'Stem';
-  S.st.forEach((t,i)=>{const g=c.G.SG[i],N=`${nm} ${i+1}`;dv(xc,g.bot,g.top,`${N} h =`,'end',{p:'@h.'+i,v:g.h,pt:`${N} h = ${f(g.h)}`});o+=ln2(X(xc),Y(g.top),X(g.xf1),Y(g.top),1)+ln2(X(xc),Y(g.bot),X(g.xf0),Y(g.bot),1);
+  const n1=S.st.length>1;S.st.forEach((t,i)=>{const g=c.G.SG[i],N=`${nm} ${i+1}`,j=n1?String(i+1):'';dv(xc,g.bot,g.top,`h${j} =`,'end',{p:'@h.'+i,v:g.h,pt:`h${j} = ${f(g.h)}`});o+=ln2(X(xc),Y(g.top),X(g.xf1),Y(g.top),1)+ln2(X(xc),Y(g.bot),X(g.xf0),Y(g.bot),1);
    if(!(g.h>1e-9))return;const zm=g.bot+g.h/2,L0=g.xf0+g.fb/2,L1=g.xb0-g.rb/2;o+=ln2(X(L0),Y(zm),X(L1),Y(zm))+tk(X(L0),Y(zm))+tk(X(L1),Y(zm));
-   lb.push([X(L1)+8,Y(zm)+4,`${N} t =`,'start',DC,'lv',{p:`st.${i}.t`,v:g.t,pt:`${N} t = ${f(g.t)} (top ${f(g.tt)})${isG()&&t.rc?' (RC)':''}`}]);
-   if(g.fb>1e-6)lb.push([X(g.xf1)-6,Y(g.top)+14,`${N} front batter =`,'end',DC,'lv',{p:`st.${i}.fb`,v:g.fb}]);
-   if(g.rb>1e-6)lb.push([X(g.xb1)+6,Y(g.top)+14,`${N} rear batter =`,'start',DC,'lv',{p:`st.${i}.rb`,v:g.rb}]);
-   if((isG()||i<S.st.length-1)&&Math.abs(+t.of||0)>1e-6)lb.push([X(g.xf0)-6,Y(g.bot)-5,`${N} front offset =`,'end',DC,'lv',{p:`st.${i}.of`,v:+t.of||0}])});
-  if(isG()){const bw=+S.gBt;dh(Zb+.15,0,B,`Block bottom B = b_f + b_t + b_r = ${f(B)}`);dh(bt-.2,gbf_,gbf_+bw,'Block top width b_t =',{p:'gBt',v:bw});
-   if(gbf_>1e-6)lb.push([X(0)-6,Y(Zb+.55*(bt-Zb)),'Front batter b_f =','end',DC,'lv',{p:'gbf',v:gbf_}]);if(gbr_>1e-6)lb.push([X(B)+6,Y(Zb+.55*(bt-Zb)),'Rear batter b_r =','start',DC,'lv',{p:'gbr',v:gbr_}])}
-  dv(xc,Zb,bt,`${isG()?'Block h':'Base t'} =`,'end',{p:'tb',v:+S.tb});o+=ln2(X(xc),Y(Zb),X(0),Y(Zb),1)+ln2(X(xc),Y(bt),X(0),Y(bt),1);
-  if(S.bon&&C.hs0>0)dv(xr-.3,Zb,Hr,'Retained H =','end',{p:'@H',v:Hr-Zb,pt:`Retained H = ${f(Hr-Zb)}${C.hs>C.hs0+1e-6?` (on virtual back ${f(C.hs)})`:''}`});
-  if(Hf>Zb)dv(xl+.35,Zb,Hf,'Front soil Df =','start',{p:'@Df',v:Hf-Zb});
-  if(KG&&KG.dk>0){dv(KG.xk-.12,Zb-KG.dk,Zb,'Key dk =','end',{p:'skd',v:KG.dk})}
-  const zr1=y0+.95,zr2=y0+.4;[0,Lt,xb,B].filter((x,i,a)=>a.indexOf(x)==i).forEach(x=>o+=ln2(X(x),Y(Zb-dkk),X(x),Y(zr1),1));[0,B].forEach(x=>o+=ln2(X(x),Y(zr1),X(x),Y(zr2),1));
-  if(Lt>0)dh(zr1,0,Lt,isG()?`Front step = ${f(Lt)}`:S.ty=='L'?`Toe = ${f(Lt)}`:'Toe =',S.ty=='L'||isG()?null:{p:'Lt',v:Lt});dh(zr1,Lt,xb,`${S.st.length?nm+' '+S.st.length:'Block'} = ${f(xb-Lt)}`);if(hl>0)dh(zr1,xb,B,isG()?`Rear step = ${f(hl)}`:S.ty=='Li'?`Heel = ${f(hl)}`:'Heel =',S.ty=='Li'||isG()?null:{p:'Lh',v:hl});dh(zr2,0,B,`B = ${f(B)}`)}
- lb.push([X(xr)-6,Y(Hr)-6,`Retained GL +${f(Hr)}`,'end',null,'lv'],[S.fon&&+S.bf?X(xF)-6:X(xl)+6,Y(Hf)-6,`Front GL +${f(Hf)}`,S.fon&&+S.bf?'end':'start',null,'lv'],[X(xl)+6,Y(Zb)+14,`Founding level +${f(Zb)}`,'start',null,'lv'],
-  [X(fx0)-6,Y(top)-6,S.st.length?'Wall top +':`Wall top +${f(top)}`,'end',null,'lv',S.st.length?{p:'st.0.top',v:top,pt:`Wall top +${f(top)}`}:null]);
+   lb.push([X(L1)+8,Y(zm)+4,`t${j} =`,'start',DC,'lv',{p:`st.${i}.t`,v:g.t,pt:`t${j} = ${f(g.t)}${Math.abs(g.tt-g.t)>1e-6?` (top ${f(g.tt)})`:''}${isG()&&t.rc?' RC':''}`}]);
+   if(g.fb>1e-6)lb.push([X(g.xf1)-6,Y(g.top)+14,`fb${j} =`,'end',DC,'lv',{p:`st.${i}.fb`,v:g.fb}]);
+   if(g.rb>1e-6)lb.push([X(g.xb1)+6,Y(g.top)+14,`rb${j} =`,'start',DC,'lv',{p:`st.${i}.rb`,v:g.rb}]);
+   if((isG()||i<S.st.length-1)&&Math.abs(+t.of||0)>1e-6)lb.push([X(g.xf0)-6,Y(g.bot)-5,`of${j} =`,'end',DC,'lv',{p:`st.${i}.of`,v:+t.of||0}])});
+  if(isG()){const bw=+S.gBt;dh(Zb+.15,0,B,`B = ${f(B)}`);if(Math.abs(bw-B)>1e-6||!NE)dh(bt-.2,gbf_,gbf_+bw,'b_t =',{p:'gBt',v:bw});
+   if(gbf_>1e-6)lb.push([X(0)-6,Y(Zb+.55*(bt-Zb)),'b_f =','end',DC,'lv',{p:'gbf',v:gbf_}]);if(gbr_>1e-6)lb.push([X(B)+6,Y(Zb+.55*(bt-Zb)),'b_r =','start',DC,'lv',{p:'gbr',v:gbr_}])}
+  dv(xc,Zb,bt,`${isG()?'h_b':'t_b'} =`,'end',{p:'tb',v:+S.tb});o+=ln2(X(xc),Y(Zb),X(0),Y(Zb),1)+ln2(X(xc),Y(bt),X(0),Y(bt),1);
+  if(S.bon&&C.hs0>0)dv(xr-.3,Zb,Hr,'H =','end',{p:'@H',v:Hr-Zb,pt:`H = ${f(Hr-Zb)}${C.hs>C.hs0+1e-6?` (virtual back ${f(C.hs)})`:''}`});
+  if(Hf>Zb)dv(xl+.35,Zb,Hf,'Df =','start',{p:'@Df',v:Hf-Zb});
+  if(KG&&KG.dk>0){dv(KG.xk-.12,Zb-KG.dk,Zb,'dk =','end',{p:'skd',v:KG.dk})}
+  const zr1=y0+.95,zr2=y0+.4,chn=!isG();if(chn){[0,Lt,xb,B].filter((x,i,a)=>a.indexOf(x)==i).forEach(x=>o+=ln2(X(x),Y(Zb-dkk),X(x),Y(zr1),1));[0,B].forEach(x=>o+=ln2(X(x),Y(zr1),X(x),Y(zr2),1));
+  if(Lt>0)dh(zr1,0,Lt,isG()?`${f(Lt)}`:S.ty=='L'?`Toe ${f(Lt)}`:'Toe =',S.ty=='L'||isG()?null:{p:'Lt',v:Lt});dh(zr1,Lt,xb,isG()?`${f(xb-Lt)}`:`${f(xb-Lt)}`);if(hl>0)dh(zr1,xb,B,isG()?`${f(hl)}`:S.ty=='Li'?`Heel ${f(hl)}`:'Heel =',S.ty=='Li'||isG()?null:{p:'Lh',v:hl});if(!isG())dh(zr2,0,B,`B = ${f(B)}`)}}
+ if(SG_)lb.push([X(xr)-6,Y(Hr)+(S.bon&&q>0?16:-6),`GL +${f(Hr)}`,'end',null,'lv'],[S.fon&&+S.bf?X(xF)-6:X(xl)+6,Y(Hf)-6,`GL +${f(Hf)}`,S.fon&&+S.bf?'end':'start',null,'lv'],[X(xl)+6,Y(Zb)+14,`Founding +${f(Zb)}`,'start',null,'lv'],
+  [X(fx0)-6,Y(top)-6,S.st.length?'Top +':`Top +${f(top)}`,'end',null,'lv',S.st.length?{p:'st.0.top',v:top,pt:`Top +${f(top)}`}:null]);
  const L=P.find(p=>p.cat=='wind'||p.cat=='bar'),xf=fx0+.1;
- if(L)fr.push({a:[X(xf+len(L.F)),Y(Zb+L.arm),X(xf),Y(Zb+L.arm)],k:'l',t:`${L.n} ${f(L.F,1)}`,an:'start',dy:4,pri:0});
- Wv.forEach(w=>{const ex=c.fa&&c.fa[w.cat]===0;fr.push({a:[X(w.arm),Y((w.y??Zb)+len(w.F)),X(w.arm),Y(w.y??Zb)],k:'g',t:`${w.n} ${f(w.F,0)}${ex?' (not in e)':''}`,an:'middle',dy:-6,pri:3,op:ex?.35:1})});
- U.forEach(w=>fr.push({a:[X(w.arm),Y(Zb-len(w.F)),X(w.arm),Y(Zb)],k:'u',t:`${w.n} ${f(w.F,1)}`,an:'middle',dy:15,pri:4}));
+ if(SL_){if(L)fr.push({a:[X(xf+len(L.F)),Y(Zb+L.arm),X(xf),Y(Zb+L.arm)],k:'l',t:`${L.cat=='wind'?'Fw':'Fb'} ${f(L.F,1)}`,an:'start',dy:4,pri:0});
+  const VG=[['dead','W'],['fill','Ws'],['sheel','Qin'],['pvs','Pv'],['pvq','Pvq']];
+  VG.forEach(([ct,id])=>{const a=Wv.filter(w=>w.cat==ct),F_=a.reduce((t,w)=>t+w.F,0);if(!(F_>1e-9))return;const xa=a.reduce((t,w)=>t+w.F*w.arm,0)/F_,ya=a.reduce((t,w)=>t+w.F*(w.y??Zb),0)/F_,ex=c.fa&&c.fa[ct]===0;
+   fr.push({a:[X(xa),Y(ya+len(F_)),X(xa),Y(ya)],k:'g',t:`${id} ${f(F_,0)}${ex?' *':''}`,an:'middle',dy:-6,pri:3,op:ex?.35:1});if(ex)NT.push(`* ${id} not included in the middle-third case (included for bearing).`)});
+  {const F_=U.reduce((t,w)=>t+w.F,0);if(F_>1e-9){const xa=U.reduce((t,w)=>t+w.F*w.arm,0)/F_;fr.push({a:[X(xa),Y(Zb-len(F_)),X(xa),Y(Zb)],k:'u',t:`U ${f(F_,1)}`,an:'middle',dy:15,pri:4})}}}
  fr.sort((p,q)=>p.pri-q.pri);
  o+=fr.map(a=>`<line x1="${f(a.a[0],1)}" y1="${f(a.a[1],1)}" x2="${f(a.a[2],1)}" y2="${f(a.a[3],1)}" stroke="${CL[a.k]}" stroke-width="${a.k=='r'||a.k=='x'?3:2.2}"${a.op<1?` stroke-opacity="${a.op}"`:''} marker-end="url(#mk${a.k})"/>`).join('');
  o+=lb.map(l=>put(...l)).join('')+fr.map(a=>put(a.a[0]+(a.an=='start'?5:a.an=='end'?-5:0),a.a[1]+a.dy,a.t,a.an,CL[a.k])).join('');
- if(!NE){const n=S.st.length,hm=(Zb+bt)/2,hb=bt-Zb,add=(p,ax,k,v,x,z,o2)=>HD.push({p,ax,k,v:+v,x,z,anc:'toe',min:-1e9,max:1e9,d:2,...o2});
+ if(!NE&&MD!='load'){const n=S.st.length,hm=(Zb+bt)/2,hb=bt-Zb,add=(p,ax,k,v,x,z,o2)=>HD.push({p,ax,k,v:+v,x,z,anc:'toe',min:-1e9,max:1e9,d:2,...o2});
   if(S.bon)add('@H','z',1,Hr-Zb,Math.min(xr-.6,B+.7),Hr,{min:+S.tb+.3,lab:'Retained H'});
   if(n&&Math.abs(top-Hr)>.02)add('st.0.top','z',1,top,fx0+t0/2,top,{min:+S.st[0].bot,lab:'Wall top'});
   const fo=!isG();if(S.ty!='L'&&fo)add('Lt','x',-1,+S.Lt,0,hm,{anc:'xb',min:0,lab:'Toe (base front end)'});
@@ -778,8 +783,11 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
   if(C.LL&&S.bon){const xq=planeX(c.G)+C.LL.x;add('lx','x',1,C.LL.x,xq,Hr+(S.bon?Math.tan(S.br*R)*(xq-xbH):0),{min:0,lab:'Line load x'})}
   window.__HD=HD;window.__FV={xl,y0,s:s0,xb};
   o+=HD.map((h,i)=>`<g class="hd ${h.ax}" data-h="${i}"><title>${h.lab} = ${dd(h.v)}${h.p=='@WL'||h.p=='fw'||/\.(top|bot)$/.test(h.p)?' mPD':' m'} – drag to change (Alt = fine 0.01 m)</title><circle cx="${f(X(h.x),1)}" cy="${f(Y(h.z),1)}" r="11" fill="transparent"/><circle class=hk cx="${f(X(h.x),1)}" cy="${f(Y(h.z),1)}" r="5.5"/></g>`).join('')}
- return o+tx(12,17,`Characteristic (unfactored) loads${L?', governing top load shown':''}; R, e and base pressure = governing middle-third case (Section 6) · B = ${f(B)} m · arrow length ∝ force (max ${f(fmax,0)} kN/m)${NE?'':' · blue boxes are editable · drag ● handles'}`,'start',null,'cap')
-  +tx(12,31,`Ka (${C.P.kaLab}) = ${f(C.P.Ka,3)}, Kah = ${f(K,3)} · Kp = ${f(C.P.Kp,3)}${pas?'':' (not used)'} · R = resultant at base, green band = middle third (GG1 §9.2.4)`,'start',null,'cap')+'</svg>'}
+ const cap=MD=='geo'?`${NE?'Figure 1 – Cross-section and levels':'Cross-section'} · dimensions in m, levels in mPD${NE?'':' · blue boxes editable · drag ● handles'}`
+  :MD=='load'?`${NE?'Figure 2 – ':''}Characteristic loads (kN/m) and base pressure (kPa), governing middle-third case (Section 6) · arrow length ∝ force`
+  :`Dimensions m, levels mPD, loads kN/m (characteristic, governing middle-third case) · arrow length ∝ force${NE?'':' · blue boxes editable · drag ● handles'}`;
+ if(SL_){NT.push(`ΣPq, ΣPa = active thrust from surcharge and soil, Pw = water (Ka ${C.P.kaLab} = ${f(C.P.Ka,3)}, Kah = ${f(K,3)}${pas?`, Kp = ${f(C.P.Kp,3)}`:''}); W = concrete, Ws = soil on the base, Pv = vertical component of earth pressure, U = uplift, R = resultant at the base. Components in Section 5.`);if(L)NT.push(`${L.cat=='wind'?'Fw = fence wind':'Fb = barrier load'} – the governing wall-top load case.`)}
+ return o+tx(12,17,cap,'start',null,'cap')+'</svg>'+(NM.length+NT.length?`<ul class=fgn>${NM.map((t,i)=>`<li data-n="${SY[i]||i+1}">${t}</li>`).join('')}${NT.map(t=>`<li data-n="–">${t}</li>`).join('')}</ul>`:'')}
 /* ---------------- calculation (pure: reads S only) ---------------- */
 let LAST={};
 function calcAll(){sync();const G=geo(),V=validate(),Pk=params('k'),Pf=params('f'),q=qVal(),P=S.acc=='gg1';if(V.E.length)return{err:1,G,V,Pk,Pf,q,P};
@@ -851,10 +859,10 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   ?card('Sliding',`${f(A.sl.u,3)} ≤ 1.0`,A.okS,['utilisation, Geoguide 1',keyS].filter(Boolean).join(' · '))+card('Overturning',`FOS ${f(A.ot.F)} ≥ 1.0`,A.okO,'factored, Geoguide 1')+card('Bearing & eccentricity',`${f(A.br.u,3)} ≤ 1.0`,A.okB&&okE,`Qn / Qult; ${eTxt}`)+rcC
   :card('Sliding',`FOS ${f(Fc.sl.F)} ≥ ${f(Fc.Fs,1)}`,Fc.okS,keyS)+card('Overturning',`FOS ${f(Fc.ot.F)} ≥ ${f(Fc.Fo,1)}`,Fc.okO,Fc.up.s.U>0?`uplift FOS ${f(Fc.up.s.W/Fc.up.s.U)} ≥ 1.5 ${Fc.okU?'✓':'✗'}`:'')+card('Bearing & eccentricity',Fc.br.F===Infinity?`q ≤ qo (net pressure ≤ 0)`:`FOS ${f(Fc.br.F)} ≥ ${f(Fc.Fb,1)}`,Fc.okB&&okE,`q = ${f(Fc.br.qap,0)} ≤ qa = ${f(Fc.br.qa,0)} kPa; ${eTxt}`)+rcC;
 
- {const E=A.sls;$('fg').innerHTML=fig({G,C:E.C,s:E.s,fa:E.fa,sB:ev(E.C,{sheel:1,pvq:1},{ppM:S.ppO})})}
+ {const E=A.sls,m=S.fgm||'all';$('fg').innerHTML=`<div class=fgv>View: ${[['all','All'],['geo','Geometry'],['load','Loads']].map(([v,t])=>`<button data-a="fgm" data-v="${v}" class="${m==v?'on':''}">${t}</button>`).join('')}</div>`+fig({G,C:E.C,s:E.s,fa:E.fa,sB:ev(E.C,{sheel:1,pvq:1},{ppM:S.ppO}),mode:m})}
  /* ---- Section 5 ---- */
  const T2=(h,r)=>P?T(h,r):T(h.filter((_,i)=>i!=3),r.map(x=>x.filter((_,i)=>i!=3))),items=(C,dir,k)=>{const a=C.it.filter(i=>i.dir==dir);return[...a.map(p=>[p.n,p.t,p.fm,f(p.F),f(p.arm),f(p.F*p.arm)]),['<b>Σ</b>','<b>Total</b>','',`<b>${f(a.reduce((t,p)=>t+p.F,0))}</b>`,'',`<b>${f(a.reduce((t,p)=>t+p.F*p.arm,0))}</b>`]]},H5=['ID','Item','Formula','Force (kN/m)','Arm (m)','Moment (kNm/m)'];
- let h=`<h2>5. Calculation – characteristic (unfactored) loads, per m run, moments about toe</h2>`
+ let h=`<h2>5. Calculation – characteristic (unfactored) loads, per m run, moments about toe</h2>`+(()=>{const E=A.sls;return`<div class="pfig f2">${fig({G,C:E.C,s:E.s,fa:E.fa,sB:ev(E.C,{sheel:1,pvq:1},{ppM:S.ppO}),noEdit:1,mode:'load'})}</div>`})()
  +`<h3>5.1 Active side (retained) – arm z above base bottom</h3>`+T(H5,items(Ck,'h'));
  if(S.wo||S.bro){const r=[];let wt='';if(S.wo){const w=windCalc();r.push(['Lw','Fence wind – Wind Code 2019','P = Qz·Cp·Ss; F = P × loaded area (see table below)',f(w.F),f(w.z),w.basis]);wt=`<p><b>Fence wind load – Wind Code 2019, Eq 2-3a: P = Qz·Cp·Ss</b> (fence h = ${f(w.h)} m, solidity φ = ${f(w.ph,2)})</p>`+T(['Step','Code reference','Substitution','Result'],w.steps)}
   if(S.bro){const b=barCalc();r.push(['Lb','Barrier – DIL 2011 Table 3.13',`${BCAT[S.brc]}, at min(1.1, ${S.bhb}) = ${f(b.ha)} m above wall top`,f(b.F),f(b.z),'separate load case from wind (DIL 3.8.1.1)'])}
@@ -986,9 +994,9 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   PL.forEach(p=>xr(p.lab+' – plain concrete','CoP Cl 6.2.2.3',`e ≤ h/6 = ${f(p.h*1000/6,0)} mm; nw ≤ capacity; shear`,`e = ${f(p.eK*1000,0)} mm; nw / cap. = ${f(p.ua,3)}`,pc(p.sev),offL('plain')?lp('nc'):lp(p.okT&&p.okU&&p.okSl&&p.shOK)));
   if(RS.length)xr('Cover & exposure (all faces)','CoP Table 4.1, 4.2','≥ minimum nominal cover',crOK?'all faces OK':'below minimum','–',offL('cover')?lp('nc'):lp(crOK))}
  const offTxt=CKL.filter(([id])=>!ckOn(id)).map(([id,n])=>`${n}: ${esc((S.ck[id]&&S.ck[id].why)||'reason not stated')}`);
- const E1=A.sls,figR=fig({G,C:E1.C,s:E1.s,fa:E1.fa,sB:ev(E1.C,{sheel:1,pvq:1},{ppM:S.ppO}),noEdit:1});
+ const E1=A.sls,figR=fig({G,C:E1.C,s:E1.s,fa:E1.fa,sB:ev(E1.C,{sheel:1,pvq:1},{ppM:S.ppO}),noEdit:1,mode:'geo'});
  const p1=`<section class=p1><div class=rh><div class=rh1><b>${esc(S.jno||'Retaining wall design check')}</b>${S.pn?` · Job no. ${esc(S.pn)}`:''} · ${gName}</div>`
-  +`<div class="rh2 mu">${P?'Geoguide 1 (2020) partial factors':'CoP Foundations 2017 global factors of safety'}${X?' · CoP SUC 2013 (2020 Ed.)':''} · Designer: ${esc(S.dsn||'–')} · Checker: ${esc(S.chk||'–')} · ${new Date().toLocaleDateString('en-GB')} · Retaining Wall Design &amp; Checker v9.5</div></div>`
+  +`<div class="rh2 mu">${P?'Geoguide 1 (2020) partial factors':'CoP Foundations 2017 global factors of safety'}${X?' · CoP SUC 2013 (2020 Ed.)':''} · Designer: ${esc(S.dsn||'–')} · Checker: ${esc(S.chk||'–')} · ${new Date().toLocaleDateString('en-GB')} · Retaining Wall Design &amp; Checker v9.6</div></div>`
   +`<div class="banner ${fails.length?'no':'ok'}">OVERALL: ${fails.length?'FAIL – '+fails.join(', '):'PASS'}</div><div class=pfig>${figR}</div>`
   +`<h3>Executive summary</h3>`+T(['Check item','Code clause','Required','Provided','Utilisation','Status'],ex,'exs')
   +(offTxt.length?`<p class=mu style="font-size:10px">Not checked (switched off by the designer): ${offTxt.join('; ')}.</p>`:'')+`</section>`;
@@ -1204,7 +1212,7 @@ if(a=='add'){const bt=+S.Zb+(+S.tb),n=S.st.length;if(!n){S.st.push({t:isG()?+Mat
  else if(a=='share'){share();return}
  else if(a=='snap'){snapshot();return}
  else if(a=='bat'){const k=b.dataset.k;if(OPB.has(k))OPB.delete(k);else OPB.add(k);ri();rr();return}
- else if(a=='tab'){document.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.id==b.dataset.t));document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x==b));if(b.dataset.t=='tl')renderTools();return}
+ else if(a=='fgm'){S.fgm=b.dataset.v;sv();rr();return}if(a=='tab'){document.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.id==b.dataset.t));document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x==b));if(b.dataset.t=='tl')renderTools();return}
  else if(a=='prev'){document.body.classList.toggle('rep');$('pvb').textContent=document.body.classList.contains('rep')?'Exit preview':'Preview report';return}
  else if(a=='print'){if(validate().E.length){msg('Fix input errors before export');return}window.print();return}
  else if(a=='opt'){runOpt();return}
