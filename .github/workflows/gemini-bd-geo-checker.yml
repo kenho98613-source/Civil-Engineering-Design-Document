@@ -142,12 +142,14 @@ jobs:
             let { res, json } = await callModel(model);
             const notes = [];
             if (!res.ok && unusable(res.status, json.error?.message)) {
-              notes.push(`\`${model}\` not usable on this API key (${res.status}); fell back to Flash.`);
+              const why = (json.error?.message || '').split('\n')[0].slice(0, 200);
+              console.log(`${model} not usable: ${res.status} ${why}`);
+              notes.push(`\`${model}\` not usable on this API key (${res.status}: ${why}); fell back to Flash.`);
               for (const m of await flashModels()) {
                 console.log(`Trying fallback model ${m}...`);
                 ({ res, json } = await callModel(m));
                 model = m;
-                if (res.ok || !unusable(res.status, json.error?.message)) break;
+                if (res.ok) break; // otherwise try the next Flash model
               }
             }
             process.env.GEMINI_MODEL = model; // shown in the review header
