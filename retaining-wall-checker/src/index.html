@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Retaining Wall Design &amp; Checker v9.2</title><style>
+<!DOCTYPE html><html lang="zh-HK"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Retaining Wall Design &amp; Checker v9.3</title><style>
 :root{--bg:#fff;--fg:#1d1f23;--mu:#6a7280;--bd:#d6dae0;--pn:#f4f5f7;--ok:#16a34a;--no:#dc2626;--nc:#6b7280;--rv:#d97706;--ac:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#16181c;--fg:#e6e8eb;--mu:#98a0ab;--bd:#343840;--pn:#20232a;--ac:#60a5fa}}
 :root[data-theme=dark]{--bg:#16181c;--fg:#e6e8eb;--mu:#98a0ab;--bd:#343840;--pn:#20232a;--ac:#60a5fa}
@@ -46,14 +46,14 @@ h2{font-size:15px;margin:14px 0 2px}h3{margin:10px 0 2px;font-size:13px}.mu{colo
 .rep .int,.rep #r8,.rep #wn{display:none!important}@media print{.int,#r8,#wn,#tl,#sv,#bn .int,.fo,svg text.scr{display:none!important}svg text.prt{display:inline!important}}
 @media print{html,body{height:auto!important;overflow:visible!important;font-size:11px}.app,main,#in,.pane,.tw,.rcb,.blk,details,.sum,.pr{overflow:visible!important;height:auto!important;max-height:none!important}.app{display:block!important}#in,.tabs,header .tb,header button{display:none!important}.pane,.pr{display:block!important}.pane:empty{display:none!important}main{display:flex!important;flex-direction:column}.pr{order:-1}table{width:100%;table-layout:auto;page-break-inside:auto;font-size:9px}table.sch{table-layout:fixed;page-break-inside:avoid;break-inside:avoid}th,td{white-space:normal!important;word-break:break-word;padding:2px 4px}thead{display:table-header-group}tr,.blk,.rsec{break-inside:avoid;page-break-inside:avoid}h2,h3{break-after:avoid;page-break-after:avoid}#fg,#r5,#r6,#r7{break-before:page;page-break-before:always}svg{max-height:none!important;break-inside:avoid}.rcb{break-inside:auto}}
 </style></head><body>
-<header><h1>Retaining Wall Design &amp; Checker v9.2 <span class="mu">· Hong Kong practice — Geoguide 1 (2020) · CoP Foundations 2017 · CoP SUC 2013 (2020 Ed.) · Wind Code 2019 · CoP DIL 2011 (2021 Ed.)</span></h1><span class="mu" id="sv"></span>
+<header><h1>Retaining Wall Design &amp; Checker v9.3 <span class="mu">· Hong Kong practice — Geoguide 1 (2020) · CoP Foundations 2017 · CoP SUC 2013 (2020 Ed.) · Wind Code 2019 · CoP DIL 2011 (2021 Ed.)</span></h1><span class="mu" id="sv"></span>
 <div class="tb"><button data-a="fopen" title="Open a .rwall project file (Ctrl+O)">📂 Open</button><button data-a="fsave" title="Save the project as a .rwall file (Ctrl+S)">💾 Save</button><button data-a="undo" id="ubt" title="Undo (Ctrl+Z)" disabled>↶ Undo</button><button data-a="redo" id="rbt" title="Redo (Ctrl+Y / Ctrl+Shift+Z)" disabled>↷ Redo</button><button data-a="share" title="Encode all inputs into the page URL (#config=…) and copy it">🔗 Copy Shareable Link</button><button data-a="snap" title="Download a standalone .html with the current inputs as its defaults">📄 Export Snapshot HTML</button><button data-a="reset" title="Clear saved inputs and the URL hash">🔄 Reset to Default</button><button data-a="prev" id="pvb">Preview report</button><button data-a="print" id="pb">Export report (PDF)</button></div></header>
 <div class="app"><aside id="in"></aside><main><div id="bn"></div><div class="sum" id="sm"></div><div class="tabs"><button data-a="tab" data-t="fg" class="on">Figure</button><button data-a="tab" data-t="r5">5. Calculation</button><button data-a="tab" data-t="r6">6. Stability</button><button data-a="tab" data-t="r7">7. Structural</button><button data-a="tab" data-t="tl">🧰 Design tools</button><button data-a="tab" data-t="r8">8. Limitations</button><label style="gap:8px;margin:0 0 0 auto">Force arrow scale <input type="range" min="0.5" max="2" step="0.1" data-p="asc" value="1" style="width:120px"><b id="asv">1.0×</b></label></div><div class="pane on" id="fg"></div><div class="pane" id="r5"></div><div class="pane" id="r6"></div><div class="pane" id="r7"></div><div class="pane" id="tl"></div><div class="pane" id="r8"></div><div class="pr" id="ps"></div><div id="refs"></div></main></div>
 <div class="mdl" id="mdl" hidden></div>
 <script>
 'use strict';
 /* =====================================================================
-   Retaining Wall Design & Checker v9.2
+   Retaining Wall Design & Checker v9.3
    v9: FC2017 Cl 2.5.4 split factors, GG1 Ko (Eq 6.1-6.4), RC Ko/Ka (default Ko) + compaction (GG1 §6.8),
    project factor γproj, check register (tick / untick + reason), canvas drag handles, undo / redo.
    Engine as v7.8 (verified against GG1 / CoP Fdn 2017 / CoP SUC 2013).
@@ -75,7 +75,7 @@ const KEY='rw9',def={ver:9,pn:'',dsn:'',chk:'',jno:'',
  r:{c:0,phi:30,g:19,gs:20},f:{c:0,phi:35,cvm:'v',cv:30,g:19,gs:20},fsm:1,fs:{c:0,phi:35,g:19,gs:20},
  kam:'r',kaM:.333,kaMf:.395,kpm:'a',kpM:3.69,kpMf:3.03,dwm:'auto',dcw:15,comp:0,dbm:'cv',dcb:30,
  Hr:10,Hf:8,fon:1,bon:1,fw:6.5,dp:1,dfm:'front',ogl:8,nopp:0,ppS:1,ppO:0,ppB:0,
- ty:'T',Lt:1.2,Lh:3.2,Zb:6,tb:.6,gw:1.5,st:[{t:.3,top:10,bot:8.5,rc:1},{t:.45,top:8.5,bot:6.6,rc:1}],
+ ty:'T',Lt:1.2,Lh:3.2,Zb:6,tb:.6,st:[{t:.3,fb:0,rb:0,of:0,top:10,bot:8.5,rc:1},{t:.45,fb:0,rb:0,of:0,top:8.5,bot:6.6,rc:1}],
  skon:0,skd:.5,skw:.5,skx:1.2,
  wl:'0.5',wlZ:8,
  qcat:'priv',q:10,qst:1,qj:0,
@@ -84,16 +84,22 @@ const KEY='rw9',def={ver:9,pn:'',dsn:'',chk:'',jno:'',
  bro:0,brc:'1.5',brF:1.5,bhb:1.1,
  gc:24,fcu:40,fy:500,cvr:50,cvf:40,cvt:50,cvb:75,cbs:'blind',exr:1,exf:2,ext:1,exb:1,rmin:.13,
  rck:'ko',ocr:1,kom:0,koM:.5,hnr:0,cpb:0,cb:{v:{d:12,s:200},h:{d:12,s:200},t:{d:12,s:200},l:{d:12,s:200}},
- gmo:'B',gmr:'none',gB:2.8,gBt:1.2,gBh:3.2,gbat:'front',heffm:'250',heff:250,grho:.25,
+ gmo:'B',gmr:'none',gB:2.8,gBt:1.2,gbf:1.6,gbr:0,gBh:3.2,geo3:1,heffm:'250',heff:250,grho:.25,
  asc:1,xrc:1,rc:{}};
 const SNAP=(window.__SNAP&&window.__SNAP.S)?window.__SNAP:null,SKEY=KEY+(SNAP?':'+SNAP.id:''),base0=()=>structuredClone(SNAP?SNAP.S:def);
-function fillDef(o){const gmig=o.ty=='G'&&o.gB==null;(function fill(o,d){for(const k in d){if(o[k]==null)o[k]=structuredClone(d[k]);else if(d[k]&&typeof d[k]=='object'&&!Array.isArray(d[k]))fill(o[k],d[k])}})(o,def);
+function fillDef(o){const gmig=o.ty=='G'&&o.gB==null,m3=o.geo3==null;(function fill(o,d){for(const k in d){if(o[k]==null)o[k]=structuredClone(d[k]);else if(d[k]&&typeof d[k]=='object'&&!Array.isArray(d[k]))fill(o[k],d[k])}})(o,def);
  if(gmig){const n=(o.st||[]).length;if(o.gbM==1||!n){o.gB=+(o.gb||o.gw||2.4);o.gBt=Math.min(+(o.gtw||o.gB),o.gB);o.gBh=+(o.gH||o.tb||3);o.st=[]}else{o.gB=+(+o.Lt+(+o.st[n-1].t)+(+o.Lh)).toFixed(3);o.gBt=o.gB;o.gBh=+o.tb}o.gbat='front';(o.st||[]).forEach(s=>{delete s.tt})}
+ if(m3){const st=o.st||[],n=st.length; // v9.3: stems / lifts get front batter, rear batter and front offset; block gets front and rear batters
+  st.forEach(s=>{const tt=+s.tt>0?Math.min(+s.tt,+s.t):+s.t;s.fb=+Math.max(0,+s.t-tt).toFixed(4);s.rb=0;s.of=0;delete s.tt});
+  if(o.ty=='G'){const B=+o.gB,Bt=Math.min(+o.gBt,B),bk=o.gbat=='back';o.gbf=bk?0:+(B-Bt).toFixed(4);o.gbr=bk?+(B-Bt).toFixed(4):0;o.gBt=Bt;
+   if(n&&!bk){st[n-1].of=+(Bt-(+st[n-1].t)).toFixed(4);for(let i=n-2;i>=0;i--)st[i].of=+((+st[i+1].t)-(+st[i].t)).toFixed(4)}} // lifts were flush with the vertical back face
+  else for(let i=n-2;i>=0;i--){const b=st[i+1];st[i].of=+((+b.t-b.fb)-(+st[i].t)).toFixed(4)} // stems were flush at the back face
+  delete o.gbat;delete o.gtw;delete o.gw;o.geo3=1}
  if(o.acc!='fc'&&o.acc!='gg1')o.acc='fc';o.gmo='B';if(o.ver!==9){o.rck=o.rck||'ko'}o.ver=9;return o}
 let S;try{S=JSON.parse(localStorage.getItem(SKEY))}catch(e){}
 if(!S&&!SNAP){for(const k of['rw8','rw7']){try{const o=JSON.parse(localStorage.getItem(k));if(o&&(o.ver===8||o.ver===7)){S=o;break}}catch(e){}}} // migrate v8 / v7 inputs
 if(!S||![7,8,9].includes(S.ver))S=base0();fillDef(S);
-const gp=p=>p.split('.').reduce((o,k)=>o?.[k],S),sp=(p,v)=>{const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]]??(o[k[i]]={});o[k[k.length-1]]=v},
+const gp=p=>{if(p[0]=='@'){const m=p.match(/^@h\.(\d+)$/),s=m&&S.st[+m[1]];return s?+(+s.top-(+s.bot)).toFixed(3):null}return p.split('.').reduce((o,k)=>o?.[k],S)},sp=(p,v)=>{const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]]??(o[k[i]]={});o[k[k.length-1]]=v},
 msg=t=>{const e=$('sv');if(e)e.textContent=t},
 sv=()=>{try{localStorage.setItem(SKEY,JSON.stringify(S));msg('Autosaved '+new Date().toLocaleTimeString())}catch(e){msg('Autosave unavailable')}hashSync();hisPush()},
 rcv=k=>Object.assign(isG()?{d:16,s:200,d2:16,s2:200,d3:16,s3:200}:{d:16,s:200,d2:12,s2:200,d3:12,s3:200},S.rc[k]);
@@ -107,18 +113,30 @@ const DESK=!!(window.__TAURI__&&window.__TAURI__.core);let CURF=null;
 const rwTxt=()=>JSON.stringify({app:'rwall',ver:9,saved:new Date().toISOString(),S},null,1),rwName=()=>String(S.pn||S.jno||'retaining-wall').replace(/[^\w\-]+/g,'_')+'.rwall';
 async function fileSave(as){try{const t=rwTxt();
  if(DESK){let p=CURF;if(as||!p){p=await __TAURI__.dialog.save({defaultPath:rwName(),filters:[{name:'Retaining wall project',extensions:['rwall']}]});if(!p)return}
-  await __TAURI__.core.invoke('write_text',{path:p,contents:t});CURF=p;document.title=p.split(/[\\/]/).pop()+' – Retaining Wall Checker v9.2';msg('Saved '+p);return}
+  await __TAURI__.core.invoke('write_text',{path:p,contents:t});CURF=p;document.title=p.split(/[\\/]/).pop()+' – Retaining Wall Checker v9.3';msg('Saved '+p);return}
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.download=rwName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);msg('Saved '+rwName()+' (Downloads)')}catch(e){msg('Save failed: '+e)}}
 function rwLoad(t,name){const o=JSON.parse(t),st=o&&o.S?o.S:o;if(!st||typeof st!='object'||!Array.isArray(st.st))throw new Error('not a .rwall project file');S=fillDef(structuredClone(st));ri();rr();sv();msg('Opened '+name)}
-async function fileOpen(){try{if(DESK){const p=await __TAURI__.dialog.open({multiple:false,filters:[{name:'Retaining wall project',extensions:['rwall','json']}]});if(!p)return;rwLoad(await __TAURI__.core.invoke('read_text',{path:p}),p);CURF=p;document.title=String(p).split(/[\\/]/).pop()+' – Retaining Wall Checker v9.2';return}
+async function fileOpen(){try{if(DESK){const p=await __TAURI__.dialog.open({multiple:false,filters:[{name:'Retaining wall project',extensions:['rwall','json']}]});if(!p)return;rwLoad(await __TAURI__.core.invoke('read_text',{path:p}),p);CURF=p;document.title=String(p).split(/[\\/]/).pop()+' – Retaining Wall Checker v9.3';return}
  const i=document.createElement('input');i.type='file';i.accept='.rwall,.json';i.onchange=()=>{const f=i.files[0];if(f)f.text().then(t=>{try{rwLoad(t,f.name)}catch(e){msg('Could not open: '+e.message)}})};i.click()}catch(e){msg('Open failed: '+e)}}
 /* virtual parameters edited on the figure (derived quantities write back to the base inputs) */
 function setP(p,v){
+ let m=p.match(/^st\.(\d+)\.t$/);if(m)p='@tw.'+m[1]; // width edits keep the front face; the heel absorbs the change (B kept where a heel exists)
  if(isG()){if(p=='@H'){const old=+S.Hr,n=+(+S.Zb+v).toFixed(3);S.Hr=n;if(S.st.length){if(Math.abs(+S.st[0].top-old)<1e-6)S.st[0].top=n}else if(Math.abs(+S.Zb+(+S.gBh)-old)<1e-6)S.gBh=+v.toFixed(3);return}
-  if(p=='tb'){S.gBh=v;return}}
- if(p=='@H'){const old=+S.Hr,n=+(+S.Zb+v).toFixed(3);S.Hr=n;if(S.st.length&&Math.abs(+S.st[0].top-old)<1e-6)S.st[0].top=n;if(!S.st.length&&isG()&&Math.abs(+S.Zb+(+S.tb)-old)<1e-6)S.tb=+v.toFixed(3);return}
+  if(p=='tb'){S.gBh=v;return}
+  if(p=='@gtf'){const d=v-(+S.gbf||0),n=S.st.length;S.gbf=+v;S.gBt=+(+S.gBt-d).toFixed(4);if(n)S.st[n-1].of=+Math.max(0,(+S.st[n-1].of||0)-d).toFixed(4);return}
+  if(p=='@gtb'){const d=v-(+S.gbr||0);S.gbr=+v;S.gBt=+(+S.gBt-d).toFixed(4);return}}
+ if(p=='@H'){const old=+S.Hr,n=+(+S.Zb+v).toFixed(3);S.Hr=n;if(S.st.length&&Math.abs(+S.st[0].top-old)<1e-6)S.st[0].top=n;return}
  if(p=='@Df'){S.Hf=+(+S.Zb+v).toFixed(3);return}
  if(p=='@WL'){S.wl='c';S.wlZ=+v;return}
+ if(p=='@mv'){const d=v-(+S.Lt);S.Lt=+v;if(S.ty!='Li')S.Lh=+Math.max(0,+S.Lh-d).toFixed(4);return} // move the bottom stem, B kept
+ m=p.match(/^@(tw|tf|h)\.(\d+)$/);
+ if(m){const i=+m[2],n=S.st.length,s=S.st[i];if(!s)return;const bot=!isG()&&i==n-1;
+  if(m[1]=='h'){v=Math.max(0,v);if(i==0)s.top=+(+s.bot+v).toFixed(3);else{const up=S.st[i-1];up.bot=+Math.min(+up.top,+s.bot+v).toFixed(3);s.top=up.bot}return} // height: the top of the segment moves
+  const dt=v-(+s.t);s.t=+(+v).toFixed(4);
+  if(m[1]=='tw'){if(bot&&S.ty!='Li')S.Lh=+Math.max(0,+S.Lh-dt).toFixed(4);return} // back face moves
+  if(bot){if(S.ty!='L')S.Lt=+Math.max(0,+S.Lt-dt).toFixed(4)}else s.of=+((+s.of||0)-dt).toFixed(4); // front face moves
+  if(i>0)S.st[i-1].of=+((+S.st[i-1].of||0)+dt).toFixed(4);return} // stems above stay in place
+ m=p.match(/^st\.(\d+)\.fb$/);if(m){const i=+m[1],s=S.st[i],d=v-(+s.fb||0);s.fb=v;if(i>0)S.st[i-1].of=+((+S.st[i-1].of||0)-d).toFixed(4);return}
  sp(p,v)}
 /* URL hash (#config=…) encoding: deflate-raw + base64url when available, else plain base64url */
 const u8b64=u=>{let s='';for(let i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')},
@@ -129,21 +147,51 @@ async function decCfg(s){const t=s[0],u=b64u8(s.slice(1));
  if(t=='z'){const d=await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer();return JSON.parse(new TextDecoder().decode(d))}
  return JSON.parse(new TextDecoder().decode(u))}
 /* ---------------- geometry ---------------- */
-const liftTT=s=>+s.tt>0?Math.min(+s.tt,+s.t):+s.t,blockTW=B=>+S.gtw>0?Math.min(+S.gtw,B):B,
+const stTT=s=>+s.t-Math.max(0,+s.fb||0)-Math.max(0,+s.rb||0),liftTT=stTT,
 trap=(b1,b2,h)=>({A:(b1+b2)/2*h,xc:(b1*b1+b1*b2+b2*b2)/(3*(b1+b2)),yc:h*(b1+2*b2)/(3*(b1+b2))}); // xc measured from the vertical back face
-const isG=()=>S.ty=='G';
+const isG=()=>S.ty=='G',gBat=()=>{const a=+S.gbf>1e-6,b=+S.gbr>1e-6;return a&&b?'front and back faces battered':a?'front face battered':b?'back face battered':'rectangular'};
 const gpF=k=>S.gpon&&S[k]?Math.max(1,+S.gpv||1):1; // project-specific additional factor (not a code requirement)
 const ckOn=id=>!(S.ck&&S.ck[id]&&S.ck[id].off);
 // optional checks that the designer may switch off (with a reason); sliding, overturning, bearing and uplift are locked ON
 const CKL=[['ecc','Eccentricity – middle-third rule'],['rc','Structural – RC / minimum steel'],['plain','Mass concrete lift sections'],['cover','Cover & exposure (CoP Table 4.2)']];
-// gravity wall (GG1 §9.3): main mass concrete block (bottom width, top width, height; batter on the front or back face)
-// with optional rectangular lifts (upstand wall) on top, flush with the vertical face of the block. Mapped onto the engine's base + stem geometry.
-const gBack=()=>isG()&&S.gbat=='back';
-const gSync=()=>{const B=Math.max(+S.gB,.1),Bt=cl(+S.gBt,.05,B),n=S.st.length;S.tb=+S.gBh;S.gtw=null;S.st.forEach(s=>{if('tt' in s)delete s.tt});
- const tl=n?+S.st[n-1].t:(S.gbat=='back'?Bt:B);S.gw=tl;if(S.gbat=='back'){S.Lt=0;S.Lh=+Math.max(0,B-tl).toFixed(4)}else{S.Lt=+Math.max(0,B-tl).toFixed(4);S.Lh=0}};
-const sync=()=>{if(isG())gSync();const n=S.st.length;if(!n)return;S.st[n-1].bot=+(S.Zb+S.tb).toFixed(3);for(let i=1;i<n;i++)S.st[i].top=S.st[i-1].bot;if(!isG())S.st.forEach(s=>s.rc=1)};
-function geo(){const n=S.st.length,tl=n?+S.st[n-1].t:+S.gw,Lt=S.ty=='L'?0:+S.Lt,hl=S.ty=='Li'?0:+S.Lh,bt=+S.Zb+(+S.tb);
- return{n,tl,Lt,hl,B:Lt+tl+hl,xb:Lt+tl,bt,top:n?+S.st[0].top:bt}}
+/* v9.3 geometry (x from the toe = front edge of the base / block underside; z in mPD)
+   Gravity block (GG1 §9.3): front batter b_f + top width b_t + rear batter b_r; bottom width B = b_f + b_t + b_r.
+   Every stem / lift: bottom width t, front batter fb, rear batter rb (top width t − fb − rb) and front offset 'of' from the
+   front edge of the top of the element below (RC bottom stem: toe length Lt; L-wall Lt = 0). Stem 1 = top segment. */
+const gBW=()=>Math.max(0,+S.gbf||0)+Math.max(0,+S.gBt||0)+Math.max(0,+S.gbr||0);
+const sync=()=>{if(isG()){S.tb=+S.gBh;S.gB=+gBW().toFixed(4)}const n=S.st.length;if(!n)return;S.st[n-1].bot=+(S.Zb+S.tb).toFixed(3);for(let i=1;i<n;i++)S.st[i].top=S.st[i-1].bot;if(!isG())S.st.forEach(s=>s.rc=1)};
+function stemGeo(){const n=S.st.length,Gw=isG(),out=new Array(n);let xs=Gw?Math.max(0,+S.gbf||0):0;
+ for(let i=n-1;i>=0;i--){const s=S.st[i],t=+s.t,fb=Math.max(0,+s.fb||0),rb=Math.max(0,+s.rb||0),h=Math.max(0,+s.top-(+s.bot)),
+  xf0=(!Gw&&i==n-1)?(S.ty=='L'?0:+S.Lt):xs+(+s.of||0),xb0=xf0+t;
+  out[i]={i,s,t,fb,rb,tt:t-fb-rb,h,bot:+s.bot,top:+s.top,xf0,xb0,xf1:xf0+fb,xb1:xb0-rb,xc:xf0+t/2};xs=xf0+fb}
+ return out}
+// x of a wall face (polyline listed top → bottom) at level z
+const pX=(P,z)=>{if(!P.length)return 0;if(z>=P[0][1])return P[0][0];for(let k=0;k<P.length-1;k++){const[a,za]=P[k],[b,zb]=P[k+1];if(za>zb&&z<=za&&z>=zb)return a+(b-a)*(za-z)/(za-zb)}return P[P.length-1][0]};
+// trapezoid split into front triangle + rectangle + rear triangle (exact weight and lever arm of each part about the toe)
+const pieces4=(xf0,xb0,fb,rb,z0,h)=>{const tt=xb0-xf0-fb-rb,r=[];if(!(h>1e-9))return r;
+ if(fb>1e-9)r.push({k:'fb',b:fb,h,A:fb*h/2,x:xf0+2*fb/3,z:z0+h/3});if(tt>1e-9)r.push({k:'r',b:tt,h,A:tt*h,x:xf0+fb+tt/2,z:z0+h/2});if(rb>1e-9)r.push({k:'rb',b:rb,h,A:rb*h/2,x:xb0-2*rb/3,z:z0+h/3});return r};
+// soil between a wall face P and the vertical plane (side 'b': x = B; 'f': x = 0) for z1..z2, split dry / saturated at Wl; exact for the linear profile
+function soilBand(P,side,B,z1,z2,Wl){const r={d:{A:0,M:0,Z:0},s:{A:0,M:0,Z:0}};if(!(z2>z1+1e-9))return r;
+ const zs=[z1,z2,Wl,...P.map(p=>p[1])].filter(z=>z>=z1&&z<=z2).sort((a,b)=>a-b),W=z=>{const x=pX(P,z);return side=='b'?Math.max(0,B-x):Math.max(0,x)};
+ for(let k=0;k<zs.length-1;k++){const za=zs[k],zb=zs[k+1],Lz=zb-za;if(!(Lz>1e-9))continue;const e=Math.min(1e-7,Lz/10),w1=W(za+e),w2=W(zb-e),A=(w1+w2)/2*Lz;if(!(A>0))continue;
+  const I2=Lz*(w1*w1+w1*w2+w2*w2)/3,o=(za+zb)/2<Wl?r.s:r.d;o.A+=A;o.M+=side=='b'?B*A-I2/2:I2/2;o.Z+=Lz*(w1*(2*za+zb)+w2*(za+2*zb))/6}return r}
+function geo(){const n=S.st.length,Gw=isG(),SG=stemGeo(),bt=+S.Zb+(+S.tb),Zb=+S.Zb,bf=Gw?Math.max(0,+S.gbf||0):0,br=Gw?Math.max(0,+S.gbr||0):0;
+ const B=Gw?gBW():(S.ty=='L'?0:+S.Lt)+(n?+S.st[n-1].t:0)+(S.ty=='Li'?0:+S.Lh);
+ let k=n-1;while(k>0&&!(SG[k].h>1e-9))k--;const b=n?SG[k]:null; // lowest stem with a height (zero-height stems are ignored)
+ const Lt=b?b.xf0:0,xb=b?b.xb0:B,bk=[],fr=[];
+ for(const s of SG){if(!(s.h>1e-9))continue;bk.push([s.xb1,s.top],[s.xb0,s.bot]);fr.push([s.xf1,s.top],[s.xf0,s.bot])}
+ bk.push([B-br,bt],[B,Zb]);fr.push([bf,bt],[0,Zb]);
+ const Lw=S.bon?Math.max(0,B-pX(bk,+S.Hr)):0;
+ return{n,SG,tl:xb-Lt,Lt,hl:Math.max(0,B-xb),B,xb,bt,top:bk[0][1],bk,fr,Lw,ftx:fr[0][0],ttw:bk[0][0]-fr[0][0]}}
+// vertical loads above each stem section (stems above + soil resting on steps / batters inside the section width);
+// Me = ΣW·(x_c − x) about the section centroid (+ = same sense as the earth-pressure moment, tension on the retained face)
+function secLoads(G){const Rs=S.r,Hr=+S.Hr,Fs=FSo(),Wb=S.bon?wlLev():-1e9,zT=Math.max(+S.Zb,+S.Hf-S.dp),Wf=Math.min(+S.fw,+S.Hf),SG=G.SG,
+ strip=(z1,z2,fn)=>{if(!(z2>z1))return;const N=Math.max(20,Math.ceil((z2-z1)/.01)),dz=(z2-z1)/N;for(let k=0;k<N;k++)fn(z1+(k+.5)*dz,dz)};
+ return SG.map(g=>{let W=0,Me=0;const acc=(Wt,x)=>{W+=Wt;Me+=Wt*(g.xc-x)};
+  for(let j=0;j<=g.i;j++){const q=SG[j];pieces4(q.xf0,q.xb0,q.fb,q.rb,q.bot,q.h).forEach(p=>acc(p.A*S.gc,p.x))}
+  if(S.bon)strip(g.bot,Hr,(z,dz)=>{const x=Math.max(pX(G.bk,z),g.xf0);if(x<g.xb0-1e-9)acc((g.xb0-x)*dz*(z<Wb?Rs.gs:Rs.g),(g.xb0+x)/2)});
+  if(S.fon)strip(g.bot,zT,(z,dz)=>{const x=Math.min(pX(G.fr,z),g.xb0);if(x>g.xf0+1e-9)acc((x-g.xf0)*dz*(z<Wf?Fs.gs:Fs.g),(g.xf0+x)/2)});
+  return{W,Me}})}
 
 /* ---------------- code tables & small helpers ---------------- */
 // Wind Code 2019 Table 4-2 (open frameworks, phi<0.8, solid area)
@@ -159,7 +207,7 @@ const faceReq=(cv,ex)=>{const r=coverReq(+S[ex]);if(r==null)return null;return c
 const coverAll=()=>FACES.map(([cv,ex,n])=>({cv,ex,n,req:faceReq(cv,ex),prov:+S[cv]})).map(o=>({...o,ok:o.req!=null&&o.prov>=o.req}));
 // DIL 2011 Table 3.17 surcharge
 const QCAT={pub:['Public road (DIL Table 3.17)',20],priv:['Private road (DIL Table 3.17)',10],foot:['Footpath / cycle track / play area (DIL Table 3.17)',5],bldg:['Building, shallow fdn: 10 kPa/storey (DIL 3.9.2, GG1 Table 16)',null],c:['Custom',null]};
-const qIn=()=>geo().hl>0?Math.max(0,+S.qin||0):0,qSide=()=>geo().hl>0?Math.max(qIn(),qVal()):qVal(),
+const qIn=()=>geo().Lw>0?Math.max(0,+S.qin||0):0,qSide=()=>geo().Lw>0?Math.max(qIn(),qVal()):qVal(),
 qVal=()=>S.qcat=='bldg'?10*Math.max(1,+S.qst||1):S.qcat=='c'?+S.q:QCAT[S.qcat][1];
 // DIL 2011 Table 3.13 barrier line load
 const BCAT={'0.75':'Congregation not expected (0.75 kN/m)','1.5':'May congregate, no overcrowding (1.5 kN/m)','3.0':'Susceptible to overcrowding (3.0 kN/m)',c:'Custom'};
@@ -172,7 +220,7 @@ const FSo=()=>S.fsm?S.f:S.fs;
 // retained design WL as a fraction of retained height (preset fractions or custom level)
 const wlF=()=>{const h=Math.max(0,S.Hr-S.Zb);if(S.wl=='c')return h>0?cl((+S.wlZ-S.Zb)/h,0,1):0;return +S.wl||0},wlLev=()=>+S.Zb+Math.max(0,S.Hr-S.Zb)*wlF();
 // earth-pressure plane: virtual back through heel end (heel present) or wall back face
-const planeX=G=>G.hl>0?G.B:G.xb,planeName=()=>{const G=geo();return G.hl>0?(isG()?'vertical plane through the heel end (GG1 Fig. 40)':'virtual back (vertical plane through heel end)'):'back face of wall'};
+const planeX=G=>G.B,planeName=()=>{const G=geo();return G.hl>0||G.Lw>1e-6?(isG()?'vertical plane through the heel end (GG1 Fig. 40)':'virtual back (vertical plane through heel end)'):'back face of wall'};
 // shear key (GG1 §9.2.3(2), Fig. 42)
 const keyG=()=>{if(!S.skon)return null;const G=geo(),Bk=Math.max(0,+S.skw),dk=Math.max(0,+S.skd);return{dk,Bk,xk:cl(+S.skx,0,Math.max(0,G.B-Bk))}};
 /* line loads parallel to the wall – GG1 §7.3.3 / §7.3.6, Figure 29 (Terzaghi 1953, rigid wall)
@@ -184,7 +232,7 @@ function lineLoad(phiDeg,H){if(!S.lon||!(H>0))return null;const x=Math.max(0,+S.
  return{x,m,H,Qv,Qh,Pk,kf,nb,Pv:Qv*Pk,yv:H*(1-nb),He,Ph:Qh*fh,yh:H-zh,trunc:He>H+1e-9,
   sig:z=>{const d=S.Hr-z;if(d<0||d>H)return 0;let s=Qv>0?Qv/H*sn(d/H)*kf:0;if(Qh>0&&He>0&&d<=He)s+=2*Qh/He*(1-d/He);return s}}}
 // concrete cross-section area per m run (= m³/m)
-function concArea(){const G=geo();let A=isG()?trap(G.B,cl(+S.gBt,.05,G.B),+S.tb).A:G.B*S.tb;S.st.forEach(s=>A+=trap(+s.t,liftTT(s),s.top-s.bot).A);const K=keyG();if(K)A+=K.Bk*K.dk;return A}
+function concArea(){const G=geo();let A=isG()?(2*Math.max(0,+S.gBt)+Math.max(0,+S.gbf)+Math.max(0,+S.gbr))/2*(+S.tb):G.B*S.tb;G.SG.forEach(g=>A+=(g.t+g.tt)/2*g.h);const K=keyG();if(K)A+=K.Bk*K.dk;return A}
 // approximate steel weight per m run (bars over element lengths; laps / anchorage excluded)
 function steelKg(RS){const G=geo();let m=0;for(const r of RS){let L=0;if(r.k[0]=='s'){const s=S.st[+r.k.slice(1)];L=s?s.top-s.bot:0}else if(r.k=='T')L=G.Lt+G.tl/2;else if(r.k=='H')L=G.hl+G.tl/2;else if(r.k=='B')L=+S.tb;
  m+=(r.Asp+r.As3+2*r.As2)*1e-6*7850*L}return m}
@@ -244,7 +292,7 @@ function topCases(){const a=[{k:'none',F:0,z:0}];if(S.wo){const w=windCalc();a.p
 /* ---------------- characteristic load components ---------------- */
 // dir: h driving horizontal (arm z above Zb), p passive horizontal, v vertical (arm x from toe), u uplift
 function comp(P,top){const G=geo(),{B,Lt,xb,hl,bt}=G,Rs=S.r,F=S.f,Fs=FSo(),Zb=+S.Zb,gc=+S.gc,q=qVal(),qi=qIn(),bo=S.bon,fo=S.fon,tb_=bo?Math.tan((+S.br)*R):0,
- hs0=Math.max(0,S.Hr-Zb),hs=hs0+(hl>0?hl*tb_:0),fr=wlF(),wb=bo?hs0*fr:0,Wb=Zb+wb,h1=hs-wb,gR=Rs.gs-g,gF=F.gs-g,gFs=Fs.gs-g,K=P.Kah,tD=Math.tan(P.d*R),
+ hs0=Math.max(0,S.Hr-Zb),hs=hs0+G.Lw*tb_,fr=wlF(),wb=bo?hs0*fr:0,Wb=Zb+wb,h1=hs-wb,gR=Rs.gs-g,gF=F.gs-g,gFs=Fs.gs-g,K=P.Kah,tD=Math.tan(P.d*R),
  pasOK=fo&&!S.nopp,wf=fo?cl(Math.min(S.fw,S.Hf)-Zb,0,1e9):0,hf0=fo?Math.max(0,S.Hf-S.dp-Zb):0,ws0=Math.min(wf,hf0),d10=hf0-ws0,
  hf=pasOK?hf0:0,ws=pasOK?ws0:0,d1=hf-ws,sk=Math.sqrt(P.Kp);
  const it=[],cnt={},add=(pre,t,fm,F_,cat,dir,arm,y)=>{if(F_>1e-9){cnt[pre]=(cnt[pre]||0)+1;it.push({n:pre+cnt[pre],t,fm,F:F_,cat,dir,arm,y})}};
@@ -262,20 +310,25 @@ function comp(P,top){const G=geo(),{B,Lt,xb,hl,bt}=G,Rs=S.r,F=S.f,Fs=FSo(),Zb=+S
   add('Pp','Dry-soil load on wet zone',`Kp·γ·d·hw = ${f(P.Kp,3)}×${Fs.g}×${f(d1)}×${f(ws)}`,P.Kp*Fs.g*d1*ws,'pas','p',ws/2);
   add('Pp','Submerged soil',`½·Kp·γ′·hw² = ½×${f(P.Kp,3)}×${f(gFs)}×${f(ws)}²`,.5*P.Kp*gFs*ws*ws,'pas','p',ws/3);
   add('Pp','Water (front)',`½·γw·hw² = ½×9.81×${f(wf)}²`,.5*g*wf*wf,'pwat','p',wf/3)}
- if(isG()){const b2=cl(+S.gBt,.05,B),tr=trap(B,b2,+S.tb),bk=gBack();add('W','Mass concrete block',b2<B?`(B+b_top)/2·h·γc = (${f(B)}+${f(b2)})/2×${f(S.tb)}×${gc}`:`B·h·γc = ${f(B)}×${f(S.tb)}×${gc}`,tr.A*gc,'dead','v',bk?tr.xc:B-tr.xc,Zb+tr.yc);
-  if(bk&&bo&&b2<B-1e-6){let Wd=0,Ws=0,Md=0,Ms=0;const N=40,dz=(+S.tb)/N;for(let k=0;k<N;k++){const z=Zb+(k+.5)*dz,w=(B-b2)*(z-Zb)/(+S.tb),x=B-w/2,sat=z<Wb,gm=sat?Rs.gs:Rs.g,dW=w*dz*gm;if(sat){Ws+=dW;Ms+=dW*x}else{Wd+=dW;Md+=dW*x}}
-   add('W','Soil wedge over battered back (dry)',`∫ w(z)·γ dz, w = (B − b_top)(z − Zb)/h`,Wd,'fill','v',Wd>0?Md/Wd:B,Zb+2*(+S.tb)/3);add('W','Soil wedge over battered back (sat.)',`∫ w(z)·γsat dz`,Ws,'fill','v',Ws>0?Ms/Ws:B,Zb+(+S.tb)/3)}}
+ const SG=G.SG,piece=(nm,pc)=>{const LB={fb:' – front batter (triangle)',r:' – rectangle',rb:' – rear batter (triangle)'};
+  pc.forEach(p=>add('W',nm+(pc.length>1||p.k!='r'?LB[p.k]:''),p.k=='r'?`b·h·γc = ${f(p.b)}×${f(p.h)}×${gc}`:`½·b·h·γc = ½×${f(p.b)}×${f(p.h)}×${gc}`,p.A*gc,'dead','v',p.x,p.z))};
+ if(isG())piece('Mass concrete block',pieces4(0,B,Math.max(0,+S.gbf||0),Math.max(0,+S.gbr||0),Zb,+S.tb));
  else add('W','Base slab',`B·tb·γc = ${f(B)}×${f(S.tb)}×${gc}`,B*S.tb*gc,'dead','v',B/2,Zb+S.tb/2);
- S.st.forEach((s,i)=>{const tt=liftTT(s),hh=s.top-s.bot,tr=trap(+s.t,tt,hh);add('W',(isG()?'Lift ':'Stem ')+(i+1),tt<s.t?`(t+t_top)/2·h·γc = (${s.t}+${f(tt)})/2×${f(hh)}×${gc}`:`t·h·γc = ${s.t}×${f(hh)}×${gc}`,tr.A*gc,'dead','v',gBack()?tr.xc:xb-tr.xc,+s.bot+tr.yc)});
+ SG.forEach(s=>piece((isG()?'Lift ':'Stem ')+(s.i+1),pieces4(s.xf0,s.xb0,s.fb,s.rb,s.bot,s.h)));
  const KG=keyG();if(KG&&KG.dk>0&&KG.Bk>0)add('W','Shear key',`Bk·dk·γc = ${f(KG.Bk)}×${f(KG.dk)}×${gc}`,KG.Bk*KG.dk*gc,'dead','v',KG.xk+KG.Bk/2,Zb-KG.dk/2);
- const hh=Math.max(0,S.Hr-bt),wh=cl(Wb-bt,0,hh),dry=hh-wh;
- if(bo&&hl>0){add('W','Heel soil (dry)',`b·h·γ = ${f(hl)}×${f(dry)}×${Rs.g}`,hl*dry*Rs.g,'fill','v',xb+hl/2,bt+wh+dry/2);
-  add('W','Heel soil (sat.)',`b·h·γsat = ${f(hl)}×${f(wh)}×${Rs.gs}`,hl*wh*Rs.gs,'fill','v',xb+hl/2,bt+wh/2);
-  if(tb_>0)add('W','Heel soil wedge (sloping backfill)',`½·b²·tanβ·γ = ½×${f(hl)}²×tan${f(S.br,1)}°×${Rs.g}`,.5*hl*hl*tb_*Rs.g,'fill','v',xb+2*hl/3,S.Hr+hl*tb_/3);
-  add('Wq','Surcharge q_in on heel (variable – bearing only)',`q_in·b = ${f(qi,1)}×${f(hl)}`,qi*hl,'sheel','v',xb+hl/2,S.Hr)}
+ const hh=Math.max(0,S.Hr-bt),wh=cl(Wb-bt,0,hh),dry=hh-wh,Lw=G.Lw;
+ // soil between the wall face and the vertical plane (back: through the heel end, GG1 Fig. 40; front: through the toe), integrated over the wall profile
+ const band=(P,side,z1,z2,Wl,nm,g1,g2,cat,fm,sb)=>{const r=soilBand(P,side,B,z1,z2,Wl),tx=(o,gm)=>sb&&o.A>0?`b·h·γ = ${f(sb)}×${f(o.A/sb)}×${gm}`:`${fm} → A = ${f(o.A,3)} m² × ${gm}`;
+  add('W',nm+' (dry)',tx(r.d,g1),r.d.A*g1,cat,'v',r.d.A>0?r.d.M/r.d.A:0,r.d.A>0?r.d.Z/r.d.A:z1);add('W',nm+' (sat.)',tx(r.s,g2),r.s.A*g2,cat,'v',r.s.A>0?r.s.M/r.s.A:0,r.s.A>0?r.s.Z/r.s.A:z1)};
+ const vB=G.bk.filter(p=>p[1]>bt+1e-9).every(p=>Math.abs(p[0]-xb)<1e-9),vF=G.fr.filter(p=>p[1]>bt+1e-9).every(p=>Math.abs(p[0]-Lt)<1e-9);
+ if(bo){if(isG())band(G.bk,'b',Zb,Math.min(+S.Hr,bt),Wb,'Soil wedge over battered back of block',Rs.g,Rs.gs,'fill','∫(B − x_back)dz');
+  band(G.bk,'b',bt,+S.Hr,Wb,'Heel soil',Rs.g,Rs.gs,'fill','∫(B − x_back)dz (wall back face to plane through heel end)',vB?hl:0);
+  if(tb_>0&&Lw>0)add('W','Heel soil wedge (sloping backfill)',`½·b²·tanβ·γ = ½×${f(Lw)}²×tan${f(S.br,1)}°×${Rs.g}`,.5*Lw*Lw*tb_*Rs.g,'fill','v',B-Lw/3,S.Hr+Lw*tb_/3);
+  add('Wq','Surcharge q_in on heel (variable – bearing only)',`q_in·b = ${f(qi,1)}×${f(Lw)}`,qi*Lw,'sheel','v',B-Lw/2,S.Hr)}
  // toe soil: top dp neglected (removable, GG1 Fig.39 n.2; FC 2.5.4(4)); kept when passive is ignored
- const ht=Math.max(0,S.Hf-S.dp-bt),wt=cl(Math.min(S.fw,S.Hf)-bt,0,ht),dt=ht-wt;
- {const tL=isG()?Math.max(0,Math.min(Lt,cl(+S.gBt,.05,B)-G.tl)):Lt,x0=Lt-tL;if(fo&&tL>0){add('W','Toe soil (dry)',`b·h·γ = ${f(tL)}×${f(dt)}×${Fs.g}`,tL*dt*Fs.g,'tsoil','v',x0+tL/2,bt+wt+dt/2);add('W','Toe soil (sat.)',`b·h·γsat = ${f(tL)}×${f(wt)}×${Fs.gs}`,tL*wt*Fs.gs,'tsoil','v',x0+tL/2,bt+wt/2)}}
+ const ht=Math.max(0,S.Hf-S.dp-bt),wt=cl(Math.min(S.fw,S.Hf)-bt,0,ht),dt=ht-wt,zT=Math.max(Zb,+S.Hf-S.dp),Wf=Math.min(+S.fw,+S.Hf);
+ if(fo){if(isG())band(G.fr,'f',Zb,Math.min(zT,bt),Wf,'Soil wedge over battered front of block',Fs.g,Fs.gs,'tsoil','∫x_front dz');
+  band(G.fr,'f',bt,zT,Wf,'Toe soil',Fs.g,Fs.gs,'tsoil','∫x_front dz (toe plane to wall front face)',vF?Lt:0)}
  if(tD>0){const Hs=it.filter(i=>i.cat=='soil').reduce((s,i)=>s+i.F,0),Hq=it.filter(i=>i.cat=='sur').reduce((s,i)=>s+i.F,0);
   add('Pv','Vertical comp. of Pah (soil) – wall friction δ',`ΣPah,soil·tanδ = ${f(Hs)}×tan${f(P.d,1)}°`,Hs*tD,'pvs','v',B,Zb+hs/3);
   add('Pv','Vertical comp. of Pah (surcharge) – for RC &amp; bearing checking only',`ΣPah,q·tanδ = ${f(Hq)}×tan${f(P.d,1)}°`,Hq*tD,'pvq','v',B,Zb+hs/2)}
@@ -373,14 +426,14 @@ const cmpOn=()=>!!(S.cmp&&S.bon&&+S.cQ>0),cmpInfo=K=>{const Q=+S.cQ,gm=+S.r.g,ph
 cmpP=(sv,K)=>{if(!cmpOn())return K*sv;const c=cmpInfo(K);return Math.max(K*sv,+S.br>0?c.phm:Math.min(sv/K,c.phm))};
 function rcActions(Kh,dDeg){const G=geo(),C0=comp({Kah:Kh,d:dDeg,Kp:0,cP:0,phr:+S.r.phi},null),{gR,wb}=C0,h1=C0.hs0-C0.wb,q=qSide(),qi=qIn(),Rs=S.r,Hr=+S.Hr,bo=S.bon,LL=C0.LL,Gv=isG(),
  eP=z=>{const dd=Hr-z;if(dd<0||!bo)return 0;return cmpP(dd<=h1?Rs.g*dd:Rs.g*h1+gR*(dd-h1),Kh)+g*Math.max(0,dd-h1)},qP=z=>(bo&&Hr-z>=0)?Kh*q+(LL?LL.sig(z):0):0;
- const w=S.wo?windCalc():null,b=S.bro?barCalc():null,els={};
+ const w=S.wo?windCalc():null,b=S.bro?barCalc():null,els={},SEC=secLoads(G);
  const put=(k,o,cb,tk)=>{const e=els[k]||(els[k]={...o,M:0,V:0,gov:''});if(Math.abs(o.M)>Math.abs(e.M)){e.M=o.M;e.gov=`Comb ${cb.id}`+(tk!='none'?` + ${tk=='wind'?'wind':'barrier'}`:'')}if(Math.abs(o.V)>Math.abs(e.V))e.V=o.V};
- const cant=(Ls,cb,tc)=>{let V=cb.gE*ints(Ls,Hr,eP)+cb.gQ*ints(Ls,Hr,qP),M=cb.gE*ints(Ls,Hr,z=>eP(z)*(z-Ls))+cb.gQ*ints(Ls,Hr,z=>qP(z)*(z-Ls));
-  if(tc.F>0){const zl=+S.Zb+tc.z;if(zl>Ls){V+=tc.F;M+=tc.F*(zl-Ls)}}return{M,V}};
+ const cant=(Ls,cb,tc,ii)=>{let V=cb.gE*ints(Ls,Hr,eP)+cb.gQ*ints(Ls,Hr,qP),M=cb.gE*ints(Ls,Hr,z=>eP(z)*(z-Ls))+cb.gQ*ints(Ls,Hr,z=>qP(z)*(z-Ls));
+  if(tc.F>0){const zl=+S.Zb+tc.z;if(zl>Ls){V+=tc.F;M+=tc.F*(zl-Ls)}}if(ii!=null){const e=SEC[ii].Me;M+=(e>0?cb.gGa:cb.gGb)*e}return{M,V}};
  for(const cb of COMBS){const tops=[{k:'none',F:0,z:0}];if(w&&cb.gW>0)tops.push({k:'wind',F:cb.gW*w.F,z:w.z,Fk:w.F});if(b&&cb.gQ>0)tops.push({k:'bar',F:cb.gQ*b.F,z:b.z,Fk:b.F});
   for(const tc of tops)for(const qv of(qi>0?[1,0]:[0])){
    // stems / lifts: cantilever from lift bottom (gravity: all lifts; mass lifts carry crack-control minimum steel)
-   if(!qv)S.st.forEach((s,i)=>{if(!s.rc&&!Gv)return;const a=cant(+s.bot,cb,tc);put('s'+i,{k:'s'+i,n:Gv?`Lift ${i+1} ${s.rc?'(RC)':'(mass concrete – min. steel)'}`:`Stem ${i+1} (RC)`,h:s.t*1000,M:a.M,V:a.V,cm:+S.cvr,co:+S.cvf,ty:'s',gv:Gv&&!s.rc},cb,tc.k)});
+   if(!qv)S.st.forEach((s,i)=>{if(!s.rc&&!Gv)return;if(!(G.SG[i].h>1e-9))return;const a=cant(+s.bot,cb,tc,i);put('s'+i,{k:'s'+i,n:Gv?`Lift ${i+1} ${s.rc?'(RC)':'(mass concrete – min. steel)'}`:`Stem ${i+1} (RC)`,h:s.t*1000,M:a.M,V:a.V,cm:+S.cvr,co:+S.cvf,ty:'s',gv:Gv&&!s.rc,me:SEC[i].Me},cb,tc.k)});
    if(Gv&&!G.n){if(!qv){const a=cant(+S.Zb,cb,tc);put('B',{k:'B',n:'Mass block – wall body at founding level',h:G.B*1000,M:a.M,V:a.V,cm:+S.cvr,co:+S.cvf,ty:'s',gv:1},cb,tc.k)}continue}
    // toe / heel: base pressure from factored loads (Method A)
    const C=comp({Kah:Kh,d:dDeg,Kp:0,cP:0,phr:+S.r.phi},tc.F>0?{k:tc.k,F:tc.Fk,z:tc.z}:null),fa={soil:cb.gE,water:cb.gE,upl:cb.gE,sur:cb.gQ,sheel:qv?cb.gQ:0,pvq:cb.gQ,pvs:cb.gE,dead:cb.gGa,fill:cb.gGa,tsoil:cb.gGa,wind:cb.gW,bar:cb.gQ,pas:0,pwat:0},
@@ -410,8 +463,9 @@ function plainChecks(){if(!isG())return[];const G=geo(),Pk=params('k'),Kh=Pk.Kah
  eS=z=>{const dd=Hr-z;if(dd<0||!bo)return 0;return Kh*(dd<=h1?Rs.g*dd:Rs.g*h1+gR*(dd-h1))},
  eP=z=>{const dd=Hr-z;if(dd<0||!bo)return 0;return Kh*(dd<=h1?Rs.g*dd:Rs.g*h1+gR*(dd-h1))+g*Math.max(0,dd-h1)},qP=z=>(bo&&Hr-z>=0)?Kh*q+(C0.LL?C0.LL.sig(z):0):0,
  w=S.wo?windCalc():null,b=S.bro?barCalc():null,out=[];
- S.st.forEach((s,i)=>{if(s.rc)return;const Ls=+s.bot,h=+s.t,xc=G.xb-h/2,lo=G.top-Ls,le=2*lo; // unbraced: le = 2 lo (6.2.2.3(b)(ii))
-  let Nw=0,Mw=0;for(let j=0;j<=i;j++){const sj=S.st[j],tr=trap(+sj.t,liftTT(sj),sj.top-sj.bot),Wj=tr.A*S.gc;Nw+=Wj;Mw+=Wj*((G.xb-tr.xc)-xc)} // + = toward heel
+ const SL=secLoads(G);
+ S.st.forEach((s,i)=>{if(s.rc||!(G.SG[i].h>1e-9))return;const Ls=+s.bot,h=+s.t,lo=G.top-Ls,le=2*lo; // unbraced: le = 2 lo (6.2.2.3(b)(ii))
+  let Nw=SL[i].W,Mw=-SL[i].Me; // lifts above + soil resting on steps / batters; moment about the section centroid, + = toward heel
   const He=ints(Ls,Hr,eP),Me=ints(Ls,Hr,z=>eP(z)*(z-Ls)),Hq=ints(Ls,Hr,qP),Mq=ints(Ls,Hr,z=>qP(z)*(z-Ls));
   {const Pv=(ints(Ls,Hr,eS)+Hq)*tD;Nw+=Pv;Mw+=Pv*h/2} // vertical component of Pah on the lift back face (consistent with stability, GG1 Fig. 40)
   const tops=[{F:0,z:0,k:'none'}];if(w)tops.push({F:w.F,z:w.z,k:'wind'});if(b)tops.push({F:b.F,z:b.z,k:'bar'});
@@ -431,16 +485,19 @@ function plainChecks(){if(!isG())return[];const G=geo(),Pk=params('k'),Kh=Pk.Kah
 /* ---------------- validation (D6) ---------------- */
 function validate(){const E=[],W=[],G=geo();
  if(!isG()&&!S.st.length)E.push('At least one stem is required for this wall type.');
- S.st.forEach((s,i)=>{if(!(s.t>0))E.push(`${isG()?'Lift':'Stem'} ${i+1}: thickness must be > 0.`);if(!(s.top>s.bot))E.push(`${isG()?'Lift':'Stem'} ${i+1}: top level must be above bottom level.`)});
- if(isG()){if(!(+S.gB>0))E.push('Block bottom width must be > 0.');if(!(+S.gBt>0)||+S.gBt>+S.gB+1e-9)E.push('Block top width must be > 0 and ≤ bottom width.');if(!(+S.gBh>0))E.push('Block height must be > 0.');S.st.forEach((s,i)=>{if(!(+s.t>0)||+s.t>+S.gBt+1e-9)E.push(`Lift ${i+1}: width must be > 0 and ≤ block top width.`)})}
-if(isG())S.st.forEach((s,i)=>{if(s.tt!=null&&!(+s.tt>0&&+s.tt<=+s.t+1e-9))E.push(`Lift ${i+1}: top thickness must be > 0 and ≤ bottom thickness.`)});if(isG()&&!S.st.length&&S.gtw!=null&&!(+S.gtw>0))E.push('Block top width must be > 0.');
+ S.st.forEach((s,i)=>{const n=`${isG()?'Lift':'Stem'} ${i+1}`;if(!(+s.t>0))E.push(`${n}: bottom width must be > 0.`);if(+s.top<+s.bot-1e-9)E.push(`${n}: top level is below the bottom level.`);
+  if(+s.fb<0||+s.rb<0)E.push(`${n}: front / rear batter cannot be negative.`);else if(+s.t>0&&!(stTT(s)>1e-3))E.push(`${n}: top width = t − front batter − rear batter = ${f(stTT(s))} m – must be > 0.`)});
+ if(S.st.length&&!(G.top>G.bt+1e-9))E.push(`Total ${isG()?'lift':'stem'} height is zero – give at least one ${isG()?'lift':'stem'} a height (or remove it).`);
+ if(isG()){if(!(+S.gBt>0))E.push('Block top width must be > 0.');if(+S.gbf<0||+S.gbr<0)E.push('Block front / rear batter cannot be negative.');if(!(+S.gBh>0))E.push('Block height must be > 0.')}
+ {const SG=G.SG,m=SG.length;SG.forEach((g,i)=>{if(!isG()&&i==m-1)return;const sup=i<m-1?SG[i+1]:null,a=sup?sup.xf1:Math.max(0,+S.gbf||0),b=sup?sup.xb1:a+Math.max(0,+S.gBt||0),nm=`${isG()?'Lift':'Stem'} ${i+1}`;
+  if(g.xf0<a-1e-6||g.xb0>b+1e-6)E.push(`${nm} (x = ${f(g.xf0)} to ${f(g.xb0)} m from toe) is not fully supported by the top of ${sup?(isG()?'Lift ':'Stem ')+(i+2):'the block'} (x = ${f(a)} to ${f(b)} m) – reduce the width or adjust the front offset.`)})}
  if(!(S.tb>0))E.push('Base thickness must be > 0.');
  if(+S.dp<0)E.push('Passive neglect depth cannot be negative.');if(S.acc!='gg1'&&S.fon&&S.dfm=='ogl'&&+S.ogl<+S.Zb)E.push('Original ground level is below the foundation base.');if(S.acc!='gg1'&&S.fon&&S.dfm=='ogl'&&+S.ogl>+S.Hf)W.push('qo based on original ground above the final front level (excavation relief). Justify that this overburden existed before excavation (CoP Foundations 2017 Cl 2.2.4).');if(qVal()<0||+S.qin<0)E.push('Surcharge cannot be negative.');
  for(const[k,s]of[['r','Retained'],['f','Foundation']]){if(+S[k].c<0)E.push(`${s} c′ cannot be negative.`);if(!(+S[k].g>0))E.push(`${s} γ must be > 0.`)}
  if(S.acc!='gg1'&&[S.Fs,S.Fo,S.Fow,S.Fb].some(v=>!(+v>=1)))E.push('Factors of safety must be ≥ 1.0.');if(S.acc=='gg1'&&(!(+S.gm>=1)||!(+S.gq>=0)))E.push('Partial factors invalid.');
  if(S.wo&&!(+S.wh>0))E.push('Fence height must be > 0.');if(S.bro&&!(+S.bhb>0))E.push('Barrier height must be > 0.');if(!(+S.gc>0))E.push('Concrete unit weight must be > 0.');
  if(S.xrc)for(const k in S.rc)for(const x of['s','s2','s3']){const v=+S.rc[k][x];if(S.rc[k][x]!=null&&!(v>=75&&v<=400))E.push(`Bar spacing ${v} mm outside 75–400 mm.`)}
- if(S.Lt<0||S.Lh<0)E.push('Toe / heel length cannot be negative.');if(isG()&&!S.st.length&&!(S.gw>0))E.push('Mass block width must be > 0.');
+ if(!isG()&&(+S.Lt<0||+S.Lh<0))E.push('Toe / heel length cannot be negative.');
  if(S.bon&&S.Hr>G.top+1e-6)E.push(`Retained soil level (+${f(S.Hr)}) is above the wall top (+${f(G.top)}).`);
  if(S.Hr<S.Zb)E.push('Retained soil level is below the base.');if(S.fon&&S.Hf>S.Hr)E.push('Front soil level is above retained soil level – not covered by this model.');
  if(S.fon&&S.fw>S.Hf)W.push('Front design GWL above front ground level – check.');
@@ -458,7 +515,6 @@ if(isG())S.st.forEach((s,i)=>{if(s.tt!=null&&!(+s.tt>0&&+s.tt<=+s.t+1e-9))E.push
  if(S.fcu<20||S.fcu>100)E.push('fcu outside CoP range.');
  if(isG()){const hr=Math.max(0,S.Hr-S.Zb);if(hr>3)W.push(`Mass concrete wall retaining ${f(hr)} m – GG1 §9.3.1: particularly suitable for < 3 m.`)}
  if(S.fon&&!S.fsm){const s=S.fs;if(+s.c<0)E.push('Front soil c′ cannot be negative.');if(!(+s.g>0))E.push('Front soil γ must be > 0.');if(!(s.phi>0&&s.phi<55))E.push('Front soil φ′ must be between 0° and 55°.');if(s.gs<g)E.push('Front soil γsat must be ≥ γw.')}
- S.st.forEach((s,i)=>{if(s.tt!=null&&+s.tt>0&&+s.tt>+s.t+1e-9)E.push(`${isG()?'Lift':'Stem'} ${i+1}: top thickness must not exceed bottom thickness.`)});
  if(S.skon){const K=keyG();if(!(+S.skd>0)||!(+S.skw>0))E.push('Shear key depth and width must be > 0.');else{if(+S.skw>G.B)E.push('Shear key wider than the base.');
   if(+S.skd<.5)W.push('Shear key depth < 0.5 m – GG1 §9.2.3(2) recommends a minimum depth of 0.5 m (below the disturbed zone).');
   if(+S.skd>G.B/2)W.push(`Shear key depth > B/2 (${f(G.B/2)} m) – GG1 §9.2.3(2): deep keys should not be used.`);
@@ -520,15 +576,18 @@ function ri0(){const I=(l,p,u,s,ro,v)=>`<label>${l}<span><input type=number step
   +Ck('Show advanced inputs (hidden items use code defaults)','adv')+`<div id=wn></div>`,'s1')
  /* ---------- STEP 2 ---------- */
  +D(sh(2,'Wall &amp; Foundation Geometry'),I('Retained ground level (top of backfill at wall)','Hr','mPD')+I('Founding level (underside of base)','Zb','mPD')+`<p class=mu>Retained height H = <b id=ht></b> m · wall top <b id=wt></b> mPD</p>`
-  +(G?`<div class=st><b>Mass concrete block</b>`+I('Bottom width','gB','m')+I('Top width','gBt','m')+I('Block height','gBh','m')
-    +Se('Battered face','gbat',[['front','Front face (retained face vertical)'],['back','Back face – retained side (front face vertical)']],230)
-    +`<p class=mu id=gbtx></p>`+A(I('Unit weight of concrete γc','gc','kN/m³'))+'</div>'
-    +S.st.map((s,i)=>`<div class=st><b>Lift ${i+1}</b> <button data-a=del data-i=${i}>−</button>`+I('Width','st.'+i+'.t','m')+I('Top level','st.'+i+'.top','mPD','',i>0)+I('Bottom level','st.'+i+'.bot','mPD','',i==S.st.length-1)+Ck('Reinforced concrete lift','st.'+i+'.rc')+'</div>').join('')
-    +`<button data-a=add>+ Add lift</button><p class=mu>Lifts sit on the block, flush with its vertical face. Wall top <b id=wt2></b> mPD · base width B = <b id=bB></b> m</p>`:'')
-  +(G?'':S.st.map((s,i)=>`<div class=st><b>${G?'Lift':'Stem'} ${i+1}</b>${(G||i)?` <button data-a=del data-i=${i}>−</button>`:''}`+I('Bottom thickness','st.'+i+'.t','m')+I('Top thickness (front face battered)','st.'+i+'.tt','m','','',liftTT(s))+I('Top level','st.'+i+'.top','mPD','',i>0)+I('Bottom level','st.'+i+'.bot','mPD','',i==S.st.length-1)+'</div>').join('')
-  +`<button data-a=add>+ Add stem</button><div class=st><b>Base slab</b>`+I('Base thickness','tb','m')
+  +(G?`<div class=st><b>Mass concrete block</b>`+I('Top width b_t','gBt','m')+I('Front batter b_f (front face, toe side)','gbf','m')+I('Rear batter b_r (back face, retained side)','gbr','m')+I('Block height','gBh','m')
+    +`<p class=mu id=gbtx></p>`+A(I('Unit weight of concrete γc','gc','kN/m³'))+'</div>':'')
+  +S.st.map((s,i)=>{const nS=S.st.length,nm=(G?'Lift ':'Stem ')+(i+1),sup=i<nS-1?(G?'Lift ':'Stem ')+(i+2)+' top':'block top';
+   return`<div class=st><b>${nm}</b>${nS>1?(i==0?' <span class=mu>(top)</span>':i==nS-1?' <span class=mu>(bottom)</span>':''):''}${(G||nS>1)?` <button data-a=del data-i=${i}>−</button>`:''}`
+   +I('Bottom width t','st.'+i+'.t','m')+I('Front batter (front face top set back)','st.'+i+'.fb','m','','',+s.fb||0)+I('Rear batter (back face top set back)','st.'+i+'.rb','m','','',+s.rb||0)
+   +((G||i<nS-1)?I(`Front offset from front edge of ${sup}`,'st.'+i+'.of','m','','',+s.of||0):'')
+   +I('Height h','@h.'+i,'m','','',dd(+s.top-(+s.bot)))+I('Top level','st.'+i+'.top','mPD','',i>0)+I('Bottom level','st.'+i+'.bot','mPD','',i==nS-1)
+   +(G?Ck('Reinforced concrete lift','st.'+i+'.rc'):'')+`<p class=mu id=sgx${i}></p></div>`}).join('')
+  +(G?`<button data-a=add>+ Add lift</button><p class=mu>Lift 1 is the top lift. Each lift sits on the element below; front offset = distance from the front edge of that element's top. Wall top <b id=wt2></b> mPD · B = <b id=bB></b> m</p>`
+   :`<button data-a=add>+ Add stem</button><p class=mu>Stem 1 is the top segment. Bottom width changes keep the front face (and B): the heel shortens. Use the toe length to move the stem.</p><div class=st><b>Base slab</b>`+I('Base thickness','tb','m')
   +I('Toe length (front)','Lt','m','',S.ty=='L',S.ty=='L'?0:undefined)+I('Heel length (back)','Lh','m','',S.ty=='Li',S.ty=='Li'?0:undefined)
-  +`<p class=mu>Base top <b id=bt></b> mPD · base width B = toe + stem + heel = <b id=bB></b> m</p>`+A(I('Unit weight of concrete γc','gc','kN/m³'))+'</div>')
+  +`<p class=mu>Base top <b id=bt></b> mPD · B = toe + bottom stem width + heel = <b id=bB></b> m</p>`+A(I('Unit weight of concrete γc','gc','kN/m³'))+'</div>')
   +`<div class=st><b>Shear key</b>`+Ck('Shear key below base (GG1 §9.2.3(2), Fig. 42)','skon')+(S.skon?I('Key depth below base dk','skd','m')+I('Key width Bk','skw','m')+I('Key front face from toe xk','skx','m')
    +`<p class=mu>Sliding checked on the horizontal plane through the key bottom (Fig. 42 mechanism 1): Fr = Ns·tanφ′ + c′(B − Bk) + Nb·tanδb + Rp1. GG1: min depth 0.5 m; deep keys (dk &gt; B/2) should not be used.</p>`:'')+'</div>','s2')
  /* ---------- STEP 3 ---------- */
@@ -595,16 +654,19 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
  let o=`<svg viewBox="0 0 ${W} ${H}"><defs>${Object.entries(CL).map(([k,v])=>`<marker id="mk${k}" markerWidth="6" markerHeight="6" refX="5.2" refY="3" orient="auto"><path d="M0,0L6,3L0,6z" fill="${v}"/></marker>`).join('')}<pattern id="dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#b8a56f"/><circle cx="6.5" cy="6.5" r=".9" fill="#b8a56f"/></pattern><pattern id="hat" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0,8L8,0" stroke="#a79f8a" stroke-width=".8"/></pattern><pattern id="hat2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#8a7f5a" stroke-width="1.1"/></pattern></defs>`;
  const lb=[],fr=[],C=c.C,K=C.P.Kah,q=C.q,pas=C.pasOK;
  o+=rc(xl,y0,xr,Zb,'fill="#e6e0d0"')+rc(xl,y0,xr,Zb,'fill="url(#hat)"');
- if(S.bon){o+=soil(B,Zb,xr,Hr);if(hl>0)o+=soil(xb,bt,B,Hr);if(C.wb>0){o+=wat(B,Zb,xr,C.Wb);if(hl>0)o+=wat(xb,bt,B,Math.max(bt,C.Wb))}o+=ln(xb,xr,Hr,'#8a7f5a')}
+ const SP=pts=>pts?`<polygon points="${PT(pts)}" fill="#f2e8cf"/><polygon points="${PT(pts)}" fill="url(#dots)"/>`:'',WP=pts=>pts?`<polygon points="${PT(pts)}" fill="#3b82f6" fill-opacity=".16"/>`:'',
+  reg=(P,side,z1,z2,ztop)=>{if(!(z2>z1+1e-9))return null;const pts=[[pX(P,z2),z2]];for(const p of P)if(p[1]<z2-1e-9&&p[1]>z1+1e-9)pts.push(p);pts.push([pX(P,z1),z1]);const e=side=='b'?B:0;pts.push([e,z1],[e,ztop??z2]);return pts},
+  xbH=pX(c.G.bk,Hr),xF=pX(c.G.fr,Hf);
+ if(S.bon){o+=soil(B,Zb,xr,Hr)+SP(reg(c.G.bk,'b',Zb,Hr));if(C.wb>0){o+=wat(B,Zb,xr,C.Wb)+WP(reg(c.G.bk,'b',Zb,Math.min(Hr,C.Wb)))}o+=ln(xbH,xr,Hr,'#8a7f5a')}
  // front soil: always drawn when above founding level; hatched / semi-transparent when ignored in the passive calculation (Revised item 4)
- if(Hf>Zb){const tf=S.fon?Math.tan((+S.bf)*R):0,zf=x=>Hf+(Lt-x)*tf,poly=PT(tf?[[xl,Zb],[xl,zf(xl)],[Lt,Hf],[Lt,bt],[0,bt],[0,Zb]]:[[xl,Zb],[xl,Hf],[0,Hf],[0,Zb]]),Df=Hf-Zb;
-  if(pas){o+=`<polygon points="${poly}" fill="#f2e8cf"/><polygon points="${poly}" fill="url(#dots)"/>`;if(!tf&&Lt>0&&Hf>bt)o+=soil(0,bt,Lt,Hf)}
+ if(Hf>Zb){const tf=S.fon?Math.tan((+S.bf)*R):0,zf=x=>Hf+(xF-x)*tf,poly=PT(tf?[[xl,Zb],[xl,zf(xl)],[0,zf(0)],[0,Zb]]:[[xl,Zb],[xl,Hf],[0,Hf],[0,Zb]]),Df=Hf-Zb,TR=reg(c.G.fr,'f',Zb,Hf,tf?zf(0):Hf);
+  if(pas){o+=`<polygon points="${poly}" fill="#f2e8cf"/><polygon points="${poly}" fill="url(#dots)"/>`+SP(TR)}
   else{o+=`<polygon points="${poly}" fill="#f2e8cf" fill-opacity=".45" stroke="#8a7f5a" stroke-dasharray="5 3" stroke-width="1"/><polygon points="${poly}" fill="url(#hat2)" fill-opacity=".55"/>`;
-   if(!tf&&Lt>0&&Hf>bt)o+=rc(0,bt,Lt,Hf,'fill="#f2e8cf" fill-opacity=".45"')+rc(0,bt,Lt,Hf,'fill="url(#hat2)" fill-opacity=".55"');
+   if(TR)o+=`<polygon points="${PT(TR)}" fill="#f2e8cf" fill-opacity=".45"/><polygon points="${PT(TR)}" fill="url(#hat2)" fill-opacity=".55"/>`;
    lb.push([X(xl)+6,Y((Hf+Zb)/2)+4,S.fon?`Front Soil (Embedment Df = ${f(Df)} m — Ignored in Kp Calc, Not On-Grade)`:`Front Soil (Df = ${f(Df)} m — not considered in calculation)`,'start','#8a5a00','lv'])}
-  if(tf){o+=`<line x1="${f(X(xl),1)}" y1="${f(Y(zf(xl)),1)}" x2="${f(X(Lt),1)}" y2="${f(Y(Hf),1)}" stroke="#8a7f5a" stroke-width="1.2"/>`;lb.push([X(xl)+6,Y(zf(xl))-20,`β_front = ${f(S.bf,1)}°`,'start',null,'lv'])}
-  if(S.fon&&C.wf>0){o+=wat(xl,Zb,0,Zb+C.wf);if(Lt>0)o+=wat(0,bt,Lt,Math.max(bt,Zb+C.wf))}o+=tf?'':ln(xl,Lt>0?Lt:0,Hf,'#8a7f5a');
-  if(S.fon&&S.dp>0){const zd=Math.max(Zb,Hf-S.dp);o+=rc(xl,zd,Lt>0?Lt:0,Hf,'fill="#d97706" fill-opacity=".10"')+ln(xl,Lt>0?Lt:0,zd,'#b45309',1);lb.push([X(xl)+6,Y(zd)+12,`Unplanned excavation ${f(Math.min(S.dp,Df))} m (GG1 Fig. 39 n.2) – ${pas?'passive taken below +'+f(zd):'passive ignored'}`,'start','#b45309','lv'])}}
+  if(tf){o+=`<line x1="${f(X(xl),1)}" y1="${f(Y(zf(xl)),1)}" x2="${f(X(xF),1)}" y2="${f(Y(Hf),1)}" stroke="#8a7f5a" stroke-width="1.2"/>`;lb.push([X(xl)+6,Y(zf(xl))-20,`β_front = ${f(S.bf,1)}°`,'start',null,'lv'])}
+  if(S.fon&&C.wf>0){o+=wat(xl,Zb,0,Zb+C.wf)+WP(reg(c.G.fr,'f',Zb,Math.min(Hf,Zb+C.wf)))}o+=tf?'':ln(xl,xF,Hf,'#8a7f5a');
+  if(S.fon&&S.dp>0){const zd=Math.max(Zb,Hf-S.dp);o+=rc(xl,zd,xF,Hf,'fill="#d97706" fill-opacity=".10"')+ln(xl,xF,zd,'#b45309',1);lb.push([X(xl)+6,Y(zd)+12,`Unplanned excavation ${f(Math.min(S.dp,Df))} m (GG1 Fig. 39 n.2) – ${pas?'passive taken below +'+f(zd):'passive ignored'}`,'start','#b45309','lv'])}}
  const mq=S.bon?K*q:0,ms=S.bon?K*(S.r.g*C.h1+C.gR*C.wb):0,mw=S.bon?g*C.wb:0,pc=pas?2*C.P.cP*C.sk:0,mp=pas?C.P.Kp*(Fs.g*C.d1+C.gFs*C.ws):0,pw=pas?g*C.wf:0,sc=.7/Math.max(mq,ms,mw,pc+mp,pw,1e-6),
  colp=(b0,dir,pts,k,items)=>{if(pts.every(q=>q[0]<1e-6))return'';const zt=pts[0][1],zl=pts[pts.length-1][1];
   items.forEach(p=>fr.push({a:[X(b0+dir*len(p.F)),Y(Zb+p.arm),X(b0),Y(Zb+p.arm)],k,t:`${p.n} ${f(p.F,1)}`,an:dir>0?'start':'end',dy:4,pri:1}));
@@ -612,10 +674,10 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
  A=P.filter(p=>p.cat!='wind'&&p.cat!='bar'),bs=B+(mq>0?mq*sc+.12:0),bw=bs+(ms>0?ms*sc+.12:0),bp=-(pc+mp)*sc-.15;
  o+=colp(B,1,[[mq,C.hs],[mq,0]],'a',A.filter(p=>p.cat=='sur'))+colp(bs,1,[[0,C.hs],[K*S.r.g*C.h1,C.wb],[ms,0]],'a',A.filter(p=>p.cat=='soil'))+colp(bw,1,[[0,C.wb],[mw,0]],'w',A.filter(p=>p.cat=='water'))
  +colp(0,-1,[[pc,C.hf],[pc+C.P.Kp*Fs.g*C.d1,C.ws],[pc+mp,0]],'p',Pp.filter(p=>p.cat=='pas'))+colp(pc+mp>0?bp:0,-1,[[0,C.wf],[pw,0]],'w',Pp.filter(p=>p.cat=='pwat'));
- {const tb=S.bon?Math.tan(S.br*R):0,zs=x=>Hr+(x-xb)*tb,QB='fill="#3b82f6" fill-opacity=".18" stroke="#3b82f6" stroke-width=".8"',band=(x1,x2)=>`<polygon points="${PT([[x1,zs(x1)],[x2,zs(x2)],[x2,zs(x2)+.22],[x1,zs(x1)+.22]])}" ${QB}/>`;
-  if(S.bon&&tb>0)o+=`<polygon points="${PT([[xb,Hr],[xr,zs(xr)],[xr,Hr]])}" fill="#f2e8cf"/><polygon points="${PT([[xb,Hr],[xr,zs(xr)],[xr,Hr]])}" fill="url(#dots)"/>`;
-  if(S.bon&&q>0){const x0=hl>0?B:xb;o+=band(x0,xr);lb.push([X((x0+xr)/2),Y(zs((x0+xr)/2)+.22)-5,`q_out = ${f(q,1)} kPa`,'middle',CL.w,'lv'])}
-  if(S.bon&&hl>0&&C.qi>0){o+=band(xb,B);lb.push([X(xb)+4,Y(zs(xb)+.22)-5,`q_in = ${f(C.qi,1)} kPa`,'start',CL.w,'lv'])}
+ {const tb=S.bon?Math.tan(S.br*R):0,zs=x=>Hr+(x-xbH)*tb,QB='fill="#3b82f6" fill-opacity=".18" stroke="#3b82f6" stroke-width=".8"',band=(x1,x2)=>`<polygon points="${PT([[x1,zs(x1)],[x2,zs(x2)],[x2,zs(x2)+.22],[x1,zs(x1)+.22]])}" ${QB}/>`;
+  if(S.bon&&tb>0)o+=`<polygon points="${PT([[xbH,Hr],[xr,zs(xr)],[xr,Hr]])}" fill="#f2e8cf"/><polygon points="${PT([[xbH,Hr],[xr,zs(xr)],[xr,Hr]])}" fill="url(#dots)"/>`;
+  if(S.bon&&q>0){const x0=B;o+=band(x0,xr);lb.push([X((x0+xr)/2),Y(zs((x0+xr)/2)+.22)-5,`q_out = ${f(q,1)} kPa`,'middle',CL.w,'lv'])}
+  if(S.bon&&C.qi>0){o+=band(xbH,B);lb.push([X(xbH)+4,Y(zs(xb)+.22)-5,`q_in = ${f(C.qi,1)} kPa`,'start',CL.w,'lv'])}
   if(S.bon&&tb>0)lb.push([X(xr)-6,Y(zs(xr))-20,`β = ${f(S.br,1)}°`,'end',null,'lv']);
   // line loads (GG1 Fig. 29)
   if(C.LL&&(C.LL.Qv>0||C.LL.Qh>0)){const xq=planeX(c.G)+C.LL.x,zq=zs(xq);if(C.LL.Qv>0){fr.push({a:[X(xq),Y(zq+.25+len(C.LL.Qv)),X(xq),Y(zq+.24)],k:'l',t:`Q1 = ${f(C.LL.Qv,1)} kN/m`,an:'middle',dy:-6,pri:0})}
@@ -623,12 +685,10 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
    o+=`<line x1="${f(X(planeX(c.G)),1)}" y1="${f(Y(zq)+14,1)}" x2="${f(X(xq),1)}" y2="${f(Y(zq)+14,1)}" stroke="#9333ea" stroke-width=".8" stroke-dasharray="2 2"/>`;lb.push([X((planeX(c.G)+xq)/2),Y(zq)+26,'x =','middle','#9333ea','lv',{p:'lx',v:C.LL.x,u:' m'}])}}
  if(S.bon){if(C.wb>0)o+=ln(B,xr,C.Wb,CL.w,1);lb.push([X(xr)-6,Y(C.wb>0?C.Wb:Zb)-6,'Design WL +','end',CL.w,'lv',{p:'@WL',v:C.Wb,pt:C.wb>0?`Design WL +${f(C.Wb)}`:'No design WL (drained)'}])}
  if(S.fon&&C.wf>0){o+=ln(xl,0,Zb+C.wf,CL.w,1)}if(S.fon)lb.push([X(xl)+6,Y(Zb+C.wf)-6,'Front GWL +','start',CL.w,'lv',{p:'fw',v:+S.fw,pt:C.wf>0?`Front GWL +${f(Zb+C.wf)}`:`Front GWL +${f(+S.fw)} (below base)`}]);
- const pg=(pts,a)=>`<polygon points="${PT(pts)}" ${a}/>`;
- const gBt_=cl(+S.gBt,.05,B),lx0=t=>gBack()?0:xb-t;if(gBack()&&S.bon&&gBt_<B)o+=`<polygon points="${PT([[gBt_,bt],[B,bt],[B,Zb]])}" fill="#f2e8cf"/><polygon points="${PT([[gBt_,bt],[B,bt],[B,Zb]])}" fill="url(#dots)"/>`;
- if(isG()&&!gBack()&&Hf>Zb&&gBt_<B){const zf=Math.min(Hf,bt),xf_=(B-gBt_)*(zf-Zb)/(+S.tb);o+=`<polygon points="${PT([[0,Zb],[xf_,zf],[0,zf]])}" fill="#f2e8cf"${pas?'':' fill-opacity=".45"'}/><polygon points="${PT([[0,Zb],[xf_,zf],[0,zf]])}" fill="url(#dots)"/>`}
- o+=(isG()?pg(gBack()?[[0,Zb],[B,Zb],[gBt_,bt],[0,bt]]:[[0,Zb],[B,Zb],[B,bt],[B-gBt_,bt]],CONC):rc(0,Zb,B,bt,CONC))+S.st.map(t=>pg([[lx0(+t.t),+t.bot],[lx0(+t.t)+(+t.t),+t.bot],[lx0(+t.t)+(+t.t),+t.top],[lx0(+t.t)+(+t.t)-liftTT(t),+t.top]],t.rc&&isG()?'fill="#b9c7d6" stroke="#334155" stroke-width="1.3"':CONC)).join('');
+ const pg=(pts,a)=>`<polygon points="${PT(pts)}" ${a}/>`,gbf_=isG()?Math.max(0,+S.gbf||0):0,gbr_=isG()?Math.max(0,+S.gbr||0):0;
+ o+=(isG()?pg([[0,Zb],[B,Zb],[B-gbr_,bt],[gbf_,bt]],CONC):rc(0,Zb,B,bt,CONC))+c.G.SG.filter(g=>g.h>1e-9).map(g=>pg([[g.xf0,g.bot],[g.xb0,g.bot],[g.xb1,g.top],[g.xf1,g.top]],g.s.rc&&isG()?'fill="#b9c7d6" stroke="#334155" stroke-width="1.3"':CONC)).join('');
  if(KG&&KG.dk>0)o+=rc(KG.xk,Zb-KG.dk,KG.xk+KG.Bk,Zb,CONC);
- const t0=S.st.length?liftTT(S.st[0]):(isG()?gBt_:blockTW(B)),fx0=isG()?(gBack()?0:B-t0):xb-t0;if(S.wo||S.bro)o+=rc(fx0,top,fx0+.1,top+Math.max(wh,S.bro?+S.bhb:0),`fill="${CL.l}" fill-opacity=".5"`);
+ const t0=c.G.ttw,fx0=c.G.ftx;if(S.wo||S.bro)o+=rc(fx0,top,fx0+.1,top+Math.max(wh,S.bro?+S.bhb:0),`fill="${CL.l}" fill-opacity=".5"`);
  if(c.s.N>0){const ux=x=>C.uf+(C.ub-C.uf)*x/B,qb=qDist(c.s.N,c.s.e,B),qm=Math.max(qb(0),qb(B)),sq=.7/Math.max(qm,ux(0),ux(B),1e-6),xs=[...Array(21)].map((_,i)=>B*i/20),Pt=(g1,g2)=>xs.map(x=>f(X(x),1)+','+f(Y(Zb-g1(x)*sq),1)).join(' ')+' '+xs.slice().reverse().map(x=>f(X(x),1)+','+f(Y(Zb-g2(x)*sq),1)).join(' ');
   o+=`<polygon points="${Pt(()=>0,ux)}" fill="${CL.u}" fill-opacity=".22" stroke="${CL.u}" stroke-width="1"/><polygon points="${Pt(ux,x=>ux(x)+qb(x))}" fill="${CL.e}" fill-opacity=".2" stroke="${CL.e}" stroke-width="1"/>`;
   [0,B].forEach(x=>lb.push([X(x),Y(Zb-(ux(x)+qb(x))*sq)+13,`${qb(x)>=qb(B-x)?'qmax':'qmin'} ${f(qb(x),1)} kPa`,'middle',CL.e,'lv']))}
@@ -642,16 +702,21 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
   dv=(x,z1,z2,t,an,ed)=>{o+=ln2(X(x),Y(z1),X(x),Y(z2))+tk(X(x),Y(z1),1)+tk(X(x),Y(z2),1);lb.push([X(x)+(an=='end'?-6:6),Y((z1+z2)/2)+4,t,an,DC,'lv',ed])},
   dh=(z,x1,x2,t,ed)=>{o+=ln2(X(x1),Y(z),X(x2),Y(z))+tk(X(x1),Y(z))+tk(X(x2),Y(z));lb.push([X((x1+x2)/2),Y(z)+14,t,'middle',DC,'lv',ed])},
   xc=-((pc+mp>0?(pc+mp)*sc:0)+(pw>0?pw*sc+.15:0)+.55),nm=isG()?'Lift':'Stem';
-  S.st.forEach((t,i)=>{dv(xc,t.bot,t.top,`${nm} ${i+1} h = ${f(t.top-t.bot)}`,'end');const L0=gBack()?0:xb-t.t,L1=L0+(+t.t);o+=ln2(X(xc),Y(t.top),X(L0),Y(t.top),1)+ln2(X(xc),Y(t.bot),X(L0),Y(t.bot),1);const zm=(+t.top+(+t.bot))/2;o+=ln2(X(L0),Y(zm),X(L1),Y(zm))+tk(X(L0),Y(zm))+tk(X(L1),Y(zm));
-   lb.push([X(L1)+8,Y(zm)+4,`${nm} ${i+1} t =`,'start',DC,'lv',{p:`st.${i}.t`,v:+t.t,pt:`${nm} ${i+1} ${isG()?'width':'t'} = ${f(t.t)}${liftTT(t)<t.t?` (top ${f(liftTT(t))})`:''}${isG()&&t.rc?' (RC)':''}`}])});
-  if(isG()){const bt_=cl(+S.gBt,.05,B),bk=gBack();dh(Zb+.15,0,B,'Block bottom width =',{p:'gB',v:+S.gB});dh(bt-.2,bk?0:B-bt_,bk?bt_:B,'Block top width =',{p:'gBt',v:bt_})}
+  S.st.forEach((t,i)=>{const g=c.G.SG[i],N=`${nm} ${i+1}`;dv(xc,g.bot,g.top,`${N} h =`,'end',{p:'@h.'+i,v:g.h,pt:`${N} h = ${f(g.h)}`});o+=ln2(X(xc),Y(g.top),X(g.xf1),Y(g.top),1)+ln2(X(xc),Y(g.bot),X(g.xf0),Y(g.bot),1);
+   if(!(g.h>1e-9))return;const zm=g.bot+g.h/2,L0=g.xf0+g.fb/2,L1=g.xb0-g.rb/2;o+=ln2(X(L0),Y(zm),X(L1),Y(zm))+tk(X(L0),Y(zm))+tk(X(L1),Y(zm));
+   lb.push([X(L1)+8,Y(zm)+4,`${N} t =`,'start',DC,'lv',{p:`st.${i}.t`,v:g.t,pt:`${N} t = ${f(g.t)} (top ${f(g.tt)})${isG()&&t.rc?' (RC)':''}`}]);
+   lb.push([X(g.xf1)-6,Y(g.top)+14,`${N} front batter =`,'end',DC,'lv',{p:`st.${i}.fb`,v:g.fb}]);
+   lb.push([X(g.xb1)+6,Y(g.top)+14,`${N} rear batter =`,'start',DC,'lv',{p:`st.${i}.rb`,v:g.rb}]);
+   if(isG()||i<S.st.length-1)lb.push([X(g.xf0)-6,Y(g.bot)-5,`${N} front offset =`,'end',DC,'lv',{p:`st.${i}.of`,v:+t.of||0}])});
+  if(isG()){const bw=+S.gBt;dh(Zb+.15,0,B,`Block bottom B = b_f + b_t + b_r = ${f(B)}`);dh(bt-.2,gbf_,gbf_+bw,'Block top width b_t =',{p:'gBt',v:bw});
+   lb.push([X(0)-6,Y(Zb+.55*(bt-Zb)),'Front batter b_f =','end',DC,'lv',{p:'gbf',v:gbf_}]);lb.push([X(B)+6,Y(Zb+.55*(bt-Zb)),'Rear batter b_r =','start',DC,'lv',{p:'gbr',v:gbr_}])}
   dv(xc,Zb,bt,`${isG()?'Block h':'Base t'} =`,'end',{p:'tb',v:+S.tb});o+=ln2(X(xc),Y(Zb),X(0),Y(Zb),1)+ln2(X(xc),Y(bt),X(0),Y(bt),1);
   if(S.bon&&C.hs0>0)dv(xr-.3,Zb,Hr,'Retained H =','end',{p:'@H',v:Hr-Zb,pt:`Retained H = ${f(Hr-Zb)}${C.hs>C.hs0+1e-6?` (on virtual back ${f(C.hs)})`:''}`});
   if(Hf>Zb)dv(xl+.35,Zb,Hf,'Front soil Df =','start',{p:'@Df',v:Hf-Zb});
   if(KG&&KG.dk>0){dv(KG.xk-.12,Zb-KG.dk,Zb,'Key dk =','end',{p:'skd',v:KG.dk})}
   const zr1=y0+.95,zr2=y0+.4;[0,Lt,xb,B].filter((x,i,a)=>a.indexOf(x)==i).forEach(x=>o+=ln2(X(x),Y(Zb-dkk),X(x),Y(zr1),1));[0,B].forEach(x=>o+=ln2(X(x),Y(zr1),X(x),Y(zr2),1));
-  if(Lt>0)dh(zr1,0,Lt,'Toe =',S.ty=='L'?null:{p:'Lt',v:Lt});dh(zr1,Lt,xb,`${S.st.length?nm+' '+S.st.length:'Core'} = ${f(xb-Lt)}`,!S.st.length&&isG()?null:null);if(hl>0)dh(zr1,xb,B,'Heel =',S.ty=='Li'?null:{p:'Lh',v:hl});dh(zr2,0,B,`B = ${f(B)}`)}
- lb.push([X(xr)-6,Y(Hr)-6,`Retained GL +${f(Hr)}`,'end',null,'lv'],[S.fon&&+S.bf?X(Lt)-6:X(xl)+6,Y(Hf)-6,`Front GL +${f(Hf)}`,S.fon&&+S.bf?'end':'start',null,'lv'],[X(xl)+6,Y(Zb)+14,`Founding level +${f(Zb)}`,'start',null,'lv'],
+  if(Lt>0)dh(zr1,0,Lt,S.ty=='L'||isG()?`Toe = ${f(Lt)}`:'Toe =',S.ty=='L'||isG()?null:{p:'Lt',v:Lt});dh(zr1,Lt,xb,`${S.st.length?nm+' '+S.st.length:'Block'} = ${f(xb-Lt)}`);if(hl>0)dh(zr1,xb,B,S.ty=='Li'||isG()?`Heel = ${f(hl)}`:'Heel =',S.ty=='Li'||isG()?null:{p:'Lh',v:hl});dh(zr2,0,B,`B = ${f(B)}`)}
+ lb.push([X(xr)-6,Y(Hr)-6,`Retained GL +${f(Hr)}`,'end',null,'lv'],[S.fon&&+S.bf?X(xF)-6:X(xl)+6,Y(Hf)-6,`Front GL +${f(Hf)}`,S.fon&&+S.bf?'end':'start',null,'lv'],[X(xl)+6,Y(Zb)+14,`Founding level +${f(Zb)}`,'start',null,'lv'],
   [X(fx0)-6,Y(top)-6,S.st.length?'Wall top +':`Wall top +${f(top)}`,'end',null,'lv',S.st.length?{p:'st.0.top',v:top,pt:`Wall top +${f(top)}`}:null]);
  const L=P.find(p=>p.cat=='wind'||p.cat=='bar'),xf=fx0+.1;
  if(L)fr.push({a:[X(xf+len(L.F)),Y(Zb+L.arm),X(xf),Y(Zb+L.arm)],k:'l',t:`${L.n} ${f(L.F,1)}`,an:'start',dy:4,pri:0});
@@ -662,20 +727,27 @@ function fig(c){const f=(v,d)=>d==null?dd(v):F0(v,d),{B,Lt,xb,hl,bt,top}=c.G,Zb=
  o+=lb.map(l=>put(...l)).join('')+fr.map(a=>put(a.a[0]+(a.an=='start'?5:a.an=='end'?-5:0),a.a[1]+a.dy,a.t,a.an,CL[a.k])).join('');
  if(!NE){const n=S.st.length,hm=(Zb+bt)/2,hb=bt-Zb,add=(p,ax,k,v,x,z,o2)=>HD.push({p,ax,k,v:+v,x,z,anc:'toe',min:-1e9,max:1e9,d:2,...o2});
   if(S.bon)add('@H','z',1,Hr-Zb,Math.min(xr-.6,B+.7),Hr,{min:+S.tb+.3,lab:'Retained H'});
-  if(n&&Math.abs(top-Hr)>.02)add('st.0.top','z',1,top,fx0+t0/2,top,{min:+S.st[0].bot+.2,lab:'Wall top'});
-  const fo=!isG();if(S.ty!='L'&&fo)add('Lt','x',-1,Lt,0,hm,{anc:'xb',min:0,lab:isG()?'Toe projection':'Toe'});
-  if(S.ty!='Li'&&fo)add('Lh','x',1,hl,B,n?hm:Zb+.25*hb,{min:0,lab:'Heel'});
-  add('tb','z',1,+S.tb,hl>.3?(xb+B)/2:Lt>.3?Lt/2:xb-.15,bt,{min:.2,max:n?+S.st[n-1].top-.2:1e9,lab:isG()&&!n?'Block height':'Base t'});
-  if(isG()){const bk=gBack(),bt_=cl(+S.gBt,.05,B);add('gB','x',bk?1:-1,+S.gB,bk?B:0,Zb+.2*hb,{anc:bk?'toe':'xb',min:.3,lab:'Block bottom width'});add('gBt','x',bk?1:-1,bt_,bk?bt_:B-bt_,bt-.15*hb,{anc:bk?'toe':'xb',min:n?+S.st[n-1].t:.1,max:+S.gB,lab:'Block top width'})}
-  S.st.forEach((t,i)=>{const bk=gBack();add(`st.${i}.t`,'x',bk?1:-1,+t.t,bk?+t.t:xb-(+t.t+liftTT(t))/2,(+t.top+(+t.bot))/2,{anc:bk?'toe':'xb',min:.15,max:isG()?cl(+S.gBt,.05,B):1e9,lab:`${isG()?'Lift':'Stem'} ${i+1} ${isG()?'width':'t'}${isG()?'':' (front face)'}`});
-   if(!isG()&&i==n-1)add(`st.${i}.t`,'x',1,+t.t,xb,(+t.top+(+t.bot))/2-.25*(+t.top-(+t.bot)),{min:.15,lab:`Stem ${i+1} t (back face)`});
-   if(i<n-1)add(`st.${i}.bot`,'z',1,+t.bot,gBack()?+t.t:xb,+t.bot,{min:+S.st[i+1].bot+.2,max:+t.top-.2,lab:`${isG()?'Lift':'Stem'} ${i+1} bottom`})});
+  if(n&&Math.abs(top-Hr)>.02)add('st.0.top','z',1,top,fx0+t0/2,top,{min:+S.st[0].bot,lab:'Wall top'});
+  const fo=!isG();if(S.ty!='L'&&fo)add('Lt','x',-1,+S.Lt,0,hm,{anc:'xb',min:0,lab:'Toe (base front end)'});
+  if(S.ty!='Li'&&fo)add('Lh','x',1,+S.Lh,B,hm,{min:0,lab:'Heel (base back end)'});
+  add('tb','z',1,+S.tb,hl>.3?(xb+B)/2:Lt>.3?Lt/2:xb-.15,bt,{min:.2,max:n?+S.st[n-1].top-.2:1e9,lab:isG()?'Block height':'Base t'});
+  if(isG()){const bf=gbf_,br=gbr_,bw=+S.gBt;add('gbf','x',-1,bf,0,Zb+.12*hb,{anc:'xb',min:0,lab:'Block front batter (toe moves)'});add('gbr','x',1,br,B,Zb+.12*hb,{min:0,lab:'Block rear batter (heel moves)'});
+   add('@gtf','x',1,bf,bf,bt-.12*hb,{min:0,max:bf+bw-.1,lab:'Block top front edge (front batter)'});add('@gtb','x',-1,br,B-br,bt-.12*hb,{min:0,max:br+bw-.1,lab:'Block top back edge (rear batter)'})}
+  c.G.SG.forEach(g=>{const i=g.i,N=`${isG()?'Lift':'Stem'} ${i+1}`,bot=!isG()&&i==n-1,sup=i<n-1?c.G.SG[i+1]:null,a=sup?sup.xf1:(isG()?gbf_:0),b=sup?sup.xb1:(isG()?gbf_+(+S.gBt):B);
+   if(i<n-1)add(`st.${i}.bot`,'z',1,g.bot,g.xc,g.bot,{min:+S.st[i+1].bot,max:g.top,lab:`${N} bottom (joint)`});
+   if(!(g.h>.05))return;const z1=g.bot+.62*g.h,fz=z=>(z-g.bot)/g.h;
+   add('@tf.'+i,'x',-1,g.t,g.xf0+g.fb*fz(z1),z1,{anc:bot&&S.ty=='L'?'xb':'toe',min:Math.max(.1,g.fb+g.rb+.05),max:bot?(S.ty=='L'?1e9:g.t+(+S.Lt)):g.t+Math.max(0,g.xf0-a),lab:`${N} front face (width)`});
+   add('@tw.'+i,'x',1,g.t,g.xb0-g.rb*fz(z1),z1,{min:Math.max(.1,g.fb+g.rb+.05),max:bot?(S.ty=='Li'?1e9:g.t+(+S.Lh)):Math.max(.1,b-g.xf0),lab:`${N} back face (width)`});
+   add(`st.${i}.fb`,'x',1,g.fb,g.xf1,g.top-Math.min(.08,g.h/4),{min:0,max:Math.max(0,g.t-g.rb-.05),lab:`${N} front batter`});
+   add(`st.${i}.rb`,'x',-1,g.rb,g.xb1,g.top-Math.min(.08,g.h/4),{min:0,max:Math.max(0,g.t-g.fb-.05),lab:`${N} rear batter`});
+   const zc=g.bot+.3*g.h;if(bot){if(S.ty=='T')add('@mv','x',1,+S.Lt,g.xc,zc,{min:0,max:+S.Lt+(+S.Lh),lab:`${N} position (toe ↔ heel)`})}
+   else add(`st.${i}.of`,'x',1,+g.s.of||0,g.xc,zc,{min:0,max:Math.max(0,(b-a)-g.t),lab:`${N} position (front offset)`})});
   if(S.bon)add('@WL','z',1,C.wb>0?C.Wb:Zb,xr-1.1,C.wb>0?C.Wb:Zb,{min:Zb,max:Hr,lab:'Design WL'});
   if(S.fon)add('fw','z',1,+S.fw,xl+1.1,Math.max(+S.fw,Zb-.3),{max:Hf,lab:'Front GWL'});
   if(Hf>Zb||S.fon)add('@Df','z',1,Hf-Zb,xl+2,Hf,{min:0,lab:'Front soil Df'});
   if(KG&&KG.dk>0){add('skd','z',-1,KG.dk,KG.xk+KG.Bk/2,Zb-KG.dk,{min:.1,lab:'Key depth'});add('skx','x',1,KG.xk,KG.xk,Zb-KG.dk/2,{min:0,max:B-KG.Bk,lab:'Key position'})}
   if(S.wo)add('wh','z',1,wh,fx0+.05,top+wh,{min:.1,lab:'Fence height'});
-  if(C.LL&&S.bon){const xq=planeX(c.G)+C.LL.x;add('lx','x',1,C.LL.x,xq,Hr+(S.bon?Math.tan(S.br*R)*(xq-xb):0),{min:0,lab:'Line load x'})}
+  if(C.LL&&S.bon){const xq=planeX(c.G)+C.LL.x;add('lx','x',1,C.LL.x,xq,Hr+(S.bon?Math.tan(S.br*R)*(xq-xbH):0),{min:0,lab:'Line load x'})}
   window.__HD=HD;window.__FV={xl,y0,s:s0,xb};
   o+=HD.map((h,i)=>`<g class="hd ${h.ax}" data-h="${i}"><title>Drag: ${h.lab} (Alt = fine 0.01 m)</title><circle cx="${f(X(h.x),1)}" cy="${f(Y(h.z),1)}" r="11" fill="transparent"/><circle class=hk cx="${f(X(h.x),1)}" cy="${f(Y(h.z),1)}" r="5.5"/></g>`).join('')}
  return o+tx(12,17,`Characteristic (unfactored) loads${L?', governing top load shown':''} · B = ${f(B)} m · arrow length ∝ force (max ${f(fmax,0)} kN/m)${NE?'':' · blue boxes are editable · drag ● handles'}`,'start',null,'cap')
@@ -726,9 +798,9 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  // panel echoes + generic panel ⇄ state sync (single source of truth)
  const tx=(id,v)=>{const e=$(id);if(e)e.innerHTML=v};
  document.querySelectorAll('#in [data-p]').forEach(el=>{if(el===document.activeElement||el.readOnly)return;const v=gp(el.dataset.p);if(v==null)return;if(el.type=='checkbox')el.checked=!!v;else if(el.type=='radio')el.checked=el.value==v;else if(String(el.value)!==String(v))el.value=v});
- tx('bt',dd(G.bt));tx('wt2',dd(G.top));if(isG()){const b2=Math.min(+S.gBt,+S.gB),dB=+S.gB-b2;tx('gbtx',`Block top level ${dd(G.bt)} mPD · ${S.gbat=='back'?'back':'front'} face batter ${dB>1e-6?`1H : ${f(+S.gBh/dB,2)}V`:'none (rectangular block)'}`)}tx('bB',dd(G.B));tx('wt',dd(G.top));tx('ht',dd(Math.max(0,S.Hr-S.Zb)));tx('hf2',dd(Math.max(0,S.Hf-S.Zb)));tx('wl',dd(wlLev()));tx('qv',f(q,1));tx('asv',f(S.asc,1)+'×');tx('kov',`${f(koVal(),3)} (${koDesc()})`);if(cmpOn()){const c=cmpInfo(koVal());tx('cmptxt',`p′hm = √(2Q1γ/π) = √(2×${c.Q}×${S.r.g}/π) = <b>${f(c.phm,2)}</b> kPa; zc = ${f(c.zc,2)} m${+S.br>0?' (fill slope: zc = 0, Fig. 27 note 2)':''}; hc = ${f(c.hc,2)} m (with K = ${f(koVal(),3)})`)}
+ tx('bt',dd(G.bt));tx('wt2',dd(G.top));if(isG()){const bf=+S.gbf,br=+S.gbr,h=+S.gBh,bat=b=>b>1e-6?`1H : ${f(h/b,2)}V`:'vertical';tx('gbtx',`Bottom width B = b_f + b_t + b_r = ${dd(bf)} + ${dd(+S.gBt)} + ${dd(br)} = <b>${dd(G.B)}</b> m · front face ${bat(bf)} · back face ${bat(br)} · block top +${dd(G.bt)} mPD`)}G.SG.forEach(g=>tx('sgx'+g.i,`h = ${dd(g.h)} m · top width ${dd(g.tt)} m · front face x ${dd(g.xf0)} → ${dd(g.xf1)} · back face x ${dd(g.xb0)} → ${dd(g.xb1)} m from toe (bottom → top)`));tx('bB',dd(G.B));tx('wt',dd(G.top));tx('ht',dd(Math.max(0,S.Hr-S.Zb)));tx('hf2',dd(Math.max(0,S.Hf-S.Zb)));tx('wl',dd(wlLev()));tx('qv',f(q,1));tx('asv',f(S.asc,1)+'×');tx('kov',`${f(koVal(),3)} (${koDesc()})`);if(cmpOn()){const c=cmpInfo(koVal());tx('cmptxt',`p′hm = √(2Q1γ/π) = √(2×${c.Q}×${S.r.g}/π) = <b>${f(c.phm,2)}</b> kPa; zc = ${f(c.zc,2)} m${+S.br>0?' (fill slope: zc = 0, Fig. 27 note 2)':''}; hc = ${f(c.hc,2)} m (with K = ${f(koVal(),3)})`)}
  const kp=$('kopan');if(kp)kp.style.display=S.rck=='ka'?'none':'';
- const wd=Pk.wd,gtx={T:'toe + stem + heel',L:'stem + heel (no toe)',Li:'toe + stem (no heel)',G:`mass concrete block (${S.gbat=='back'?'back':'front'} face battered)${S.st.length?` + ${S.st.length} lift${S.st.length>1?'s':''}`:''}`}[S.ty];
+ const wd=Pk.wd,gtx={T:'toe + stem + heel',L:'stem + heel (no toe)',Li:'toe + stem (no heel)',G:`mass concrete block (${gBat()})${S.st.length?` + ${S.st.length} lift${S.st.length>1?'s':''}`:''}`}[S.ty];
  tx('tyinfo',`Geometry: <b>${gtx}</b>. Earth pressure on the ${planeName()}. Default wall friction: ${wd.src}.`);
  tx('dwtxt',`${wd.src}. Selected δ = ${f(wd.d,1)}°${S.kam!='c'?' – <b>not used</b> (Rankine / manual Ka: δ = 0)':''}${wd.over&&S.kam=='c'?` <span class=warn>– larger than Geoguide 1 Table 14 δmax (${f(wd.dmax,1)}°)</span>`:''}`);
  tx('cvexp',`δb = φcv′ = ${phiCv()}° (Geoguide 1 §5.12: base friction for a wall without shear key = angle of skin friction of rough blinding concrete on soil, taken as the critical-state angle φcv′). Use test results, or the §5.5.2 lower bounds – about 34° granitic, 30° volcanic.${P?` Partial factor: δbf = tan⁻¹(tan${phiCv()}°/${S.gm}) = ${f(Pf.db,1)}°.`:''}${S.skon?' With a shear key the sliding plane passes through undisturbed soil (φ′ of foundation soil, GG1 §5.12, Fig. 42).':''}`);
@@ -763,7 +835,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   ['Front soil angle of shearing resistance','φ′s',f(Pk.phs,2),f(Pf.phs,2),'°',S.fsm?'= foundation soil':'front (passive-side) soil'],
   ['Passive earth pressure coefficient (δ = 0)','Kp',f(Pk.Kp,4),f(Pf.Kp,4),'–',!Ck.pasOK?'Not used – front soil passive ignored':S.kpm=='m'?'Manual override':'Coulomb δ = 0, GG1 Fig. 39 note 3'],
   ['Passive cohesion','c′s',f(Pk.cP,2),f(Pf.cP,2),'kPa','c′f = c′/γm'],['Base friction angle','δb',f(Pk.db,2),f(Pf.db,2),'°',S.dbm=='cv'?`δb = φcv′ = ${phiCv()}° (GG1 §5.12); δbf = tan⁻¹(tanδb/γm)`:'Custom'],
-  ['Base adhesion','c′b','0','0','kPa','GG1 §5.12 (c′ = 0 model), Fig. 41'],['Surcharge outside (earth pressure only)','q_out',f(q,1),`×${S.gq}`,'kPa',QCAT[S.qcat][0]],...(G.hl>0?[['Surcharge on heel (variable, not stabilising)','q_in',f(qIn(),1),`×${S.gq} (bearing only)`,'kPa','DIL Table 3.17 / GG1 §7.2.1']]:[]),
+  ['Base adhesion','c′b','0','0','kPa','GG1 §5.12 (c′ = 0 model), Fig. 41'],['Surcharge outside (earth pressure only)','q_out',f(q,1),`×${S.gq}`,'kPa',QCAT[S.qcat][0]],...(G.Lw>0?[['Surcharge on heel (variable, not stabilising)','q_in',f(qIn(),1),`×${S.gq} (bearing only)`,'kPa','DIL Table 3.17 / GG1 §7.2.1']]:[]),
   ...(Ck.LL?[['Vertical line load','Q1',f(Ck.LL.Qv,1),`×${S.gq}`,'kN/m',`GG1 Fig. 29(a), x = ${f(Ck.LL.x)} m`],['Horizontal line load','Qh',f(Ck.LL.Qh,1),`×${S.gq}`,'kN/m','GG1 Fig. 29(c)']]:[]),
   ['Ground slope retained / front','β',`${f(S.bon?+S.br:0,1)} / ${f(S.fon?+S.bf:0,1)}`,'same','°','β positive = uphill']])
  +`<h3>5.2 Active side (retained) – arm z above base bottom</h3>`+T(H5,items(Ck,'h'));
@@ -845,7 +917,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   if(RS.length){const shn=r=>r.st?['Vertical main','Horizontal (each face)','Vertical (front)']:['Main','Distribution (each face)','Opposite face'];
    h7+=`<h3>7.1 Reinforcement schedule</h3>`+T(['Element','Location / face','Bars','Provided','As,prov (mm²/m)','As,req (mm²/m)','Status'],RS.flatMap(r=>{const sh=shn(r);return[[r.n,r.tf,sh[0],`T${r.bm.d}@${r.bm.s}`,f(r.Asp,0),f(Math.max(r.Asr,r.Asm),0),lp(r.okM&&r.okV&&r.okVm)],[r.n,r.gv?'each face':'both faces',sh[1],`T${r.r.d2}@${r.r.s2} EF`,f(r.secProv,0),f(r.secReq,0),lp(r.okSec)],[r.n,r.of,sh[2],`T${r.bo.d}@${r.bo.s}`,f(r.As3,0),r.gv?f(r.Asm,0):'nominal',lp(r.gv?r.okOpp:r.As3<=40*r.h)]]}))
    +RS.map(r=>`<div class=rcb><h3>${r.n} — h = ${f(r.h,0)} mm ${lp(r.ok)}</h3>${r.bad?`<p class=err>Factored resultant outside base – base pressure invalid for this combination.</p>`:''}`+RCT(r,[
-    ['1 Design actions',`envelope of Comb 1–3${S.rck=='env'?', Ka & Ko':''}`,`governing: ${r.gov}${r.hnM!=null?`; optional check, base-pressure relief ignored: M = ${f(Math.abs(r.hnM),1)}, V = ${f(Math.abs(r.hnV),1)} (${S.hnr?'governs design':'for information'})`:''}`,`M = ${f(Math.abs(r.M),1)} kNm/m; V = ${f(Math.abs(r.V),1)} kN/m`,''],
+    ['1 Design actions',`envelope of Comb 1–3${S.rck=='env'?', Ka & Ko':''}`,`governing: ${r.gov}${r.hnM!=null?`; optional check, base-pressure relief ignored: M = ${f(Math.abs(r.hnM),1)}, V = ${f(Math.abs(r.hnV),1)} (${S.hnr?'governs design':'for information'})`:''}`,`M = ${f(Math.abs(r.M),1)} kNm/m; V = ${f(Math.abs(r.V),1)} kN/m${r.me&&Math.abs(r.me)>.005?`<br><small>incl. eccentric self-weight / soil on steps Me,k = ${f(r.me,2)} kNm/m about the section centroid (γ = ${r.me>0?'1.4 / 1.2 adverse':'1.0 beneficial'})</small>`:''}`,''],
     ['2 Effective depth',`d = h − c − φ/2${r.rev?' (moment reversed: tension on '+r.tf.toLowerCase()+')':''}`,`${f(r.h,0)} − ${r.cT} − ${r.bm.d}/2`,`d = ${f(r.d,0)} mm`,''],
     ['3 K factor','K = M/(fcu·b·d²) ≤ K′ (eq 6.7, 6.8)',`${f(Math.abs(r.M)*1e6,0)}/(${S.fcu}×1000×${f(r.d,0)}²)`,`K = ${f(r.K,4)}; K′ = ${r.Kp}`,lp(r.okK)],
     ['4 Lever arm','z = d[0.5+√(0.25−K/0.9)] ≤ 0.95d (eq 6.10)','',`z = ${f(r.z,0)} mm; x = ${f(r.x,0)} mm`,''],
@@ -883,10 +955,10 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  const nz=v=>v==null||v===''||(typeof v=='number'&&!Number.isFinite(v))?'–':v,
   SC=(t,rows)=>`<section class=rsec><h3>${t}</h3><table class=sch><colgroup><col style="width:26%"><col style="width:10%"><col style="width:18%"><col style="width:8%"><col style="width:21%"><col style="width:17%"></colgroup><thead><tr><th>Item / Parameter Name</th><th>Symbol</th><th>Input / Calculated Value</th><th>Unit</th><th>Reference / Clause</th><th>Status / Remark</th></tr></thead><tbody>${rows.map(r=>typeof r=='string'?`<tr class=sg><td colspan=6>${r}</td></tr>`:`<tr>${[0,1,2,3,4,5].map(i=>`<td>${nz(r[i])}</td>`).join('')}</tr>`).join('')}</tbody></table></section>`,
   IN='Input',DV='Derived',yn=v=>v?'Yes':'No',pct=x=>Number.isFinite(x)?f(100*x,0)+' %':'∞',ul=(ok,x)=>`${lp(ok)} ${Number.isFinite(x)?'util. '+pct(x):''}`;
- const gName=({T:'Cantilever – inverted T',L:'L-wall (heel only)',Li:'Reversed L (toe only)',G:`Gravity – mass concrete block, ${S.gbat=='back'?'back':'front'} face battered${S.st.length?` + ${S.st.length} lift${S.st.length>1?'s':''}`:''}`})[S.ty],
+ const gName=({T:'Cantilever – inverted T',L:'L-wall (heel only)',Li:'Reversed L (toe only)',G:`Gravity – mass concrete block, ${gBat()}${S.st.length?` + ${S.st.length} lift${S.st.length>1?'s':''}`:''}`})[S.ty],
   wd2=Pk.wd,Fs0=FSo(),vb=planeName();
  const r1=[['Project no.','–',esc(S.pn||'–'),'–','–',IN],['Designer / Checker','–',`${esc(S.dsn||'–')} / ${esc(S.chk||'–')}`,'–','–',IN],['Date of calculation','–',new Date().toLocaleDateString(),'–','–','–'],
-  ...(S.jno?[['Project title','–',esc(S.jno),'–','–',IN]]:[]),['Calculation tool','–','Retaining Wall Design & Checker v9.2','–','–','–'],['Wall type','–',gName,'–',isG()?'GG1 §9.2, §9.3':'GG1 §9.2, Fig. 48','Input'],
+  ...(S.jno?[['Project title','–',esc(S.jno),'–','–',IN]]:[]),['Calculation tool','–','Retaining Wall Design & Checker v9.3','–','–','–'],['Wall type','–',gName,'–',isG()?'GG1 §9.2, §9.3':'GG1 §9.2, Fig. 48','Input'],
   ['Checking method','–',P?'Partial factor (limit state)':'Global factor of safety','–',P?'GG1 §4.3.4, Tables 6 & 7':'CoP Fdn 2017 Cl 2.5.4, 2.2.4',IN],
   ...(P?[['Partial factor on soil strength','γm',S.gm,'–','GG1 Table 7','applied to tanφ′, c′, tanδb first'],['Partial factor on surcharge','γf,Q',S.gq,'–','GG1 Table 6',IN]]
    :[['Groundwater condition','–',fcF().lab,'–','CoP Fdn 2017 Cl 2.5.4',IN],['Required FOS – sliding (other / groundwater)','Fs',`${f(+S.Fs,2)} / ${f(fcF().Fsw,2)}`,'–','CoP Fdn 2017 Cl 2.5.4',IN],['Required FOS – overturning (other / wind / groundwater)','Fo',`${f(+S.Fo,2)} / ${f(+S.Fow,2)} / ${f(fcF().Fog,2)}`,'–','CoP Fdn 2017 Cl 2.5.4',IN],['Required FOS – uplift','Fu',f(fcF().Fu,2),'–','CoP Fdn 2017 Cl 2.5.4',DV],['Required FOS – bearing','Fb',f(+S.Fb,2),'–','CoP Fdn 2017 Cl 2.2.4',IN]]),
@@ -896,8 +968,9 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  const r2=[['Retained ground level (at wall)','GL_r',f(+S.Hr),'mPD','–',IN],['Front ground level','GL_f',f(+S.Hf),'mPD','–',IN],['Founding level (underside of base)','Z_b',f(+S.Zb),'mPD','–',IN],
   ['Retained height','H',f(Math.max(0,S.Hr-S.Zb)),'m','H = GL_r − Z_b',DV],['Embedment below front ground','D_f',f(Math.max(0,S.Hf-S.Zb)),'m','D_f = GL_f − Z_b',S.fon?(Ck.pasOK?'passive below unplanned excavation':'passive ignored – not on grade'):'front soil not considered'],
   ['Wall top level','–',f(G.top),'mPD','–',DV],
-  ...S.st.flatMap((s,i)=>{const n=(isG()?'Lift ':'Stem ')+(i+1);return[[isG()?`${n} – width`:`${n} – thickness bottom / top`,'t',isG()?f(+s.t):`${f(+s.t)} / ${f(liftTT(s))}`,'m','–',isG()?(s.rc?'RC lift':'mass concrete'):IN],[`${n} – top / bottom level`,'–',`${f(+s.top)} / ${f(+s.bot)}`,'mPD','–',IN]]}),
-  ...(isG()?[['Mass concrete block – height','h_b',f(+S.tb),'m','GG1 §9.3',IN],['Mass concrete block – bottom / top width','B / b_top',`${f(+S.gB)} / ${f(Math.min(+S.gBt,+S.gB))}`,'m','–',IN],['Battered face','–',S.gbat=='back'?'back (retained side)':'front','–','–',IN]]
+  ...(()=>{const SGr=geo().SG;return S.st.flatMap((s,i)=>{const g=SGr[i],n=(isG()?'Lift ':'Stem ')+(i+1);return[[`${n} – bottom / top width`,'t / t_top',`${f(g.t)} / ${f(g.tt)}`,'m','–',isG()?(s.rc?'RC lift':'mass concrete'):IN],[`${n} – front / rear batter`,'fb / rb',`${f(g.fb)} / ${f(g.rb)}`,'m','–',IN],
+   ...((isG()||i<S.st.length-1)?[[`${n} – front offset (from front edge of the top below)`,'of',f(+s.of||0),'m','–',IN]]:[]),[`${n} – front / back face at bottom (from toe)`,'x',`${f(g.xf0)} / ${f(g.xb0)}`,'m','–',DV],[`${n} – top / bottom level (height)`,'–',`${f(g.top)} / ${f(g.bot)} (h = ${f(g.h)})`,'mPD','–',IN]]})})(),
+  ...(isG()?[['Mass concrete block – height','h_b',f(+S.tb),'m','GG1 §9.3',IN],['Mass concrete block – top width / front batter / rear batter','b_t / b_f / b_r',`${f(+S.gBt)} / ${f(+S.gbf)} / ${f(+S.gbr)}`,'m','–',IN],['Mass concrete block – bottom width','B',f(+S.gB),'m','B = b_f + b_t + b_r',DV]]
    :[['Base thickness','t_b',f(+S.tb),'m','–',IN],['Toe length','L_t',f(G.Lt),'m','–',S.ty=='L'?'n/a (L-wall)':IN],['Heel length','L_h',f(G.hl),'m','–',S.ty=='Li'?'n/a (reversed L)':IN],['Base width','B',f(G.B),'m','B = L_t + t + L_h',DV]]),
   ...(S.skon?[['Shear key depth / width','d_k / B_k',`${f(+S.skd)} / ${f(+S.skw)}`,'m','GG1 §9.2.3(2), Fig. 42',IN],['Shear key front face from toe','x_k',f(Ck.KG?Ck.KG.xk:+S.skx),'m','GG1 §9.2.3(2)',IN]]:[]),
   ['Concrete volume per m run','V_c',f(R0.vol,3),'m³/m','–',DV]];
@@ -914,7 +987,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  const w5=S.wo?windCalc():null;
  const r4=['Groundwater',['Retained design water level','WL_r',Ck.wb>0?f(Ck.Wb):'none','mPD','GG1 Ch. 8 / §9.2',S.wl=='0'?'drained by weepholes':S.wl=='c'?'custom level':`${f(+S.wl*100,0)} % of H`],
   ['Front design groundwater level','WL_f',S.fon?f(+S.fw):'–','mPD','–',S.fon?IN:'–'],['Uplift on base','U',f(sk.U),'kN/m','linear toe → heel',DV],
-  'Surcharge and line loads',['Uniform surcharge beyond '+(G.hl>0?'heel':'wall'),'q_out',f(q,1),'kPa',QCAT[S.qcat][0],'variable; earth pressure only'],...(G.hl>0?[['Uniform surcharge on heel','q_in',f(qIn(),1),'kPa','DIL Table 3.17','variable; bearing only']]:[]),
+  'Surcharge and line loads',['Uniform surcharge beyond '+(G.Lw>0?'heel':'wall'),'q_out',f(q,1),'kPa',QCAT[S.qcat][0],'variable; earth pressure only'],...(G.hl>0?[['Uniform surcharge on heel','q_in',f(qIn(),1),'kPa','DIL Table 3.17','variable; bearing only']]:[]),
   ...(Ck.LL?[['Vertical line load (at x from '+(G.hl>0?'virtual back':'wall back')+')','Q1',`${f(Ck.LL.Qv,1)} @ x = ${f(Ck.LL.x)}`,'kN/m · m','GG1 §7.3.3, Fig. 29(a)',`Ph = ${f(Ck.LL.Pv,2)} kN/m`],['Horizontal line load','Qh',f(Ck.LL.Qh,1),'kN/m','GG1 §7.3.6, Fig. 29(c)',`Ph = ${f(Ck.LL.Ph,2)} kN/m`]]:[]),
   'Wall-top loads',['Fence wind load','F_w',w5?f(w5.F,2):'OFF','kN/m',w5?'Wind Code 2019 Eq 2-3a':'–',w5?`h = ${S.wh} m, φ = ${S.wsd}, P = ${f(w5.P,3)} kPa`:'–'],
   ['Barrier line load','F_b',S.bro?f(brVal(),2):'OFF','kN/m',S.bro?'CoP DIL 2011 Table 3.13':'–',S.bro?`at ${f(Math.min(1.1,+S.bhb))} m above wall top`:'–'],['Top-load cases','–','none / wind / barrier','–','CoP DIL 2011 Cl 3.8.1.1','worst governs'],
@@ -941,7 +1014,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   S.skon?`Sliding: shear key ${f(+S.skd)} m deep × ${f(+S.skw)} m wide – GG1 Fig. 42 mechanism 1 (horizontal plane through the key bottom; undisturbed foundation soil φ′ = ${S.f.phi}°, c′ = ${S.f.c} kPa; δb = φcv′ on the key base).`:`Base friction: δb = φcv′ = ${phiCv()}° (GG1 §5.12); base adhesion taken as zero; no shear key.`,
   ...(!P&&S.fon?[`Bearing (CoP Foundations 2017 Cl 2.2.4): qo from ${S.dfm=='ogl'?`original ground level +${f(+S.ogl)} mPD before excavation`:'front soil level (unplanned excavation excluded)'}; q in qu from permanent front soil only, depth ≤ min(3 m, B).`]:[]),
   `Groundwater: hydrostatic; retained design WL ${Ck.wb>0?f(Ck.Wb)+' mPD':'none (drained)'}${S.fon?`, front design GWL ${f(+S.fw)} mPD`:''}; uplift varies linearly from toe to heel.`,
-  `Surcharge: q_outside ${f(qVal(),1)} kPa (earth pressure only)${G.hl>0?`; q_inside ${f(qIn(),1)} kPa on heel, not stabilising, included in bearing`:''}; surcharge treated as a variable action.`,
+  `Surcharge: q_outside ${f(qVal(),1)} kPa (earth pressure only)${G.Lw>0?`; q_inside ${f(qIn(),1)} kPa on heel, not stabilising, included in bearing`:''}; surcharge treated as a variable action.`,
   ...(Ck.LL?[`Line loads: GG1 Fig. 29 (Terzaghi 1953, rigid wall) – Q1 = ${f(Ck.LL.Qv,1)} kN/m and Qh = ${f(Ck.LL.Qh,1)} kN/m at x = ${f(Ck.LL.x)} m; treated as variable actions.`]:[]),
   `Wall-top loads: ${S.wo?'fence wind (Wind Code 2019)':''}${S.wo&&S.bro?' and ':''}${S.bro?'barrier load (DIL 2011 Table 3.13)':''}${!S.wo&&!S.bro?'none':' – separate load cases, worst governs (DIL Cl 3.8.1.1)'}.`,
   `Stability: ${P?`Geoguide 1 partial factors (γm = ${S.gm}, γf,Q = ${S.gq}) applied to soil strength before deriving K, δ and δb`:`CoP Foundations 2017 global factors of safety, ${fcF().lab} (sliding ${f(fcF().Fsw,1)} × H(groundwater) + ${f(+S.Fs,1)} × H(other); overturning ${f(+S.Fow,1)} × M(wind) + ${f(fcF().Fog,1)} × M(groundwater) + ${f(+S.Fo,1)} × M(other); uplift ${f(fcF().Fu,1)}; bearing ${f(+S.Fb,1)})`}${S.gpon?`; project-specific factor γproj = ${f(Math.max(1,+S.gpv||1),2)} (${esc(S.gpsrc||'source not stated')})`:''}; bearing capacity per GG1 Fig. A2 / FC 2017 Table 2.3 (strip footing); middle-third rule GG1 §9.2.4.`,
@@ -965,14 +1038,14 @@ function renderTools(){const el=$('tl');if(!window.__RES){el.innerHTML='<p class
  if(keep){const n=el.querySelector(`[data-tp="${keep}"]`);if(n)n.focus()}}
 const uBar=(lab,x)=>{const ok=x<=1+1e-9,w=Number.isFinite(x)?Math.min(100,x*100/1.5):100;return`<div><span class=mu>${lab}</span><br><b style="color:${ok?'var(--ok)':'var(--no)'}">${Number.isFinite(x)?f(100*x,0)+' %':'∞'}</b><div class=bar><i style="width:${f(w,1)}%;background:${ok?'var(--ok)':'var(--no)'}"></i></div></div>`};
 /* ---- 🎯 optimiser ---- */
-function optHTML(){const G1=isG()&&!S.st.length,ty=S.ty,vars=G1?'block core width':[ty!='L'?'toe':null,ty!='Li'?'heel':null].filter(Boolean).join(' + ')+(TL.optTb?' + base thickness':'');
+function optHTML(){const G1=isG(),ty=S.ty,vars=G1?'block top width b_t (batters and lifts kept)':[ty!='L'?'toe':null,ty!='Li'?'heel':null].filter(Boolean).join(' + ')+(TL.optTb?' + base thickness':'');
  return`<div class=tool><h3>🎯 Auto-Optimizer – minimum concrete volume</h3><p class=mu>Wall height, levels, stem / lift sizes and soil parameters are kept. The tool searches ${vars} (0.05 m resolution) for the smallest concrete volume that passes every check of the selected method (${S.acc=='gg1'?'Geoguide 1 partial factors':'CoP Foundations 2017 global FOS'}): sliding${S.skon?' (shear key)':''}, overturning, bearing${S.acc=='gg1'?'':', uplift'} and the middle-third rule (GG1 §9.2.4).</p>
  <div class=row>${G1?'':`<label class=ck><input type=checkbox data-tp=opttb${TL.optTb?' checked':''}> also optimise base thickness between</label><label><input type=number step=0.05 data-tp=tbmin value=${TL.tbMin}>–</label><label><input type=number step=0.05 data-tp=tbmax value=${TL.tbMax}> m</label>`}
  <label class=ck><input type=checkbox data-tp=optrc${TL.optRc?' checked':''}> also require structural checks (current bars)</label></div>
  <div class=row><button class=pri data-a=opt${TL.busy?' disabled':''}>✨ Auto-Optimize Geometry</button><span class=mu id=optmsg>${TL.optMsg}</span></div><div class=prog><i id=optbar></i></div>${TL.opt?optRes(TL.opt):''}</div>`}
 function optRes(o){if(o.none)return`<p class=err>No passing geometry found within the search range (toe / heel ≤ ${f(o.Lmax)} m${o.tbs?`, base ${f(o.tbs[0])}–${f(o.tbs[o.tbs.length-1])} m`:''}). Increase the stem / base size or review the loading.</p>`;
  const c=o.cur,b=o.best,G1=o.G1,stale=JSON.stringify(S)!==o.key,row=(n,a,bb,d=2)=>[n,typeof a=='number'?f(a,d):a,typeof bb=='number'?f(bb,d):bb];
- const rows=[...(G1?[row('Block core width (m)',c.gw,b.gw)]:[row('Toe length Lt (m)',c.Lt,b.Lt),row('Heel length Lh (m)',c.Lh,b.Lh),row('Base thickness tb (m)',c.tb,b.tb)]),row('Base width B (m)',c.B,b.B),row('Concrete volume (m³/m)',c.vol,b.vol,3),
+ const rows=[...(G1?[row('Block top width b_t (m)',c.gw,b.gw)]:[row('Toe length Lt (m)',c.Lt,b.Lt),row('Heel length Lh (m)',c.Lh,b.Lh),row('Base thickness tb (m)',c.tb,b.tb)]),row('Base width B (m)',c.B,b.B),row('Concrete volume (m³/m)',c.vol,b.vol,3),
   ...['sl','ot','br','up','ec'].filter(k=>k!='up'||S.acc!='gg1').map(k=>[UN[k]+' utilisation',c.m.err?'–':(Number.isFinite(c.m[k])?f(100*c.m[k],0)+' %':'∞')+(c.m[k]>1+1e-9?' ✗':''),f(100*b.m[k],0)+' %']),
   ['Result',c.m.err?'input error':c.m.okAll?lp(true):lp(false),lp(true)]];
  return`${stale?'<p class=warn>Design inputs have changed since this run – re-run the optimiser.</p>':''}<div class=tw><table><thead><tr><th>Item</th><th>Current</th><th>Optimised</th></tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
@@ -984,13 +1057,13 @@ async function runOpt(){if(TL.busy)return;TL.busy=1;TL.opt=null;TL.optMsg='Searc
   Lmax=+Math.max(2*H+2,4).toFixed(2),stp=.05,r2=v=>+(Math.round(v/stp)*stp).toFixed(2);
  const tbs=G1||!TL.optTb?null:(()=>{const a=[],lo=Math.max(.2,Math.min(TL.tbMin,TL.tbMax)),hi=Math.max(TL.tbMin,TL.tbMax);for(let t=lo;t<=hi+1e-9;t+=stp)a.push(r2(t));return a})();
  let n=0,best=null;const t0=performance.now(),tot=(tbs?tbs.length:1)*((useT&&useH)?(Lmax/.25+12)*10:12);
- const mk=(Lt,Lh,tb,gw)=>{const t=structuredClone(base);if(useT)t.Lt=Lt;if(useH)t.Lh=Lh;if(tb!=null)t.tb=tb;if(G1)t.gB=gw;return t};
+ const mk=(Lt,Lh,tb,gw)=>{const t=structuredClone(base);if(useT)t.Lt=Lt;if(useH)t.Lh=Lh;if(tb!=null)t.tb=tb;if(G1)t.gBt=gw;return t};
  const test=async t=>{n++;if(n%12==0){const b=$('optbar');if(b)b.style.width=Math.min(99,100*n/tot)+'%';await yieldUI()}const m=lean(t);return m.err?null:m},ok=m=>!!m&&m.okAll;
  const minVar=async(make,lo,hi)=>{let mh=await test(make(hi));if(!ok(mh))return null;const ml=await test(make(lo));if(ok(ml))return{v:lo,m:ml};
   while(hi-lo>stp+1e-9){const mid=r2((lo+hi)/2);if(mid<=lo+1e-9||mid>=hi-1e-9)break;const mm=await test(make(mid));if(ok(mm)){hi=mid;mh=mm}else lo=mid}return{v:r2(hi),m:mh}};
  const consider=(t,m,rec)=>{if(TL.optRc){const fm=fullM(t);if(fm.err||!fm.ok)return}if(!best||m.vol<best.vol-1e-9||(Math.abs(m.vol-best.vol)<1e-9&&m.G.B<best.B))best={...rec,m,vol:m.vol,B:m.G.B}};
  try{for(const tb of(tbs||[null])){
-  if(G1){const r=await minVar(v=>mk(0,0,null,v),Math.max(.3,Math.min(+S.gBt,+S.gB)),Lmax);if(r)consider(mk(0,0,null,r.v),r.m,{gw:r.v});continue}
+  if(G1){const r=await minVar(v=>mk(0,0,null,v),(()=>{const n=S.st.length,s=S.st[n-1];return Math.max(.3,n?(+s.of||0)+(+s.t):.3)})(),Lmax);if(r)consider(mk(0,0,null,r.v),r.m,{gw:r.v});continue}
   if(useT&&useH){let bt=null;
    for(let Lt=0;Lt<=Lmax+1e-9;Lt+=.25){const L=r2(Lt);if(bt&&L+G0.tl>=bt.m.G.B)break;const r=await minVar(v=>mk(L,v,tb),0,Lmax);if(r&&(!bt||r.m.vol<bt.m.vol))bt={Lt:L,Lh:r.v,m:r.m}}
    if(!bt)continue;
@@ -1000,9 +1073,9 @@ async function runOpt(){if(TL.busy)return;TL.busy=1;TL.opt=null;TL.optMsg='Searc
   else if(useT){const r=await minVar(v=>mk(v,0,tb),0,Lmax);if(r)consider(mk(r.v,0,tb),r.m,{Lt:r.v,Lh:0,tb:tb??+base.tb})}}}
  catch(e){TL.optMsg='Optimiser error: '+e.message}
  const cm=lean(structuredClone(base));
- TL.opt=best?{key,G1,n,ms:performance.now()-t0,cur:{Lt:G0.Lt,Lh:G0.hl,tb:+base.tb,gw:+base.gw,B:G0.B,vol:cm.err?NaN:cm.vol,m:cm},best:{...best,tb:best.tb??+base.tb}}:{none:1,Lmax,tbs,key};
+ TL.opt=best?{key,G1,n,ms:performance.now()-t0,cur:{Lt:G0.Lt,Lh:G0.hl,tb:+base.tb,gw:+base.gBt,B:G0.B,vol:cm.err?NaN:cm.vol,m:cm},best:{...best,tb:best.tb??+base.tb}}:{none:1,Lmax,tbs,key};
  TL.busy=0;TL.optMsg=best?'Done.':'No solution.';renderTools()}
-function optApply(){const b=TL.opt&&TL.opt.best;if(!b)return;if(TL.opt.G1)S.gB=b.gw;else{if(S.ty!='L')S.Lt=b.Lt;if(S.ty!='Li')S.Lh=b.Lh;S.tb=b.tb}ri();sv();rr();msg('Optimised geometry applied')}
+function optApply(){const b=TL.opt&&TL.opt.best;if(!b)return;if(TL.opt.G1)S.gBt=b.gw;else{if(S.ty!='L')S.Lt=b.Lt;if(S.ty!='Li')S.Lh=b.Lh;S.tb=b.tb}ri();sv();rr();msg('Optimised geometry applied')}
 /* ---- 🌊 stress test ---- */
 function stressS(){const t=structuredClone(S);if(TL.st.wl!=null){t.wl='c';t.wlZ=TL.st.wl}if(TL.st.q!=null){t.qcat='c';t.q=TL.st.q}return t}
 function stressHTML(){const Zb=+S.Zb,Hr=+S.Hr,wl=TL.st.wl??wlLev(),q0=qVal(),q=TL.st.q??q0;
@@ -1094,19 +1167,24 @@ document.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.t
  const p=t.dataset&&t.dataset.p;if(!p||(t.type=='number'&&t.value===''))return;
  const v=t.type=='checkbox'?+t.checked:(t.type=='number'||t.type=='range'||t.dataset.n)?+t.value:t.value;
  if(p=='kam'&&v=='m'){S.kaM=+(LAST.Ka||.33).toFixed(3)}if(p=='kpm'&&v=='m'){S.kpM=+(LAST.kp||3).toFixed(2)}if(p=='kom'&&v==1)S.koM=+koAuto().toFixed(3);
- if(p=='ty'){if((v=='G'||v=='Li')&&S.kam=='r')S.kam='c';if((v=='T'||v=='L')&&S.kam=='c'&&S.dwm=='auto')S.kam='r';if(v=='G'&&S.ty!='G'){S.gc=23;const Hh=Math.max(1,+S.Hr-(+S.Zb)),bh=+(.8*Hh).toFixed(2),bw=+Math.max(1,.7*Hh).toFixed(2),tw=+Math.max(.6,.3*Hh).toFixed(2);Object.assign(S,{gB:bw,gBt:tw,gBh:bh,gbat:'front'});S.st=[{t:+Math.min(.6,tw).toFixed(2),top:+S.Hr,bot:+S.Zb+bh,rc:0}]}if(v!='G'&&S.ty=='G'){S.gc=24;S.tb=.6;S.st=[{t:.4,top:+S.Hr,bot:+S.Zb+.6,rc:1}];S.Lt=1.2;S.Lh=Math.max(1,+(.5*(S.Hr-S.Zb)).toFixed(2))}}
+ if(p=='ty'){if((v=='G'||v=='Li')&&S.kam=='r')S.kam='c';if((v=='T'||v=='L')&&S.kam=='c'&&S.dwm=='auto')S.kam='r';if(v=='G'&&S.ty!='G'){S.gc=23;const Hh=Math.max(1,+S.Hr-(+S.Zb)),bh=+(.8*Hh).toFixed(2),bw=+Math.max(1,.7*Hh).toFixed(2),tw=+Math.max(.6,.3*Hh).toFixed(2);Object.assign(S,{gBt:tw,gbf:+(bw-tw).toFixed(2),gbr:0,gBh:bh});S.st=[{t:+Math.min(.6,tw).toFixed(2),fb:0,rb:0,of:0,top:+S.Hr,bot:+S.Zb+bh,rc:0}]}if(v!='G'&&S.ty=='G'){S.gc=24;S.tb=.6;S.st=[{t:.4,fb:0,rb:0,of:0,top:+S.Hr,bot:+S.Zb+.6,rc:1}];S.Lt=1.2;S.Lh=Math.max(1,+(.5*(S.Hr-S.Zb)).toFixed(2))}}
  if(p=='fy'){S.rmin=+v==250?.24:.13;S.grho=+v==250?.30:.25}
  if(p=='wl'&&v=='c')S.wlZ=+wlLev().toFixed(2);
  if(p=='skon'&&v){const G=geo();if(!(+S.skx>=0&&+S.skx+(+S.skw)<=G.B))S.skx=+G.Lt.toFixed(2)}
  const wsdX=p=='wsd'&&((+S.wsd>=.8)!=(+v>=.8));
- sp(p,v);if(wsdX||RERENDER.has(p)||/^st\.\d+\.rc$/.test(p)||p=='fon'){const keep=t.type=='number'||t.type=='text';ri();if(keep){const n=document.querySelector(`#in [data-p="${p}"]`);if(n){n.focus({preventScroll:true});if(t.type=='number'){n.value='';n.value=t.value}}}}sv();rr()});
+ setP(p,v);if(wsdX||RERENDER.has(p)||/^st\.\d+\.rc$/.test(p)||p=='fon'){const keep=t.type=='number'||t.type=='text';ri();if(keep){const n=document.querySelector(`#in [data-p="${p}"]`);if(n){n.focus({preventScroll:true});if(t.type=='number'){n.value='';n.value=t.value}}}}sv();rr()});
 // figure inputs commit on Enter / blur (change) so typing is not interrupted by the re-render
 document.addEventListener('change',e=>{const t=e.target;if(!t.classList||!t.classList.contains('fi'))return;const v=+t.value;if(t.value===''||!Number.isFinite(v))return;const p=t.dataset.p;setP(p,v);ri();sv();rr();msg(`Figure edit: ${p.replace('@','')} = ${v}`)});
 document.addEventListener('keydown',e=>{const t=e.target;if((e.ctrlKey||e.metaKey)&&!e.altKey&&!(t&&t.type=='text')){const k=e.key.toLowerCase();if(k=='s'){e.preventDefault();fileSave(e.shiftKey);return}if(k=='o'){e.preventDefault();fileOpen();return}if(k=='z'||k=='y'){e.preventDefault();if(t&&t.blur&&t!==document.body)t.blur();hisGo(k=='y'||e.shiftKey?1:-1);return}}if(e.key=='Enter'&&t.classList&&t.classList.contains('fi')){e.preventDefault();t.blur()}if(e.key=='Escape'&&!$('mdl').hidden)mclose()});
 document.addEventListener('click',e=>{const jr=e.target.closest('tr[data-jump]');if(jr&&!e.target.closest('input')){const t={rc:'r7',cover:'r7',plain:'r7'}[jr.dataset.jump]||'r6',tb=document.querySelector(`.tabs button[data-t="${t}"]`);if(tb)tb.click();return}
  const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,i=+b.dataset.i;
- if(a=='add'){const bt=+S.Zb+(+S.tb);if(!S.st.length){S.st.push({t:isG()?+Math.min(.5,+S.gBt).toFixed(2):(+S.gw||1),top:Math.max(+S.Hr,bt+.5),bot:bt,rc:0})}else{const l=S.st[S.st.length-1];l.bot=+(l.top-Math.max(.3,(l.top-bt)/2)).toFixed(2);S.st.push({t:+(l.t+.15).toFixed(2),top:l.bot,bot:bt,rc:isG()?0:1})}}
- else if(a=='del'){if(!isG()&&S.st.length<2)return;if(i==0&&S.st.length>1){S.st[1].top=S.st[0].top}S.st.splice(i,1);for(let j=i;j<=S.st.length;j++){S.rc['s'+j]=S.rc['s'+(j+1)];if(!S.rc['s'+j])delete S.rc['s'+j]}}
+if(a=='add'){const bt=+S.Zb+(+S.tb),n=S.st.length;if(!n){S.st.push({t:isG()?+Math.min(.5,+S.gBt).toFixed(2):1,fb:0,rb:0,of:0,top:Math.max(+S.Hr,bt+.5),bot:bt,rc:0})}
+  else{const l=S.st[n-1];l.bot=+(l.top-Math.max(.3,(l.top-bt)/2)).toFixed(2);let t=+(l.t+.15).toFixed(2);const of=+l.of||0;if(isG())t=+Math.max(+l.t,Math.min(t,+S.gBt-of)).toFixed(2);S.st.push({t,fb:0,rb:0,of,top:l.bot,bot:bt,rc:isG()?0:1});l.of=0}}
+ else if(a=='del'){const n=S.st.length;if(!isG()&&n<2)return;const old=stemGeo().map(g=>g.xf0),Bo=geo().B;
+  if(i==0&&n>1){S.st[1].top=S.st[0].top}S.st.splice(i,1);old.splice(i,1);for(let j=i;j<=S.st.length;j++){S.rc['s'+j]=S.rc['s'+(j+1)];if(!S.rc['s'+j])delete S.rc['s'+j]}
+  // keep every remaining stem / lift at its position on the drawing
+  sync();const m=S.st.length;for(let k=m-1;k>=0;k--){const s=S.st[k],d=old[k]-stemGeo()[k].xf0;if(Math.abs(d)<1e-9)continue;
+   if(!isG()&&k==m-1){if(S.ty!='L')S.Lt=+Math.max(0,+S.Lt+d).toFixed(4);if(S.ty!='Li')S.Lh=+Math.max(0,+S.Lh+Bo-geo().B).toFixed(4)}else s.of=+((+s.of||0)+d).toFixed(4)}}
  else if(a=='reset'){modal('🔄 Reset to default?',`<p>${SNAP?'All inputs return to the values saved in this snapshot file.':'All inputs return to the factory defaults.'} The shared-link hash and the inputs saved in this browser are cleared. Pinned scenarios are kept.</p>`,[['mclose','Cancel'],['doreset','Reset',1]]);return}
  else if(a=='doreset'){doReset();return}
  else if(a=='mclose'){mclose();return}
@@ -1121,7 +1199,7 @@ document.addEventListener('click',e=>{const jr=e.target.closest('tr[data-jump]')
  else if(a=='print'){if(validate().E.length){msg('Fix input errors before export');return}window.print();return}
  else if(a=='opt'){runOpt();return}
  else if(a=='optapply'){optApply();return}
- else if(a=='optpin'){const o=TL.opt;if(!o||!o.best)return;const t=structuredClone(S);if(o.G1)t.gB=o.best.gw;else{t.Lt=o.best.Lt;t.Lh=o.best.Lh;t.tb=o.best.tb}pinNow(t,`${String.fromCharCode(65+TL.pins.length)} – optimised ${TYN[S.ty]}`);return}
+ else if(a=='optpin'){const o=TL.opt;if(!o||!o.best)return;const t=structuredClone(S);if(o.G1)t.gBt=o.best.gw;else{t.Lt=o.best.Lt;t.Lh=o.best.Lh;t.tb=o.best.tb}pinNow(t,`${String.fromCharCode(65+TL.pins.length)} – optimised ${TYN[S.ty]}`);return}
  else if(a=='pin'){pinNow(S,TL.pname?`${String.fromCharCode(65+TL.pins.length)} – ${TL.pname}`:'');return}
  else if(a=='unpin'){TL.pins.splice(i,1);TL.pins.forEach((p,j)=>p.name=p.name.replace(/^[A-C] – /,String.fromCharCode(65+j)+' – '));savePins();renderTools();return}
  else if(a=='loadpin'){const p=TL.pins[i];if(!p)return;S=fillDef(structuredClone(p.S));ri();sv();rr();msg('Loaded scenario '+p.name);return}
@@ -1131,14 +1209,16 @@ document.addEventListener('click',e=>{const jr=e.target.closest('tr[data-jump]')
  ri();sv();rr()});
 /* figure drag handles: transform frozen during the drag (window.FZ) so the picture does not rescale under the pointer */
 let DRG=null,DRAF=0;
+// keep the figure under the pointer when the summary above it changes height during a drag
+function keepFig(fn){const f=$('fg');if(!f){fn();return}const y0=f.getBoundingClientRect().top;fn();let d=f.getBoundingClientRect().top-y0;if(Math.abs(d)<=.5)return;const M=document.querySelector('main'),s0=M.scrollTop;M.scrollTop+=d;d-=M.scrollTop-s0;if(Math.abs(d)>.5)window.scrollBy(0,d)}
 document.addEventListener('pointerdown',e=>{const g=e.target.closest&&e.target.closest('#fg [data-h]');if(!g||e.button)return;const h=(window.__HD||[])[+g.dataset.h],sv0=g.ownerSVGElement;if(!h||!sv0)return;e.preventDefault();
  const r=sv0.getBoundingClientRect(),vb=sv0.viewBox.baseVal,k=r.width/vb.width,FV=window.__FV;window.FZ={xl:FV.xl,y0:FV.y0,s:FV.s,xb0:FV.xb,anc:h.anc};
- DRG={h,px:e.clientX,py:e.clientY,ppm:k*FV.s,v:h.v};document.body.classList.add('drg');let t=$('dtip');if(!t){t=document.createElement('div');t.id='dtip';document.body.appendChild(t)}});
+ DRG={h,px:e.clientX,py:e.clientY,ppm:k*FV.s,v:h.v};document.body.classList.add('drg');['bn','sm'].forEach(id=>{const x=$(id);if(x)x.style.minHeight=x.offsetHeight+'px'});let t=$('dtip');if(!t){t=document.createElement('div');t.id='dtip';document.body.appendChild(t)}});
 window.addEventListener('pointermove',e=>{if(!DRG)return;const{h,px,py,ppm}=DRG,d=h.ax=='x'?(e.clientX-px)/ppm:-(e.clientY-py)/ppm,st=e.altKey?.01:.05;
  let v=Math.round((h.v+h.k*d)/st)*st;v=+cl(v,h.min,h.max).toFixed(3);const t=$('dtip');t.style.display='block';t.style.left=(e.clientX+14)+'px';t.style.top=(e.clientY+12)+'px';
  t.textContent=`${h.lab} = ${v.toFixed(e.altKey?2:2)}${h.p=='@WL'||h.p=='fw'||h.p.endsWith('.top')||h.p.endsWith('.bot')?' mPD':' m'}`;
- if(v===DRG.v)return;DRG.v=v;setP(h.p,v);if(!DRAF)DRAF=requestAnimationFrame(()=>{DRAF=0;rr()})});
-const dragEnd=()=>{if(!DRG)return;const{h,v}=DRG;DRG=null;window.FZ=null;document.body.classList.remove('drg');const t=$('dtip');if(t)t.style.display='none';if(DRAF){cancelAnimationFrame(DRAF);DRAF=0}ri();sv();rr();msg(`Figure drag: ${h.lab} = ${v}`)};
+ if(v===DRG.v)return;DRG.v=v;setP(h.p,v);if(!DRAF)DRAF=requestAnimationFrame(()=>{DRAF=0;keepFig(rr)})});
+const dragEnd=()=>{if(!DRG)return;const{h,v}=DRG;DRG=null;window.FZ=null;document.body.classList.remove('drg');const t=$('dtip');if(t)t.style.display='none';if(DRAF){cancelAnimationFrame(DRAF);DRAF=0}keepFig(()=>{ri();sv();rr();['bn','sm'].forEach(id=>{const x=$(id);if(x)x.style.minHeight=''})});msg(`Figure drag: ${h.lab} = ${v}`)};
 window.addEventListener('pointerup',dragEnd);window.addEventListener('pointercancel',dragEnd);
 window.addEventListener('beforeprint',()=>{if(!$('ps').innerHTML)rr()});
 const hh=()=>{const h=document.querySelector('header');if(h)document.documentElement.style.setProperty('--hh',h.offsetHeight+'px')};window.addEventListener('resize',hh);hh();
