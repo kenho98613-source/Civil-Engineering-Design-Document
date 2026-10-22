@@ -106,10 +106,10 @@ function fillDef(o){const gmig=o.ty=='G'&&o.gB==null,m3=o.geo3==null;(function f
    if(n&&!bk){st[n-1].of=+(Bt-(+st[n-1].t)).toFixed(4);for(let i=n-2;i>=0;i--)st[i].of=+((+st[i+1].t)-(+st[i].t)).toFixed(4)}} // lifts were flush with the vertical back face
   else for(let i=n-2;i>=0;i--){const b=st[i+1];st[i].of=+((+b.t-b.fb)-(+st[i].t)).toFixed(4)} // stems were flush at the back face
   delete o.gbat;delete o.gtw;delete o.gw;o.geo3=1}
- if(o.f){if(o.f.cvm=='v')o.f.cv=30;else if(o.f.cvm=='g')o.f.cv=34;o.f.cvm='c'}o.gpon=0;o.lon=0;o.adv=1;if(o.acc!='fc'&&o.acc!='gg1')o.acc='fc';o.gmo='B';if(o.ver!==9){o.rck=o.rck||'ko'}o.ver=9;return o}
+ if(o.f){if(o.f.cvm=='v')o.f.cv=30;else if(o.f.cvm=='g')o.f.cv=34;o.f.cvm='c'}if(o.lon&&(+o.lQv>0||+o.lQh>0))(window.__DROP=window.__DROP||[]).push(`line load Q1 = ${o.lQv} kN/m, Qh = ${o.lQh} kN/m`);if(o.gpon&&+o.gpv!=1)(window.__DROP=window.__DROP||[]).push(`project factor γproj = ${o.gpv}`);o.gpon=0;o.lon=0;o.adv=1;if(o.acc!='fc'&&o.acc!='gg1')o.acc='fc';o.gmo='B';if(o.ver!==9){o.rck=o.rck||'ko'}o.ver=9;return o}
 let S;try{S=JSON.parse(localStorage.getItem(SKEY))}catch(e){}
 if(!S&&!SNAP){for(const k of['rw8','rw7']){try{const o=JSON.parse(localStorage.getItem(k));if(o&&(o.ver===8||o.ver===7)){S=o;break}}catch(e){}}} // migrate v8 / v7 inputs
-if(!S||![7,8,9].includes(S.ver))S=base0();fillDef(S);
+if(!S||![7,8,9].includes(S.ver))S=base0();window.__DROP=[];fillDef(S);if(window.__DROP.length)setTimeout(()=>{try{msg('Removed in v9.7, NOT applied: '+window.__DROP.join('; ')+'. Check the design.')}catch(e){}},800);
 const gp=p=>{if(p[0]=='@'){const m=p.match(/^@h\.(\d+)$/),s=m&&S.st[+m[1]];return s?+(+s.top-(+s.bot)).toFixed(3):null}return p.split('.').reduce((o,k)=>o?.[k],S)},sp=(p,v)=>{const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]]??(o[k[i]]={});o[k[k.length-1]]=v},
 msg=t=>{const e=$('sv');if(e)e.textContent=t},
 sv=()=>{try{localStorage.setItem(SKEY,JSON.stringify(S));msg('Autosaved '+new Date().toLocaleTimeString())}catch(e){msg('Autosave unavailable')}hashSync();hisPush()},
@@ -126,7 +126,7 @@ async function fileSave(as){try{const t=rwTxt();
  if(DESK){let p=CURF;if(as||!p){p=await __TAURI__.dialog.save({defaultPath:rwName(),filters:[{name:'Retaining wall project',extensions:['rwall']}]});if(!p)return}
   await __TAURI__.core.invoke('write_text',{path:p,contents:t});CURF=p;document.title=p.split(/[\\/]/).pop()+' – Retaining Wall Checker v9.7';msg('Saved '+p);return}
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'application/json'}));a.download=rwName();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);msg('Saved '+rwName()+' (Downloads)')}catch(e){msg('Save failed: '+e)}}
-function rwLoad(t,name){const o=JSON.parse(t),st=o&&o.S?o.S:o;if(!st||typeof st!='object'||!Array.isArray(st.st))throw new Error('not a .rwall project file');S=fillDef(structuredClone(st));ri();rr();sv();msg('Opened '+name)}
+function rwLoad(t,name){const o=JSON.parse(t),st=o&&o.S?o.S:o;if(!st||typeof st!='object'||!Array.isArray(st.st))throw new Error('not a .rwall project file');window.__DROP=[];S=fillDef(structuredClone(st));ri();rr();sv();msg('Opened '+name+(window.__DROP.length?' – removed in v9.7, NOT applied: '+window.__DROP.join('; ')+'. Check the design.':''))}
 async function fileOpen(){try{if(DESK){const p=await __TAURI__.dialog.open({multiple:false,filters:[{name:'Retaining wall project',extensions:['rwall','json']}]});if(!p)return;rwLoad(await __TAURI__.core.invoke('read_text',{path:p}),p);CURF=p;document.title=String(p).split(/[\\/]/).pop()+' – Retaining Wall Checker v9.7';return}
  const i=document.createElement('input');i.type='file';i.accept='.rwall,.json';i.onchange=()=>{const f=i.files[0];if(f)f.text().then(t=>{try{rwLoad(t,f.name)}catch(e){msg('Could not open: '+e.message)}})};i.click()}catch(e){msg('Open failed: '+e)}}
 /* virtual parameters edited on the figure (derived quantities write back to the base inputs) */
@@ -515,7 +515,7 @@ function validate(){const E=[],W=[],G=geo();
  {const SG=G.SG,m=SG.length;SG.forEach((g,i)=>{if(!isG()&&i==m-1)return;const sup=i<m-1?SG[i+1]:null,a=sup?sup.xf1:Math.max(0,+S.gbf||0),b=sup?sup.xb1:a+Math.max(0,+S.gBt||0),nm=`${isG()?'Lift':'Stem'} ${i+1}`;
   if(g.xf0<a-1e-6||g.xb0>b+1e-6)E.push(`${nm} (x = ${f(g.xf0)} to ${f(g.xb0)} m from toe) is not fully supported by the top of ${sup?(isG()?'Lift ':'Stem ')+(i+2):'the block'} (x = ${f(a)} to ${f(b)} m) – reduce the width or adjust the front offset.`)})}
  if(!(S.tb>0))E.push('Base thickness must be > 0.');
- if(+S.dp<0)E.push('Passive neglect depth cannot be negative.');if(S.acc!='gg1'&&S.fon&&S.dfm=='ogl'&&+S.ogl<+S.Zb)E.push('Original ground level is below the foundation base.');if(S.acc!='gg1'&&S.fon&&S.dfm=='ogl'&&+S.ogl>+S.Hf)W.push('qo based on original ground above the final front level (excavation relief). Justify that this overburden existed before excavation (CoP Foundations 2017 Cl 2.2.4).');if(qVal()<0||+S.qin<0)E.push('Surcharge cannot be negative.');
+ if(+S.dp<0)E.push('Passive neglect depth cannot be negative.');if(S.acc!='gg1'&&S.dfm=='ogl'&&+S.ogl<+S.Zb)E.push('Original ground level is below the foundation base.');if(S.acc!='gg1'&&S.dfm=='ogl'&&+S.ogl>+S.Hf)W.push('qo based on original ground above the final front level (excavation relief). Justify that this overburden existed before excavation (CoP Foundations 2017 Cl 2.2.4).');if(qVal()<0||+S.qin<0)E.push('Surcharge cannot be negative.');
  for(const[k,s]of[['r','Retained'],['f','Foundation']]){if(+S[k].c<0)E.push(`${s} c′ cannot be negative.`);if(!(+S[k].g>0))E.push(`${s} γ must be > 0.`)}
  if(S.acc!='gg1'&&[S.Fs,S.Fo,S.Fow,S.Fb].some(v=>!(+v>=1)))E.push('Factors of safety must be ≥ 1.0.');if(S.acc=='gg1'&&(!(+S.gm>=1)||!(+S.gq>=0)))E.push('Partial factors invalid.');
  if(S.wo&&!(+S.wh>0))E.push('Fence height must be > 0.');if(S.bro&&!(+S.bhb>0))E.push('Barrier height must be > 0.');if(!(+S.gc>0))E.push('Concrete unit weight must be > 0.');
@@ -672,12 +672,12 @@ let FIGN=0;function fig(c){const FI='f'+(++FIGN),f=(v,d)=>d==null?dd(v):F0(v,d),
   if(!ed)return lead+tx(ax,yy,t,an,col,k);
   const xs=an=='end'?ax-ws:an=='middle'?ax-ws/2:ax,xi=xs+t.length*cw+2;
   return lead+tx(ax,yy,full,an,col,k,'prt')+tx(xs,yy,t,'start',col,k,'scr')+`<foreignObject class=fo x="${f(xi,1)}" y="${f(yy-12,1)}" width="48" height="17"><input class=fi type=number step="${ed.st||0.05}" data-p="${ed.p}" value="${dd(ed.v)}" title="Edit – synced with the input panel"></foreignObject>`},
- CONC='fill="#cfd6dd" stroke="#64748b" stroke-width="1.3"',soil=(x1,z1,x2,z2)=>rc(x1,z1,x2,z2,'fill="#f2e8cf"')+rc(x1,z1,x2,z2,'fill="url(#${FI}dots)"'),wat=(x1,z1,x2,z2)=>rc(x1,z1,x2,z2,'fill="#3b82f6" fill-opacity=".16"'),
+ CONC='fill="#cfd6dd" stroke="#64748b" stroke-width="1.3"',soil=(x1,z1,x2,z2)=>rc(x1,z1,x2,z2,'fill="#f2e8cf"')+rc(x1,z1,x2,z2,`fill="url(#${FI}dots)"`),wat=(x1,z1,x2,z2)=>rc(x1,z1,x2,z2,'fill="#3b82f6" fill-opacity=".16"'),
  ln=(x1,x2,z,col,d)=>`<line x1="${f(X(x1),1)}" x2="${f(X(x2),1)}" y1="${f(Y(z),1)}" y2="${f(Y(z),1)}" stroke="${col}" stroke-width="1.2"${d?' stroke-dasharray="6 3"':''}/>`,
  PT=pts=>pts.map(p=>f(X(p[0]),1)+','+f(Y(p[1]),1)).join(' ');
  let o=`<svg viewBox="0 0 ${W} ${H}"><defs>${Object.entries(CL).map(([k,v])=>`<marker id="${FI}mk${k}" markerWidth="5" markerHeight="5" refX="4.6" refY="2.5" orient="auto"><path d="M0,0L5,2.5L0,5z" fill="${v}"/></marker>`).join('')}<pattern id="${FI}dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#b8a56f"/><circle cx="6.5" cy="6.5" r=".9" fill="#b8a56f"/></pattern><pattern id="${FI}hat" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0,8L8,0" stroke="#a79f8a" stroke-width=".8"/></pattern><pattern id="${FI}hat2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#8a7f5a" stroke-width="1.1"/></pattern></defs>`;
  const lb=[],fr=[],C=c.C,K=C.P.Kah,q=C.q,pas=C.pasOK;
- o+=rc(xl,y0,xr,Zb,'fill="#e6e0d0"')+rc(xl,y0,xr,Zb,'fill="url(#${FI}hat)"');
+ o+=rc(xl,y0,xr,Zb,'fill="#e6e0d0"')+rc(xl,y0,xr,Zb,`fill="url(#${FI}hat)"`);
  const SP=pts=>pts?`<polygon points="${PT(pts)}" fill="#f2e8cf"/><polygon points="${PT(pts)}" fill="url(#${FI}dots)"/>`:'',WP=pts=>pts?`<polygon points="${PT(pts)}" fill="#3b82f6" fill-opacity=".16"/>`:'',
   reg=(P,side,z1,z2,ztop)=>{if(!(z2>z1+1e-9))return null;const pts=[[pX(P,z2),z2]];for(const p of P)if(p[1]<z2-1e-9&&p[1]>z1+1e-9)pts.push(p);pts.push([pX(P,z1),z1]);const e=side=='b'?B:0;pts.push([e,z1],[e,ztop??z2]);return pts},
   xbH=c.G.xH,xF=pX(c.G.fr,Hf);
