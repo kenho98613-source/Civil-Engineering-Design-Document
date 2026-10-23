@@ -95,7 +95,7 @@ const KEY='rw9',def={ver:9,pn:'',dsn:'',chk:'',jno:'',
  bro:0,brc:'1.5',brF:1.5,bhb:1.1,
  gc:24,fcu:40,fy:500,cvr:50,cvf:40,cvt:50,cvb:75,cbs:'blind',exr:1,exf:2,ext:1,exb:1,rmin:.13,
  rck:'ko',ocr:1,kom:0,koM:.5,hnr:0,cpb:0,cb:{v:{d:12,s:200},h:{d:12,s:200},t:{d:12,s:200},l:{d:12,s:200}},
- gmo:'B',gmr:'none',gB:2.8,gBt:1.2,gbf:1.6,gbr:0,gBh:3.2,geo3:1,heffm:'250',heff:250,gsz:'sz',grho:.25,jmu:.6,mshd:12,mshs:175,
+ gmo:'B',gmr:'none',gB:2.8,gBt:1.2,gbf:1.6,gbr:0,gBh:3.2,geo3:1,heffm:'250',heff:250,gsz:'sz',grho:.25,jmu:.6,jfs:1.5,mshd:12,mshs:175,
  asc:1,xrc:1,rc:{}};
 const SNAP=(window.__SNAP&&window.__SNAP.S)?window.__SNAP:null,SKEY=KEY+(SNAP?':'+SNAP.id:''),base0=()=>structuredClone(SNAP?SNAP.S:def);
 function fillDef(o){const gmig=o.ty=='G'&&o.gB==null,m3=o.geo3==null;(function fill(o,d){for(const k in d){if(o[k]==null)o[k]=structuredClone(d[k]);else if(d[k]&&typeof d[k]=='object'&&!Array.isArray(d[k]))fill(o[k],d[k])}})(o,def);
@@ -483,10 +483,10 @@ function dsg(c){const r=rcv(c.k),rev=c.M<0,bm=rev?{d:r.d3,s:r.s3}:{d:r.d,s:r.s},
 /* ---------------- gravity: plain concrete sections (CoP 6.2.2.3, GG1 §9.2.3(2)) ---------------- */
 // v9.8 Section 7.4: anti-crack surface mesh (detailing only, CoP 9.6.5 / CIRIA C660) – one row per mass concrete section
 function meshSched(PL){if(!isG()||S.gmr!='cc')return[];const d=+S.mshd||12,sp=+S.mshs||175,Ap=Math.PI*d*d/4*1000/sp,rho=+S.grho;
- return PL.map(p=>{const hm=p.h*1000,he=Math.min(hm/2,Math.max(1,hEffMax())),Am=rho/100*1000*he;return{lab:p.lab,hm,he,Am,d,sp,Ap,okA:Ap>=Am-1e-6,okS:sp<=300,ok:Ap>=Am-1e-6&&sp<=300}})}
+ return PL.map(p=>{const hm=p.h*1000,he=Math.min(hm/2,Math.max(1,hEffMax())),Am=rho/100*1000*he;const st=S.st[p.i],Hh=p.blk?+S.gBh:(st?+st.top-(+st.bot):0);return{lab:p.lab,Hh,hm,he,Am,d,sp,Ap,okA:Ap>=Am-1e-6,okS:sp<=300,ok:Ap>=Am-1e-6&&sp<=300}})}
 // v9.8 Step 13: tension anchorage of starter bars (CoP 2013 Cl 8.4, eq 8.3, Table 8.3)
-function anch(r){const i=+String(r.k).slice(1),s=S.st[i],phi=r.bm.d,fy=+S.fy,fcu=Math.min(+S.fcu,60),be=fy==250?.28:.5,fb=be*Math.sqrt(fcu),lb=.87*fy*phi/(4*fb),n=Math.ceil(lb/phi-1e-9),L=n*phi,emb=Math.ceil(L/50)*50,av=s?(+s.bot-(+S.Zb))*1000:0;
- return{phi,fy,fcu,be,fb,lb,n,L,emb,av,ok:av>=emb-1e-6}}
+function anch(r){const i=+String(r.k).slice(1),s=S.st[i],phi=r.bm.d,fy=+S.fy,fcu=Math.min(+S.fcu,60),be=fy==250?.28:.5,fb=be*Math.sqrt(fcu),lb=.87*fy*phi/(4*fb),n=Math.ceil(lb/phi-1e-9),L=n*phi,emb=Math.ceil(L/50)*50,nb=S.st[i+1],rcB=!!(nb&&nb.rc),av=nb?(+nb.top-(+nb.bot))*1000:+S.gBh*1000,into=nb?(nb.rc?`RC Stem (lift ${i+2}) below (lap / anchorage in RC)`:`mass concrete lift ${i+2} below`):'mass concrete block';
+ return{phi,fy,fcu,be,fb,lb,n,L,emb,av,rcB,into,ok:av>=emb-1e-6}}
 function plainChecks(){if(!isG())return[];const G=geo(),Pk=params('k'),ko=koVal(),q=qSide(),Rs=S.r,Hr=+S.Hr,C0=comp(Pk,null),{gR}=C0,h1=C0.hs0-C0.wb,bo=S.bon,
  KS=S.rck=='ka'?[[Pk.Kah,Pk.d,'Ka']]:S.rck=='ko'?[[ko,0,'Ko']]:[[Pk.Kah,Pk.d,'Ka'],[ko,0,'Ko']], // same earth pressure basis as Section 7.1 (GG1 §10.2, Table 20)
  w=S.wo?windCalc():null,b=S.bro?barCalc():null,out=[],SL=secLoads(G),secs=[];
@@ -506,9 +506,9 @@ function plainChecks(){if(!isG())return[];const G=geo(),Pk=params('k'),ko=koVal(
     const eU1=(MovU-Mw)/Nw,eU4=(MovU-1.4*Mw)/(1.4*Nw),hmm=h*1000,ea=le*le/(2500*h)*1000;
     const cap=(N,e)=>{const ex=Math.max(Math.abs(e)*1000,hmm/20,20);return{ex,c1:.3*(hmm-2*ex)*S.fcu,c2:.3*(hmm-2*(ex+ea))*S.fcu,N:N}};
     const a=cap(Nw,eU1),c=cap(1.4*Nw,eU4),ur=x=>{const m=Math.min(x.c1,x.c2);return m>0?x.N/m:Infinity},ua=Math.max(ur(a),ur(c));
-    const vav=HU/hmm,vlim=S.fcu<25?.3:.45,shOK=HU<Nw/4||vav<vlim,mu=(He+Hq+ht)/Nw,mua=+S.jmu>0?+S.jmu:.6;
-    const r={...sc,i:sc.i,s:S.st[sc.i]||null,h,Ls,lo,le,sl:le/h,Nw,Mw,He,Hq,mt,eK,eU1,eU4,ea,a,c,ua,HU,vav,vlim,shOK,mu,tk:t.k,kl,Kh,okT:Math.abs(eK)<=h/6+1e-9,okU:ua<=1&&Math.max(a.ex,c.ex)<hmm/2,okSl:le/h<=30,mua,okJ:!sc.jt||mu<=mua+1e-9,Mk:eK*Nw,Hk:He+Hq+ht};
-    r.sev=Math.max(Math.abs(r.eK)/(h/6),ua,shOK?0:vav/vlim,sc.jt?mu/mua:0);if(!wr||r.sev>wr.sev)wr=r}} // governing = highest ratio of any plain-concrete check
+    const vav=HU/hmm,vlim=S.fcu<25?.3:.45,shOK=HU<Nw/4||vav<vlim,mu=(He+Hq+ht)/Nw,mua=+S.jmu>0?+S.jmu:.6,jfs=+S.jfs>=1?+S.jfs:1.5;
+    const r={...sc,i:sc.i,s:S.st[sc.i]||null,h,Ls,lo,le,sl:le/h,Nw,Mw,He,Hq,mt,eK,eU1,eU4,ea,a,c,ua,HU,vav,vlim,shOK,mu,tk:t.k,kl,Kh,okT:Math.abs(eK)<=h/6+1e-9,okU:ua<=1&&Math.max(a.ex,c.ex)<hmm/2,okSl:le/h<=30,mua,jfs,okJ:!sc.jt||jfs*mu<=mua+1e-9,Mk:eK*Nw,Hk:He+Hq+ht};
+    r.sev=Math.max(Math.abs(r.eK)/(h/6),ua,shOK?0:vav/vlim,sc.jt?jfs*mu/mua:0);if(!wr||r.sev>wr.sev)wr=r}} // governing = highest ratio of any plain-concrete check
   out.push(wr)}
  return out}
 
@@ -553,7 +553,7 @@ function validate(){const E=[],W=[],G=geo();
   if(+S.lQv<0||+S.lQh<0)E.push('Line loads cannot be negative.');if(+S.br>0)W.push('Line load: GG1 Fig. 29 is for a level retained surface – β_retained > 0 not covered.');
   W.push('Line load pressures from GG1 Fig. 29 assume a rigid, non-yielding wall (conservative for a yielding wall).')}
  if(S.wl=='c'&&S.bon&&(+S.wlZ<+S.Zb-1e-9||+S.wlZ>+S.Hr+1e-9))W.push('Custom retained WL outside base level – retained ground level; clipped.');
- if(isG()&&S.xrc&&S.gmr=='cc'){if(!(+S.grho>0))E.push('Anti-crack mesh ratio ρ must be > 0.');if(!(+S.mshs>=75&&+S.mshs<=400))E.push('Mesh bar spacing must be 75–400 mm.')}if(isG()&&S.xrc&&!(+S.jmu>0&&+S.jmu<=1.5))E.push('Allowable joint friction μ must be > 0 and ≤ 1.5.');
+ if(isG()&&S.xrc&&S.gmr=='cc'){if(!(+S.grho>0))E.push('Anti-crack mesh ratio ρ must be > 0.');if(!(+S.mshs>=75&&+S.mshs<=400))E.push('Mesh bar spacing must be 75–400 mm.')}if(isG()&&S.xrc&&!(+S.jmu>0&&+S.jmu<=1.5))E.push('Allowable joint friction μ must be > 0 and ≤ 1.5.');if(isG()&&S.xrc&&!(+S.jfs>=1))E.push('Joint sliding FOS must be ≥ 1.0.');
  if(S.gpon){if(!(+S.gpv>=1))E.push('Project-specific factor γproj must be ≥ 1.0.');W.push(`Project-specific additional factor γproj = ${S.gpv} applied to ${[S.gpS?'sliding':'',S.gpO?'overturning':'',S.gpA?'As,req':''].filter(Boolean).join(', ')||'nothing'} – NOT a code requirement${S.gpsrc?` (source: ${esc(S.gpsrc)})`:' – state the source'}.`)}
  if(S.xrc&&S.cmp&&S.bon&&!(+S.cQ>0))E.push('Compaction line load Q1 must be > 0 (or untick compaction).');
  for(const[id,n]of CKL)if(!ckOn(id)&&!(S.ck[id].why||'').trim())W.push(`Check “${n}” switched OFF without a reason – enter the reason in the check register.`);
@@ -649,7 +649,7 @@ function ri0(){const I=(l,p,u,s,ro,v)=>`<label>${l}<span><input type=number step
  /* ---------- STEP 5 ---------- */
  +D(sh(5,'Concrete &amp; Reinforcement Design'),Ck('<b>Include structural calculation in report</b>','xrc')+R2(Ic('fcu','fcu','MPa'),`<label class=c><span>fy <small class=mu>MPa</small></span><select data-p="fy">${[['500','500'],['250','250']].map(([v,t])=>`<option value="${v}"${v==S.fy?' selected':''}>${t}</option>`).join('')}</select></label>`)+(!G&&Gd.hl>0?Ck('Include q_inside in heel RC design','qinRC'):'')
   +(G?`<div class=st><b>Gravity wall – mass concrete</b>${Nt('Option A (v9.8): mass concrete lifts and block are designed as unreinforced plain concrete (CoP 2013 Cl 9.2.1.1, Cl 6.2.2.3; GG1 §9.3) – no RC design tables. Lifts ticked “RC” are designed as RC Upstand / RC Stem with starter-bar anchorage (7.3).')}`
-    +R2(Ic('Joint μ_allow','jmu','',null,'Construction joint friction (GEO check). 0.60 = rough / keyed joint. Engineer to justify.'),'')
+    +R2(Ic('Joint μ_allow','jmu','',null,'Construction joint friction (GEO check). 0.60 = rough / keyed joint. Engineer to justify.'),Ic('Joint FOS','jfs','',null,'Factor of safety on joint sliding: FOS·Hk/Nk ≤ μ_allow (default 1.5, as FC 2017 Cl 2.5.4 sliding).'))
     +Se('Surface mesh','gmr',[['none','Unreinforced – plain concrete'],['cc','Unreinforced + anti-crack mesh (detailing)']],230)
     +(S.gmr=='cc'?R2(Ic('ρ per face','grho','%',null,'CoP Cl 9.6.5: 0.25% (fy 500) / 0.30% (fy 250)'),Se('h_eff limit','heffm',[['250','250 mm'],['c','Custom']],84))+(S.heffm=='c'?R2(Ic('h_eff limit','heff','mm'),''):'')
       +`<label>Mesh bars (B.W.)<span><select data-p="mshd" data-n=1 style="width:62px">${[10,12,16,20].map(d=>`<option${d==+S.mshd?' selected':''}>${d}</option>`).join('')}</select><input type=number step=25 min=75 max=400 data-p="mshs" value="${esc(S.mshs)}" style="width:58px">mm</span></label>`
@@ -810,7 +810,7 @@ function calcAll(){sync();const G=geo(),V=validate(),Pk=params('k'),Pf=params('f
  if(ckOn('ecc')&&!(A.okE||A.naE))fails.push('Eccentricity (middle third)');
  if(X&&ckOn('rc')&&RS.length&&!okRC)fails.push(isG()?'Structural (RC upstand / stem)':'RC design');if(X&&ckOn('plain')&&PL.length&&!okPlain)fails.push('Mass concrete section');if(X&&ckOn('mesh')&&MS.length&&!okMesh)fails.push('Anti-crack mesh (detailing)');
  if(X&&ckOn('cover')&&RS.length&&!crOK)fails.push('Cover / exposure');
- return{G,V,Pk,Pf,q,P,A,Fc,gov,Ck,sk,ko,RS,PL,MS,okMesh,CA,crOK,okRC,okPlain,u,fails,X,vol:concArea(),steel:steelKg(RS)}}
+ return{G,V,Pk,Pf,q,P,A,Fc,gov,Ck,sk,ko,RS,PL,MS,okMesh,CA,crOK,okRC,okPlain,u,fails,X,vol:concArea(),steel:steelKg(RS)+MS.reduce((a,m)=>a+m.Ap*1e-6*7850*2*2*m.Hh,0)}} // mesh: 2 faces × 2 ways over the section height (approx.)
 
 /* ---------------- check register (tick / untick) ---------------- */
 /* summary register: stability shows FOS / ratio provided vs required (as in the code); utilisation bar only for structural rows */
@@ -986,13 +986,13 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
     ['3 Slenderness','le/h ≤ 30 (6.2.2.3(b)); ea = le²/(2500h) (6.2.2.3(p))',`lo = ${f(p.lo,2)} m, le = 2lo = ${f(p.le,2)} m; ${f(p.le*1000,0)}² / (2500 × ${f(hm,0)})`,`le/h = ${f(p.sl,2)} ${p.okSl?'≤':'>'} 30; ea = ${f(p.ea,1)} mm`,lp(p.okSl)],
     ['4 Axial capacity','Nu ≤ nw = 0.3(h − 2(ex + ea))·fcu·b (6.2.2.3(p))',`0.3 × (${f(hm,0)} − 2 × (${f(ca.ex,0)} + ${f(p.ea,1)})) × ${S.fcu} (b = 1000 mm)`,(Math.min(ca.c1,ca.c2)>0?`nw = ${f(Math.min(ca.c1,ca.c2),1)} kN/m ${p.okU?'≥':'<'} Nu = ${f(ca.N,1)}; utilisation ${f(100*p.ua,0)}%`:`nw ≤ 0: ex + ea ≥ h/2 – section cannot carry Nu = ${f(ca.N,1)} kN/m`),lp(p.okU)],
     ['5 Shear','Hu < Nu/4, or v_avg = Hu/(bh) ≤ '+f(p.vlim,2)+' N/mm² (6.2.2.3(r))',`Nu/4 = ${f(p.Nw/4,1)} kN/m; v_avg = ${f(p.HU*1000,0)} / (1000 × ${f(hm,0)})`,`Hu = ${f(p.HU,1)} ${p.HU<p.Nw/4?'<':'≥'} ${f(p.Nw/4,1)}; v_avg = ${f(p.vav,3)} ${p.vav<p.vlim?'≤':'>'} ${f(p.vlim,2)} N/mm²`,lp(p.shOK)],
-    p.jt?['6 Construction joint (GEO check)','μ_req = Hk / Nk ≤ μ_allow (rough / keyed joint; Engineer to justify)',`Hk = ${f(p.Hk,1)} kN/m; Nk = ${f(p.Nw,1)} kN/m`,`μ_req = ${f(p.mu,3)} ${p.okJ?'≤':'>'} μ_allow = ${f(p.mua,2)}`,lp(p.okJ)]
+    p.jt?['6 Construction joint (GEO check)','FOS·μ_req ≤ μ_allow, μ_req = Hk / Nk (characteristic; rough / keyed joint, Engineer to justify μ_allow)',`Hk = ${f(p.Hk,1)} kN/m; Nk = ${f(p.Nw,1)} kN/m; μ_req = ${f(p.mu,3)}; FOS = ${f(p.jfs,2)}`,`${f(p.jfs,2)} × ${f(p.mu,3)} = ${f(p.jfs*p.mu,3)} ${p.okJ?'≤':'>'} μ_allow = ${f(p.mua,2)}`,lp(p.okJ)]
      :['6 Founding level','sliding on the founding stratum','–','checked in Section 6 (external stability)','']];
    return`<div class=rcb><h3>${p.lab} — h = ${f(hm,0)} mm ${lp(ok)}</h3><p class=mu style="margin:0 0 2px">Governing: ${p.kl}${cmpOn()?' + compaction':''}, ${tn({k:p.tk})}.</p>`+RCT(p,rows)+'</div>'}).join('')
   +`<p class="mu int">In-plane tension due to differential settlement (CoP 6.2.2.3(t)) – NOT CHECKED.</p>`;
   // 7.3 RC elements + Step 13 anchorage
   h7+=`<h3>7.3 RC elements</h3>`+(nRC?`<p class=mu>RC Upstand / RC Stem designed as reinforced concrete (CoP Cl 9.6.1 / 9.3.1.1(a), ${S.rmin}% × αmin). Step 12: starter bars anchored into the concrete below (CoP Cl 8.4).</p>`+rcSch()
-   +RS.map(r=>{const a=anch(r);return rcBlk(r,[['12 Starter bar anchorage into mass concrete',`L_anch = 0.87fy·φ / (4β√fcu) (CoP Cl 8.4, eq 8.3; β = ${a.be} for ${a.fy==250?'plain bars':'Type 2 deformed bars'} in tension, Table 8.3)`,`0.87 × ${a.fy} × ${a.phi} / (4 × ${a.be} × √${a.fcu}) = ${f(a.lb,0)} mm = ${f(a.lb/a.phi,1)}φ`,`use ${a.n}φ = ${a.L} mm → embed ≥ ${a.emb} mm below the lift; available ${f(a.av,0)} mm ${a.ok?'≥':'<'} ${a.emb}`,lp(a.ok)]])}).join('')
+   +RS.map(r=>{const a=anch(r);return rcBlk(r,[[`12 Starter bar anchorage into ${a.rcB?'RC below':'mass concrete'}`,`L_anch = 0.87fy·φ / (4·fbu), fbu = β√fcu (CoP Cl 8.4, eq 8.4 / eq 8.3; β = ${a.be} for ${a.fy==250?'plain bars':'Type 2 deformed bars'} in tension, Table 8.3)`,`0.87 × ${a.fy} × ${a.phi} / (4 × ${a.be} × √${a.fcu}) = ${f(a.lb,0)} mm = ${f(a.lb/a.phi,1)}φ`,`use ${a.n}φ = ${a.L} mm → embed ≥ ${a.emb} mm into ${a.into}; depth available ${f(a.av,0)} mm ${a.ok?'≥':'<'} ${a.emb}`,lp(a.ok)]])}).join('')
    :`<p class=mu>No RC elements – all lifts are mass concrete (tick “RC” on a lift in Step 2 for an RC Upstand / RC Stem).</p>`);
   // 7.4 anti-crack mesh
   h7+=`<h3>7.4 Anti-crack mesh schedule (optional detailing, CoP Cl 9.6.5 surface zone)</h3>`+(MS.length?
@@ -1025,7 +1025,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   xr('Bearing capacity (strip)','CoP Fdn 2017 Cl 2.2.4, Table 2.3',`FOS ≥ ${f(Fc.Fb,1)}; q ≤ qa = ${f(Fc.br.qa,0)} kPa`,Fc.br.F===Infinity?'q ≤ qo':`<b>${f(Fc.br.F,2)}</b>; q = ${f(Fc.br.qap,0)} kPa`,'–',lp(Fc.okB))}
  xr('Eccentricity – middle third (unfactored)','GG1 §9.2.4',A.naE?'rule need not apply (e < 0)':`e ≤ B/6 = ${f(G.B/6,3)} m`,`e = <b>${f(se2.s.e,3)}</b> m; q_max = ${f(qmx(se2.s),1)} kPa`,'–',offL('ecc')?lp('nc'):A.naE?lp('na'):lp(okE));
  if(X){RS.forEach(r=>xr(r.n,r.gv?'CoP 6.1.2.4–6.1.2.5; Cl 9.6.5':'CoP 6.1.2.4–6.1.2.5; Table 9.1',`As ≥ ${f(Math.max(r.Asr,r.Asm),0)} mm²/m; v ≤ ${f(r.vc,2)} N/mm²`,`T${r.bm.d}@${r.bm.s} = ${f(r.Asp,0)}; v = ${f(r.v,2)}`,pc(Math.max(r.uM,r.uV)),offL('rc')?lp('nc'):lp(r.ok)));
-  PL.forEach(p=>xr(p.lab+' – plain concrete','CoP Cl 6.2.2.3',`e ≤ h/6 = ${f(p.h*1000/6,0)} mm; nw ≤ capacity; shear${p.jt?`; joint μ ≤ ${f(p.mua,2)}`:''}`,`e = ${f(p.eK*1000,0)} mm; nw / cap. = ${f(p.ua,3)}${p.jt?`; μ_req = ${f(p.mu,2)}`:''}`,pc(p.sev),offL('plain')?lp('nc'):lp(p.okT&&p.okU&&p.okSl&&p.shOK&&p.okJ)));
+  PL.forEach(p=>xr(p.lab+' – plain concrete','CoP Cl 6.2.2.3',`e ≤ h/6 = ${f(p.h*1000/6,0)} mm; nw ≤ capacity; shear${p.jt?`; ${f(p.jfs,1)}·μ ≤ ${f(p.mua,2)}`:''}`,`e = ${f(p.eK*1000,0)} mm; nw / cap. = ${f(p.ua,3)}${p.jt?`; μ_req = ${f(p.mu,2)}`:''}`,pc(p.sev),offL('plain')?lp('nc'):lp(p.okT&&p.okU&&p.okSl&&p.shOK&&p.okJ)));
   if(R0.MS.length){const m0=R0.MS[0];xr('Anti-crack mesh (detailing only)','CoP Cl 9.6.5 (surface zone)',`As ≥ ${f(Math.max(...R0.MS.map(m=>m.Am)),0)} mm²/m each face; s ≤ 300`,`T${m0.d}@${m0.sp} B.W. = ${f(m0.Ap,0)}`,'–',offL('mesh')?lp('nc'):lp(R0.okMesh))}
   if(RS.length||R0.MS.length)xr('Cover & exposure (all faces)','CoP Table 4.1, 4.2','≥ minimum nominal cover',crOK?'all faces OK':'below minimum','–',offL('cover')?lp('nc'):lp(crOK))}
  const offTxt=CKL.filter(([id])=>!ckOn(id)).map(([id,n])=>`${n}: ${esc((S.ck[id]&&S.ck[id].why)||'reason not stated')}`);
@@ -1059,7 +1059,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
    ...(P?[['Partial factors','γm / γf,Q',`${S.gm} / ${S.gq}`]]:[['Groundwater basis','–',fcF().lab],['Required FOS sliding / overturning','Fs / Fo',`${f(+S.Fs,2)} / ${f(+S.Fo,2)} (wind ${f(+S.Fow,2)}, GW ${f(fcF().Fog,2)})`],['Required FOS bearing','Fb',f(+S.Fb,2)]]),
    S.gpon?['Project-specific factor','γproj',`${f(Math.max(1,+S.gpv||1),2)} (${esc(S.gpsrc||'source not stated')})`]:null,['Concrete unit weight','γc',`${S.gc} kN/m³`],
    X?['Concrete / steel grade','fcu / fy',`${S.fcu} / ${S.fy} MPa`]:null,X?['Nominal cover ① / ② / ③ / ④','c',`${S.cvr} / ${S.cvf} / ${S.cvt} / ${S.cvb} mm`]:null,
-   X&&isG()?['Mass concrete','–',`unreinforced (plain concrete); joint μ_allow = ${f(+S.jmu,2)}${S.gmr=='cc'?`; anti-crack mesh T${S.mshd}@${S.mshs} B.W. (detailing only)`:''}`]:null];
+   X&&isG()?['Mass concrete','–',`unreinforced (plain concrete); joint μ_allow = ${f(+S.jmu,2)}, FOS ${f(+S.jfs,2)}${S.gmr=='cc'?`; anti-crack mesh T${S.mshd}@${S.mshs} B.W. (detailing only)`:''}`]:null];
  const as=[
   `Earth pressure: ${Pk.kaLab}, acting on the ${vb}; wall friction δ = ${f(Pk.d,1)}° (${wd2.src}). Cohesion of retained soil ignored for active pressure.`,
   S.fon?(Ck.pasOK?`Passive resistance: Kp with δ = 0 (GG1 Fig. 39 note 3); top ${S.dp} m of front soil neglected as unplanned excavation (Fig. 39 note 2).`
@@ -1069,7 +1069,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
   `Groundwater hydrostatic; uplift linear from toe to heel. Surcharge is a variable action (never stabilising); q_inside and the surcharge wall-friction component Pv2 are used for bearing / RC only – the middle-third check takes the worst of both present / absent.`,
   ...(S.wo||S.bro?[`Wall-top loads (${[S.wo?'fence wind':'',S.bro?'barrier':''].filter(Boolean).join(', ')}) are separate load cases; the worst governs (DIL Cl 3.8.1.1).`]:[]),
   `Bearing capacity as a strip footing (GG1 Fig. A2 / FC 2017 Table 2.3); middle-third rule GG1 §9.2.4.`,
-  ...(X?[isG()?`Structural: mass concrete sections (each lift and the block at founding level) by CoP 6.2.2.3 with the Section 7 earth pressure; unreinforced (CoP 9.2.1.1); construction joints μ_req ≤ μ_allow ${f(+S.jmu,2)}${S.gmr=='cc'?`; surface anti-crack mesh per CoP 9.6.5 surface zone h_eff = min(h/2, ${f(hEffMax(),0)} mm), not relied upon for strength`:''}${S.st.some(x=>x.rc)?'; RC Upstand / Stem to CoP SUC 2013 with starter-bar anchorage (Cl 8.4)':''}; load combinations CoP Table 2.1.`
+  ...(X?[isG()?`Structural: mass concrete sections (each lift and the block at founding level) by CoP 6.2.2.3 with the Section 7 earth pressure; unreinforced (CoP 9.2.1.1); construction joints ${f(+S.jfs,2)}·μ_req ≤ μ_allow ${f(+S.jmu,2)}${S.gmr=='cc'?`; surface anti-crack mesh per CoP 9.6.5 surface zone h_eff = min(h/2, ${f(hEffMax(),0)} mm), not relied upon for strength`:''}${S.st.some(x=>x.rc)?'; RC Upstand / Stem to CoP SUC 2013 with starter-bar anchorage (Cl 8.4)':''}; load combinations CoP Table 2.1.`
    :`Structural: CoP SUC 2013, load combinations Table 2.1, unfactored soil parameters (GG1 §4.3.5); stems designed as slabs in out-of-plane bending (Cl 9.6.1).`]:[])];
  $('ps').innerHTML=p1+`<section class=p2><h2>Design parameters</h2><div class=pg>${PTb('Geometry',gRows)}${PTb('Soil &amp; interface',sRows)}${PTb('Loading &amp; groundwater',lRows)}${PTb('Design basis &amp; materials',bRows)}</div>`
   +`<h3>Design assumptions</h3><ol class=asl>${as.map(a=>`<li>${a}</li>`).join('')}</ol></section>`;
