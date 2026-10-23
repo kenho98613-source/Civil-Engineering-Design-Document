@@ -1,6 +1,6 @@
 [package]
 name = "retaining-wall-checker"
-version = "9.7.0"
+version = "9.8.0"
 description = "Retaining Wall Design & Checker (HK GEO / BD codes)"
 edition = "2021"
 
