@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import json
 import requests
 
@@ -63,7 +64,14 @@ def call_gemini_ice(diff_content: str, gemini_api_key: str) -> str:
         }
     }
 
-    resp = requests.post(url, json=payload, headers={"Content-Type": "application/json"})
+    # Retry on rate limit / temporary overload (429, 5xx) with backoff
+    for attempt, wait in enumerate([0, 10, 30, 60, 120]):
+        if wait:
+            print(f"Gemini busy ({resp.status_code}), retry {attempt} in {wait}s...")
+            time.sleep(wait)
+        resp = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=300)
+        if resp.status_code not in (429, 500, 502, 503, 504):
+            break
     if resp.status_code != 200:
         print(f"Error calling Gemini API: {resp.status_code} - {resp.text}")
         sys.exit(1)
