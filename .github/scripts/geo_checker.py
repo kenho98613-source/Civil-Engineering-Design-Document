@@ -49,7 +49,7 @@ def call_gemini_ice(diff_content: str, gemini_api_key: str) -> str:
         "### 4. Required Action Items for Design Engineer (Claude)"
     )
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")}:generateContent?key={gemini_api_key}"
     payload = {
         "contents": [
             {
