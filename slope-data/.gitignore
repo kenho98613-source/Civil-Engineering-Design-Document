@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+slope_output/
+out_*/
