@@ -105,9 +105,12 @@ if __name__ == "__main__":
     pr_num = os.environ.get("PR_NUMBER")
     repo_name = os.environ.get("REPO_FULL_NAME")
 
-    if not all([gemini_key, github_token, pr_num, repo_name]):
-        print("Missing required environment variables.")
-        sys.exit(1)
+    if not gemini_key:
+        print("GEMINI_API_KEY not set - Gemini check skipped (optional).")
+        sys.exit(0)
+    if not all([github_token, pr_num, repo_name]):
+        print("Missing required environment variables - Gemini check skipped.")
+        sys.exit(0)
 
     print(f"Fetching diff for PR #{pr_num} in {repo_name}...")
     diff = get_pr_diff(repo_name, pr_num, github_token)
