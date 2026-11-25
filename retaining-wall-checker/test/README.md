@@ -15,3 +15,8 @@ node test/pdf.js src/index.html <project.rwall> <wall type index> out.pdf [full]
 - `ui2.js`: real clicks on stem on base, drag handles, Auto-bar, Auto design, Setup wizard, wall type switch and export. Must show 0 page errors.
 
 Project `.rwall` files and result `.json` / `.pdf` files contain client project data: keep them out of this public repository.
+
+## v13.8.13 (fence self-weight)
+- `p13813.py` = patch v13.8.12 -> v13.8.13.
+- `node ftest.js <model.html> <project.rwall>` = fence self-weight check on each wall type (off / on / at front edge): sliding and overturning must not change; N rises by P/s.
+- v13.8.12 report HTML differs from `baseline_v13.8.11.json` by design (CR-1..5) while numeric results are identical. For later versions compare numbers against the baseline and HTML against a fresh v13.8.12 run.
