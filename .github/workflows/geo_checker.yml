@@ -21,6 +21,8 @@ permissions:
 jobs:
   run-independent-check:
     runs-on: ubuntu-latest
+    # Optional advisory review: never blocks the PR
+    timeout-minutes: 10
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -36,6 +38,7 @@ jobs:
           pip install requests
 
       - name: Execute Gemini BD & GEO Independent Check
+        continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

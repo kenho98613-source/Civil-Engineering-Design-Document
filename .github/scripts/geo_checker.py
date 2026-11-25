@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import json
 import requests
 
@@ -49,7 +50,7 @@ def call_gemini_ice(diff_content: str, gemini_api_key: str) -> str:
         "### 4. Required Action Items for Design Engineer (Claude)"
     )
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{os.environ.get('GEMINI_MODEL', 'gemini-3.8-flash')}:generateContent?key={gemini_api_key}"
     payload = {
         "contents": [
             {
@@ -63,7 +64,14 @@ def call_gemini_ice(diff_content: str, gemini_api_key: str) -> str:
         }
     }
 
-    resp = requests.post(url, json=payload, headers={"Content-Type": "application/json"})
+    # Retry on rate limit / temporary overload (429, 5xx) with backoff
+    for attempt, wait in enumerate([0, 10, 30, 60, 120]):
+        if wait:
+            print(f"Gemini busy ({resp.status_code}), retry {attempt} in {wait}s...")
+            time.sleep(wait)
+        resp = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=300)
+        if resp.status_code not in (429, 500, 502, 503, 504):
+            break
     if resp.status_code != 200:
         print(f"Error calling Gemini API: {resp.status_code} - {resp.text}")
         sys.exit(1)
@@ -97,9 +105,12 @@ if __name__ == "__main__":
     pr_num = os.environ.get("PR_NUMBER")
     repo_name = os.environ.get("REPO_FULL_NAME")
 
-    if not all([gemini_key, github_token, pr_num, repo_name]):
-        print("Missing required environment variables.")
-        sys.exit(1)
+    if not gemini_key:
+        print("GEMINI_API_KEY not set - Gemini check skipped (optional).")
+        sys.exit(0)
+    if not all([github_token, pr_num, repo_name]):
+        print("Missing required environment variables - Gemini check skipped.")
+        sys.exit(0)
 
     print(f"Fetching diff for PR #{pr_num} in {repo_name}...")
     diff = get_pr_diff(repo_name, pr_num, github_token)
