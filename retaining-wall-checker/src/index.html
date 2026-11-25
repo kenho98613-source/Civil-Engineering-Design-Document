@@ -1071,7 +1071,7 @@ function ri0(){const I=(l,p,u,s,ro,v)=>`<label>${l}<span><input type=number step
    +R2(+S.wsd>=.8?Ic('Wall length l','wlen','m'):'',A(Ic('St','wSt','',null,'Topography factor (Cl 3.4)')))+A(+S.wsd>=.8?Se('Pressure zone (Fig. B3-1)','wz',[['A','A – wall end (0–0.3h), worst'],['B','B (0.3h–2h)'],['C','C (2h–4h)'],['D','D (> 4h from end)']],170):'')
    +`<div id=wtxt class=mu></div>`:'')
    +Ck('<b>Fence self-weight</b> on wall top (permanent)','fdl','Dead load of the fence: P per post ÷ post spacing s (blank s → P is taken as kN/m). Included in bearing, eccentricity and the stem design (worse of fence present / absent); ignored where favourable (sliding, overturning).')
-   +(S.fdl?R2(Ic('P per post','fdP','kN'),Ic('Post spacing s','fdS','m',null,'Blank = P is a line load in kN/m'))+`<p class=mu>w<sub>f</sub> = ${fdW()>0?F0(fdW(),2)+' kN/m':'–'}</p>`:'')
+   +(S.fdl?R2(Ic('P per post','fdP','kN'),Ic('Post spacing s','fdS','m',null,'Blank = P is a line load in kN/m'))+`<p class=mu id=fdwt></p>`:'')
 
   +'</div><div class=st>'+Ck('<b>Barrier</b> load on wall top (DIL Cl 3.8: Table 3.13 pedestrian / Cl 3.8.3 vehicle impact)','bro')+(S.bro?Se('Category','brc',Object.entries(BCAT),230)
    +(isVeh()?(S.brc=='v6E'?Ic('Gross vehicle mass M','vM','kg',null,'Class 6E: heaviest vehicle to be accommodated (Road Traffic (Construction and Maintenance of Vehicles) Regulations)'):'')
@@ -1431,7 +1431,7 @@ function rr(){const R0=calcAll(),{G,V,Pk,Pf,q,P}=R0;
  {const C=cvAll(),lo=(v,m)=>m!=null&&v<m,ex=r=>`Cond ${r.ex} (${r.why})`,mm=m=>m==null?`C${S.fcu} below the Table 4.2 grade`:`min ${m}`;
   tx('cvtxt',`Stem: rear ${ex(C.rows[0])}, front ${ex(C.rows[1])} → ${mm(C.sMin)} mm; used <b${lo(C.s,C.sMin)?' class=err':''}>${C.s} mm</b><br>Base top: ${ex(C.rows[2])} → ${mm(C.tMin)} mm; used <b${lo(C.t,C.tMin)?' class=err':''}>${C.t} mm</b> · underside ${C.b} mm`);
   const e=$('cvsel');if(e){const a=e.querySelector('option[value=a]');if(a)a.textContent=`Auto – ${C.auto}`;[...e.options].forEach(op=>{if(op.value=='a')return;const v=+op.value,l=lo(v,C.sMin);op.textContent=v+(l?' (< min)':'');op.style.color=l?'#dc2626':''})}}
- if(S.wo){const w=windCalc();tx('wtxt',w.steps.map(r=>`${r[0]}: ${r[2]} = <b>${r[3]}</b>`).join('<br>'))}
+ if(S.fdl)tx('fdwt',`w<sub>f</sub> = ${fdW()>0?F0(fdW(),2)+' kN/m':'–'}${+S.fdS>0?` (${F0(+S.fdP,2)} / ${F0(+S.fdS,2)})`:''}`);if(S.wo){const w=windCalc();tx('wtxt',w.steps.map(r=>`${r[0]}: ${r[2]} = <b>${r[3]}</b>`).join('<br>'))}
  if(S.bro&&isVeh()){const V=vehCalc();tx('vehtxt',`F = 0.5·M·v²/(c+b) [M kg, v m/s, c & b mm → F kN] = 0.5×${V.M}×${f(V.v,1)}²/(${V.c}+${f(V.b,0)}) = ${f(V.F1,1)} kN${V.gm!=1?` × γ ${f(V.gm,2)}`:''}${S.vObl?' × 0.5':''} = <b>${f(V.F,1)} kN</b> → ${f(V.F,1)}/${f(V.Ld,2)} m = <b>${f(V.Fm,2)} kN/m</b> at bumper height ${V.hb} mm above floor +${f(V.fl)} → +${f(V.zA)} mPD${S.vSO?' · <b>structural design only (excluded from stability)</b>':''}`)}
  const t7=document.querySelector('[data-t="r7"]');if(t7)t7.style.display=S.xrc?'':'none';
  $('refs').innerHTML=`<p><b>References:</b> ${REFS.map((r,i)=>`[${i+1}] ${r}`).join(' · ')}</p>`;
@@ -2259,7 +2259,7 @@ function dwBuildTo(i,into){if(into!='new')return dwBuild(i);const prev=PJ.active
 document.addEventListener('keydown',e=>{const z=$('dwz');if(e.key=='Escape'&&z&&!z.hidden&&DW.arm){DW.arm=null;dwPanel();dwMsg('')}});
 
 /* ---------------- events ---------------- */
-const RERENDER=new Set(['bkfm','gis','obdp','fon','ppS','ppO','ppB','tsw','xa','smb','vObl','vFl','vStem','vSO','gmb','kpp','kom','dfm','acc','adv','ty','kam','kpm','dwm','dbm','f.cvm','qcat','wo','bro','brc','rck','fy','cbs','cvS','nopp','fsm','skon','lon','wl','gmo','gmr','heffm','gbat','bon','gwc','gpon','cmp','gsz']);
+const RERENDER=new Set(['fdl','bkfm','gis','obdp','fon','ppS','ppO','ppB','tsw','xa','smb','vObl','vFl','vStem','vSO','gmb','kpp','kom','dfm','acc','adv','ty','kam','kpm','dwm','dbm','f.cvm','qcat','wo','bro','brc','rck','fy','cbs','cvS','nopp','fsm','skon','lon','wl','gmo','gmr','heffm','gbat','bon','gwc','gpon','cmp','gsz']);
 function toolInput(t){const k=t.dataset.tp;
  if(k=='swl'){TL.st.wl=+t.value;stressUpdate()}else if(k=='sq'){TL.st.q=+t.value;stressUpdate()}
  else if(k=='opttb')TL.optTb=t.checked;else if(k=='optrc')TL.optRc=t.checked;else if(k=='tbmin')TL.tbMin=+t.value;else if(k=='tbmax')TL.tbMax=+t.value;else if(k=='pname')TL.pname=t.value}

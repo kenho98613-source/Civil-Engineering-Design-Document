@@ -83,3 +83,13 @@ assert s2.count(o)==1
 s2=s2.replace(o,"V = variable, used for bearing only${fdOn()?' · F = fence self-weight, bearing / eccentricity / RC only (ignored in sliding / overturning)':''} · P = passive.")
 open(dst,'w',encoding='utf-8').write(s2)
 print('legend ok')
+s3=open(dst,encoding='utf-8').read()
+def r3(o,n):
+    global s3
+    assert s3.count(o)==1,o[:60]; s3=s3.replace(o,n)
+# fix: ticking "Fence self-weight" must re-render the input panel (P / s inputs); w_f text refreshed with the results
+r3("const RERENDER=new Set(['bkfm',","const RERENDER=new Set(['fdl','bkfm',")
+r3("+`<p class=mu>w<sub>f</sub> = ${fdW()>0?F0(fdW(),2)+' kN/m':'–'}</p>`:'')","+`<p class=mu id=fdwt></p>`:'')")
+r3("if(S.wo){const w=windCalc();tx('wtxt',","if(S.fdl)tx('fdwt',`w<sub>f</sub> = ${fdW()>0?F0(fdW(),2)+' kN/m':'–'}${+S.fdS>0?` (${F0(+S.fdP,2)} / ${F0(+S.fdS,2)})`:''}`);if(S.wo){const w=windCalc();tx('wtxt',")
+open(dst,'w',encoding='utf-8').write(s3)
+print('rerender ok')
