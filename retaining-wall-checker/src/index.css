@@ -1,0 +1,344 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   Retaining Wall Desktop Workstation – Design Tokens (DESIGN.md)
+   Clean CAD / Engineering Workstation · Light & Dark Parity
+   ========================================================================= */
+
+:root,
+:root[data-theme="light"] {
+  --chrome-dark: #1e293b;
+  --chrome-dark-tx: #f8fafc;
+  --surface-chrome: #f6f5f2;
+  --surface-canvas: #f2f1ed;
+  --surface-panel: #ffffff;
+  --surface-subtle: #f1f0ec;
+  --surface-elevated: #ffffff;
+  --float-pill: rgba(255, 255, 255, 0.9);
+  --border-hairline: #d6d3cd;
+  --border-muted: #e7e5e0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --status-pass: #15803d;
+  --status-pass-bg: #f0fdf4;
+  --status-pass-bd: #bbf7d0;
+  --status-fail: #dc2626;
+  --status-fail-bg: #fef2f2;
+  --status-fail-bd: #fecaca;
+  --status-warn: #d97706;
+  --status-warn-bg: #fffbeb;
+  --status-warn-bd: #fde68a;
+  --status-na: #64748b;
+  --status-na-bg: #f1f0ec;
+  --accent-cobalt: #2563eb;
+  --accent-cobalt-hover: #1d4ed8;
+  --accent-cobalt-soft: rgba(37, 99, 235, 0.1);
+  --accent-teal: #0f766e;
+  --accent-teal-hover: #115e59;
+
+  /* CAD SVG Palette — Direction C Architectural Drafting Pro */
+  --cad-bg: #ffffff;
+  --cad-grid: rgba(148, 163, 184, 0.14);
+  --cad-concrete-fill: #e2e8f0;
+  --cad-concrete-stroke: #1e293b;
+  --cad-soil-fill: #faf8f3;
+  --cad-soil-hatch: #cbc5b9;
+  --cad-soil-stroke: #94a3b8;
+  --cad-front-soil: #f3f1ec;
+  --cad-fdn-hatch: #c6c1b7;
+  --cad-water: #2563eb;
+  --cad-water-fill: rgba(37, 99, 235, 0.1);
+  --cad-force-active: #dc2626;
+  --cad-force-passive: #16a34a;
+  --cad-force-weight: #334155;
+  --cad-kern: rgba(22, 163, 74, 0.18);
+  --cad-rebar: #c2410c;
+  --cad-dim: #475569;
+  --cad-halo: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] {
+    --chrome-dark: #090e1a;
+    --chrome-dark-tx: #f8fafc;
+    --surface-chrome: #0f172a;
+    --surface-canvas: #0b1120;
+    --surface-panel: #111827;
+    --surface-subtle: #1e293b;
+    --surface-elevated: #1e293b;
+    --float-pill: rgba(17, 24, 39, 0.92);
+    --border-hairline: #334155;
+    --border-muted: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --status-pass: #22c55e;
+    --status-pass-bg: rgba(34, 197, 94, 0.12);
+    --status-pass-bd: rgba(34, 197, 94, 0.35);
+    --status-fail: #f87171;
+    --status-fail-bg: rgba(248, 113, 113, 0.12);
+    --status-fail-bd: rgba(248, 113, 113, 0.35);
+    --status-warn: #fbbf24;
+    --status-warn-bg: rgba(251, 191, 36, 0.12);
+    --status-warn-bd: rgba(251, 191, 36, 0.35);
+    --status-na: #94a3b8;
+    --status-na-bg: rgba(148, 163, 184, 0.12);
+    --accent-cobalt: #60a5fa;
+    --accent-cobalt-hover: #3b82f6;
+    --accent-cobalt-soft: rgba(96, 165, 250, 0.14);
+    --accent-teal: #14b8a6;
+    --accent-teal-hover: #0d9488;
+
+    --cad-bg: #0f172a;
+    --cad-grid: rgba(148, 163, 184, 0.07);
+    --cad-concrete-fill: #334155;
+    --cad-concrete-stroke: #e2e8f0;
+    --cad-soil-fill: #171c26;
+    --cad-soil-hatch: #334155;
+    --cad-soil-stroke: #64748b;
+    --cad-front-soil: #131822;
+    --cad-fdn-hatch: #273244;
+    --cad-water: #38bdf8;
+    --cad-water-fill: rgba(56, 189, 248, 0.12);
+    --cad-force-active: #f87171;
+    --cad-force-passive: #34d399;
+    --cad-force-weight: #e2e8f0;
+    --cad-kern: rgba(34, 197, 94, 0.22);
+    --cad-rebar: #fb923c;
+    --cad-dim: #94a3b8;
+    --cad-halo: #0f172a;
+  }
+}
+
+:root[data-theme="dark"] {
+  --chrome-dark: #090e1a;
+  --chrome-dark-tx: #f8fafc;
+  --surface-chrome: #0f172a;
+  --surface-canvas: #0b1120;
+  --surface-panel: #111827;
+  --surface-subtle: #1e293b;
+  --surface-elevated: #1e293b;
+  --float-pill: rgba(17, 24, 39, 0.92);
+  --border-hairline: #334155;
+  --border-muted: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --status-pass: #22c55e;
+  --status-pass-bg: rgba(34, 197, 94, 0.12);
+  --status-pass-bd: rgba(34, 197, 94, 0.35);
+  --status-fail: #f87171;
+  --status-fail-bg: rgba(248, 113, 113, 0.12);
+  --status-fail-bd: rgba(248, 113, 113, 0.35);
+  --status-warn: #fbbf24;
+  --status-warn-bg: rgba(251, 191, 36, 0.12);
+  --status-warn-bd: rgba(251, 191, 36, 0.35);
+  --status-na: #94a3b8;
+  --status-na-bg: rgba(148, 163, 184, 0.12);
+  --accent-cobalt: #60a5fa;
+  --accent-cobalt-hover: #3b82f6;
+  --accent-cobalt-soft: rgba(96, 165, 250, 0.14);
+  --accent-teal: #14b8a6;
+  --accent-teal-hover: #0d9488;
+
+  --cad-bg: #0f172a;
+  --cad-grid: rgba(148, 163, 184, 0.07);
+  --cad-concrete-fill: #334155;
+  --cad-concrete-stroke: #e2e8f0;
+  --cad-soil-fill: #171c26;
+  --cad-soil-hatch: #334155;
+  --cad-soil-stroke: #64748b;
+  --cad-front-soil: #131822;
+  --cad-fdn-hatch: #273244;
+  --cad-water: #38bdf8;
+  --cad-water-fill: rgba(56, 189, 248, 0.12);
+  --cad-force-active: #f87171;
+  --cad-force-passive: #34d399;
+  --cad-force-weight: #e2e8f0;
+  --cad-kern: rgba(34, 197, 94, 0.22);
+  --cad-rebar: #fb923c;
+  --cad-dim: #94a3b8;
+  --cad-halo: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background-color: var(--surface-canvas);
+  color: var(--text-primary);
+  font-family: "Segoe UI Variable", "Segoe UI", "Noto Sans TC", system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.font-mono-eng {
+  font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Crisp subtle scrollbars for desktop workstation panes */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hairline);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* CAD SVG label halo for crisp readability over hatching */
+.cad-label {
+  paint-order: stroke;
+  stroke: var(--cad-halo);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+/* Exact v14.0.1 Figure SVG typography, inline dimension editors & drag handles */
+.rw-fig-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+.rw-fig-svg .lb,
+.rw-fig-svg .lv,
+.rw-fig-svg .cap {
+  font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--cad-halo);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.rw-fig-svg .lb {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+.rw-fig-svg .lv {
+  font-size: 10px;
+  fill: var(--text-secondary);
+}
+.rw-fig-svg .cap {
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: var(--text-muted);
+}
+.rw-fig-svg .prt {
+  display: none;
+}
+.rw-fig-svg .fi {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--accent-cobalt);
+  border-radius: 3px;
+  background: var(--surface-panel);
+  color: var(--accent-cobalt);
+  font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: right;
+  padding: 0 3px;
+  outline: none;
+}
+.rw-fig-svg .fi:focus {
+  box-shadow: 0 0 0 2px var(--accent-cobalt-soft);
+}
+.rw-fig-svg .hd.x {
+  cursor: ew-resize;
+}
+.rw-fig-svg .hd.z {
+  cursor: ns-resize;
+}
+.rw-fig-svg .hk {
+  fill: var(--surface-panel);
+  stroke: var(--accent-cobalt);
+  stroke-width: 1.8;
+  opacity: 0.85;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.1s ease, fill 0.1s ease, opacity 0.1s ease;
+}
+.rw-fig-svg .hd:hover .hk {
+  fill: var(--accent-cobalt);
+  opacity: 1;
+  transform: scale(1.3);
+}
+.fgn {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.fgn li::before {
+  content: attr(data-n) " ";
+  font-weight: 700;
+  color: var(--accent-cobalt);
+}
+
+.drafting-grid {
+  background-image:
+    linear-gradient(to right, var(--cad-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--cad-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Direction C Architectural Drafting Calculation Sheet Styles (Sections 5, 6, 7 & 8) */
+.calc-sheet { font-size: 12.5px; line-height: 1.5; color: var(--text-primary); }
+.calc-sheet h2 { font-size: 15px; font-weight: 700; margin: 0 0 8px; padding-bottom: 6px; border-bottom: 1.5px solid var(--border-hairline); letter-spacing: -0.01em; }
+.calc-sheet h3 { font-size: 13px; font-weight: 700; margin: 16px 0 6px; display: flex; align-items: center; gap: 6px; }
+.calc-sheet p { margin: 4px 0 8px; }
+.calc-sheet .mu { color: var(--text-muted); font-size: 11.5px; }
+.calc-sheet .err { color: var(--status-fail); font-weight: 600; }
+.calc-sheet .warn { color: var(--status-warn); font-weight: 600; }
+.calc-sheet .xp { display: none; }
+.calc-sheet.full .xp { display: inline; }
+.calc-sheet.full div.xp { display: block; }
+.calc-sheet .tw { overflow-x: auto; margin: 6px 0 12px; border: 1px solid var(--border-hairline); border-radius: 7px; background: var(--surface-panel); }
+.calc-sheet table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+.calc-sheet th { text-align: left; padding: 6px 9px; background: var(--surface-chrome); color: var(--text-secondary); font-weight: 600; font-size: 11px; border-bottom: 1px solid var(--border-hairline); white-space: nowrap; }
+.calc-sheet td { padding: 5.5px 9px; border-bottom: 1px solid var(--border-muted); vertical-align: top; }
+.calc-sheet tr:last-child td { border-bottom: none; }
+.calc-sheet table.ctab td:first-child { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-weight: 600; color: var(--accent-cobalt); white-space: nowrap; width: 105px; }
+.calc-sheet table.ctab td:last-child { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; text-align: right; white-space: nowrap; font-weight: 600; }
+.calc-sheet table.ctab th:last-child { text-align: right; }
+.calc-sheet table.ctab tr.res td { background: var(--surface-subtle); font-weight: 700; border-top: 1.5px solid var(--border-hairline); }
+.calc-sheet table.rct td:first-child { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-weight: 700; color: var(--text-muted); width: 42px; text-align: center; }
+.calc-sheet table.rct td:nth-child(4), .calc-sheet table.rct td:nth-child(5) { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-size: 11.5px; }
+.calc-sheet .blk { margin: 12px 0; padding: 12px 14px; border: 1px solid var(--border-hairline); border-left: 4px solid var(--border-hairline); border-radius: 8px; background: var(--surface-panel); }
+.calc-sheet .blk.ok { border-left-color: var(--status-pass); }
+.calc-sheet .blk.no { border-left-color: var(--status-fail); }
+.calc-sheet .blk.na { border-left-color: var(--text-muted); }
+.calc-sheet .blk.rv { border-left-color: var(--status-warn); }
+.calc-sheet .blk .bh { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 7px; margin-bottom: 8px; border-bottom: 1px solid var(--border-muted); font-size: 13px; }
+.calc-sheet .blk .bh span { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+.calc-sheet .rcb { margin: 14px 0; padding: 12px 14px; border: 1px solid var(--border-hairline); border-radius: 8px; background: var(--surface-panel); }
+.calc-sheet .rcb h3 { margin-top: 0; }
+.calc-sheet .lamp { display: inline-flex; align-items: center; padding: 1.5px 7px; border-radius: 999px; font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; }
+.calc-sheet .lamp.okq { background: var(--status-pass-bg); color: var(--status-pass); border: 1px solid var(--status-pass-bd); }
+.calc-sheet .lamp.no { background: var(--status-fail-bg); color: var(--status-fail); border: 1px solid var(--status-fail-bd); }
+.calc-sheet .lamp.na { background: var(--surface-subtle); color: var(--text-muted); border: 1px solid var(--border-hairline); }
+.calc-sheet .lamp.rv { background: var(--status-warn-bg); color: var(--status-warn); border: 1px solid var(--status-warn-bd); }
+.calc-sheet .lamp.nc { background: var(--surface-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline); }
+

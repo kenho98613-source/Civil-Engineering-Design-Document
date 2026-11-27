@@ -2,12 +2,34 @@
   "name": "retaining-wall-checker",
   "private": true,
   "version": "14.0.1",
+  "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:node": "node scripts/run-engine-tests.mjs",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
     "icons": "tauri icon app-icon.png",
-    "dev": "tauri dev",
-    "build": "tauri build"
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "lucide-react": "^0.511.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.1.0"
+    "@tailwindcss/vite": "^4.1.4",
+    "@tauri-apps/cli": "^2.1.0",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.3",
+    "vitest": "^3.1.2"
   }
 }
