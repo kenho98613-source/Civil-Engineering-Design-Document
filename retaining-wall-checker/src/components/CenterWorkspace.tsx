@@ -7,6 +7,7 @@ import {
   ancRC,
   benchRun,
   f,
+  isG,
   kaEq,
   kpEq,
   rcv,
@@ -766,7 +767,8 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
 
             {/* Starter Bar Anchorage Check */}
             {(() => {
-              const an = anch(S, result.G, result.RS) || ancRC(S, result.G, result.RS);
+              const stemEl = result.RS.filter((r) => /^s\d+$/.test(r.k)).slice(-1)[0];
+              const an = stemEl ? (isG(S) ? anch(S, stemEl) : ancRC(S, stemEl)) : null;
               if (!an) return null;
               return (
                 <div
