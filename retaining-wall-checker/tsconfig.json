@@ -16,5 +16,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/engine", "src/report", "src/main.tsx", "src/App.tsx", "src/vite-env.d.ts"]
+  "include": ["src/engine", "src/report", "src/components", "src/hooks", "src/main.tsx", "src/App.tsx", "src/vite-env.d.ts"]
 }

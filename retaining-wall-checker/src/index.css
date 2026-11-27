@@ -1,5 +1,195 @@
 @import "tailwindcss";
 
-:root {
+/* =========================================================================
+   Retaining Wall Desktop Workstation – Design Tokens (DESIGN.md)
+   Clean CAD / Engineering Workstation · Light & Dark Parity
+   ========================================================================= */
+
+:root,
+:root[data-theme="light"] {
+  --surface-canvas: #f8fafc;
+  --surface-panel: #ffffff;
+  --surface-subtle: #f1f5f9;
+  --surface-elevated: #ffffff;
+  --border-hairline: #cbd5e1;
+  --border-muted: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --status-pass: #16a34a;
+  --status-pass-bg: #f0fdf4;
+  --status-pass-bd: #bbf7d0;
+  --status-fail: #dc2626;
+  --status-fail-bg: #fef2f2;
+  --status-fail-bd: #fecaca;
+  --status-warn: #d97706;
+  --status-warn-bg: #fffbeb;
+  --status-warn-bd: #fde68a;
+  --status-na: #64748b;
+  --status-na-bg: #f1f5f9;
+  --accent-cobalt: #2563eb;
+  --accent-cobalt-hover: #1d4ed8;
+  --accent-cobalt-soft: rgba(37, 99, 235, 0.1);
+  --accent-teal: #0f766e;
+  --accent-teal-hover: #115e59;
+
+  /* CAD SVG Palette */
+  --cad-bg: #ffffff;
+  --cad-grid: #f1f5f9;
+  --cad-concrete-fill: #cbd5e1;
+  --cad-concrete-stroke: #334155;
+  --cad-soil-fill: #f5efe0;
+  --cad-soil-stroke: #a1885f;
+  --cad-front-soil: #e8efe5;
+  --cad-water: #0284c7;
+  --cad-water-fill: rgba(14, 165, 233, 0.1);
+  --cad-force-active: #dc2626;
+  --cad-force-passive: #059669;
+  --cad-force-weight: #334155;
+  --cad-kern: rgba(22, 163, 74, 0.18);
+  --cad-rebar: #c2410c;
+  --cad-dim: #475569;
+  --cad-halo: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] {
+    --surface-canvas: #0b1120;
+    --surface-panel: #111827;
+    --surface-subtle: #1e293b;
+    --surface-elevated: #1e293b;
+    --border-hairline: #334155;
+    --border-muted: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --status-pass: #22c55e;
+    --status-pass-bg: rgba(34, 197, 94, 0.12);
+    --status-pass-bd: rgba(34, 197, 94, 0.35);
+    --status-fail: #f87171;
+    --status-fail-bg: rgba(248, 113, 113, 0.12);
+    --status-fail-bd: rgba(248, 113, 113, 0.35);
+    --status-warn: #fbbf24;
+    --status-warn-bg: rgba(251, 191, 36, 0.12);
+    --status-warn-bd: rgba(251, 191, 36, 0.35);
+    --status-na: #94a3b8;
+    --status-na-bg: rgba(148, 163, 184, 0.12);
+    --accent-cobalt: #60a5fa;
+    --accent-cobalt-hover: #3b82f6;
+    --accent-cobalt-soft: rgba(96, 165, 250, 0.14);
+    --accent-teal: #14b8a6;
+    --accent-teal-hover: #0d9488;
+
+    --cad-bg: #0f172a;
+    --cad-grid: #1e293b;
+    --cad-concrete-fill: #475569;
+    --cad-concrete-stroke: #cbd5e1;
+    --cad-soil-fill: #27221a;
+    --cad-soil-stroke: #856d47;
+    --cad-front-soil: #1a2822;
+    --cad-water: #38bdf8;
+    --cad-water-fill: rgba(56, 189, 248, 0.12);
+    --cad-force-active: #f87171;
+    --cad-force-passive: #34d399;
+    --cad-force-weight: #e2e8f0;
+    --cad-kern: rgba(34, 197, 94, 0.22);
+    --cad-rebar: #fb923c;
+    --cad-dim: #94a3b8;
+    --cad-halo: #0f172a;
+  }
+}
+
+:root[data-theme="dark"] {
+  --surface-canvas: #0b1120;
+  --surface-panel: #111827;
+  --surface-subtle: #1e293b;
+  --surface-elevated: #1e293b;
+  --border-hairline: #334155;
+  --border-muted: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --status-pass: #22c55e;
+  --status-pass-bg: rgba(34, 197, 94, 0.12);
+  --status-pass-bd: rgba(34, 197, 94, 0.35);
+  --status-fail: #f87171;
+  --status-fail-bg: rgba(248, 113, 113, 0.12);
+  --status-fail-bd: rgba(248, 113, 113, 0.35);
+  --status-warn: #fbbf24;
+  --status-warn-bg: rgba(251, 191, 36, 0.12);
+  --status-warn-bd: rgba(251, 191, 36, 0.35);
+  --status-na: #94a3b8;
+  --status-na-bg: rgba(148, 163, 184, 0.12);
+  --accent-cobalt: #60a5fa;
+  --accent-cobalt-hover: #3b82f6;
+  --accent-cobalt-soft: rgba(96, 165, 250, 0.14);
+  --accent-teal: #14b8a6;
+  --accent-teal-hover: #0d9488;
+
+  --cad-bg: #0f172a;
+  --cad-grid: #1e293b;
+  --cad-concrete-fill: #475569;
+  --cad-concrete-stroke: #cbd5e1;
+  --cad-soil-fill: #27221a;
+  --cad-soil-stroke: #856d47;
+  --cad-front-soil: #1a2822;
+  --cad-water: #38bdf8;
+  --cad-water-fill: rgba(56, 189, 248, 0.12);
+  --cad-force-active: #f87171;
+  --cad-force-passive: #34d399;
+  --cad-force-weight: #e2e8f0;
+  --cad-kern: rgba(34, 197, 94, 0.22);
+  --cad-rebar: #fb923c;
+  --cad-dim: #94a3b8;
+  --cad-halo: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background-color: var(--surface-canvas);
+  color: var(--text-primary);
+  font-family: "Segoe UI Variable", "Segoe UI", "Noto Sans TC", system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+.font-mono-eng {
+  font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Crisp subtle scrollbars for desktop workstation panes */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hairline);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* CAD SVG label halo for crisp readability over hatching */
+.cad-label {
+  paint-order: stroke;
+  stroke: var(--cad-halo);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
