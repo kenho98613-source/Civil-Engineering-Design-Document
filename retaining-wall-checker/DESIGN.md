@@ -1,0 +1,28 @@
+# Design System – Retaining Wall Desktop Workstation
+
+- **Role & Tone**: Lead Software Graphic & UI/UX Designer for a precision civil & geotechnical engineering desktop application running on Windows (Tauri v2 + React + TypeScript + Tailwind CSS).
+- **Visual Direction**: Clean CAD / Engineering Workstation.
+  - Crisp `1px` structural borders, calm neutral slate/zinc surfaces, restrained elevation, generous breathing room, and clear typographic hierarchy.
+  - Strictly apply `font-variant-numeric: tabular-nums` across all numbers, levels (mPD), coordinates, dimensions, forces, moments, factors of safety, reinforcement areas, and utilisation percentages.
+  - Dedicated monospace/tabular styling for engineering badges (`T20@150`, `+10.00 mPD`, `FOS 2.45 ≥ 1.50`).
+- **Semantic Colors**:
+  - Neutral surfaces (`slate`/`zinc`) for window chrome, toolbars, panels, and cards; full **Light** and **Dark** theme parity via CSS design tokens (`[data-theme="light" | "dark"]`).
+  - **Emerald / Green**: `PASS`, safe margins, curtailment cut-off lines, middle-third kern band.
+  - **Crimson / Red**: `FAIL`, input validation errors, limit lines (`100%`), SFD diagrams.
+  - **Amber**: Warnings, engineering verification notes (`REQUIRES VERIFICATION`), DXF guessed/inferred values, high-utilisation caution (`85–100%`).
+  - **Cobalt / Blue**: Active selections, interactive SVG drag handles, primary actions, BMD diagrams, active step indicator.
+- **Workspace Layout**:
+  - **Top Command Bar + Wall-Type Tab Strip**:
+    - Integrated multi-wall-type tabs (`RW1`, `RW2`, `+ New ▾`, inline rename/delete), active project title / `.rwall` dirty indicator.
+    - Quick actions: Setup Wizard, Auto Design, Undo/Redo, File menu (Open/Save `.rwall`, Import DXF, Export DXF, Snapshot), More menu (Default Design, Benchmark modal, Reset), Concise/Full report toggle, Light/Dark theme switch, and primary **Export PDF** CTA.
+  - **3-Pane Desktop Workstation**:
+    - **Left Pane (340–380px, collapsible)**: Step 1–5 guided input inspector with sticky progress stepper, error/warning count badges per step, grouped cards, and instant jump from error banners.
+    - **Center Canvas (Fluid)**: Workspace view switcher (`Section Figure` · `BMD / SFD` · `RC Diagram` · `Check Register` · `5. Calculation` · `6. Stability` · `7. Structural` · `Design Tools` · `8. Limitations`) with floating CAD toolbar (mode toggle, layer switches, force arrow scale, zoom/fit).
+    - **Right Pane (280–310px, collapsible to status rail on narrower windows)**: Persistent live KPI status rail grouped into Stability (Sliding, Overturning, Bearing, Uplift, Eccentricity, Accidental Impact) and Structural (per-element RC / mesh utilisation), with overall PASS/FAIL badge, concrete volume / steel estimate footer, and click-to-jump navigation.
+- **Interactive Diagrams & Design Tools**:
+  - **SVG Cross-Section**: Preserve all bidirectional drag handles (`●`) and parameter editing; upgrade raw inline `<foreignObject>` `<input>` boxes into crisp engineering pills that open a clean anchored popover editor on click; add CAD layer toggles (Dimensions, Forces, Soil/GWL, Middle-Third/Bearing, Rebar/Key) and bidirectional hover cross-highlighting between left-pane inputs and SVG geometry elements.
+  - **RC Diagram**: Upgrade per-element interactive cards with crisp cross-section sketches, hoverable bar callouts, popover bar picker (`T12–T40 @ 100–300`), and per-element Auto-Bar button.
+  - **Design Tools**: Cohesive engineering cards for Auto-Optimizer (progress + before/after delta table), Live Stress Test (GWT & surcharge sliders + critical failure threshold callouts + live mini-section), Scenario Pin A/B/C Comparator (table + grouped bar SVG), and Sensitivity Tornado (dual-sided horizontal tornado SVG).
+- **Decoupled A4 Report Layer (`src/report/`)**:
+  - Separate print/PDF stylesheet and pure React/HTML report renderer completely isolated from dark mode, Tailwind interactive chrome, and screen scrollbars.
+  - Supports **Concise** vs **Full** report mode and **Multi-Wall-Type Summary + Combined Package** with continuous page numbers (`Page X / Y`).
