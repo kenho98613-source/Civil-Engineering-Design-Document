@@ -473,7 +473,14 @@ console.log('\n=== 5. FIGURE SVG, ALL DRAG HANDLES & MULTI-STEM MUTATIONS ===');
   engine.linkLevels(sTer2, 'xs.0.zt');
   assert.ok(!calcAll(sTer2).err && calcAll(sTer2).G.XS[0].top >= 9.2 - 1e-6, 'Dragging terrace soil UP must raise SB1 top');
 
-  console.log(`  PASS  Figure SVG (${fT.handles.length} T handles / ${fTer.handles.length} multi-stem handles), Terrace soil, Soil Handle Up/Down Drag, Add/Delete/Split Stems & L→T auto-conversion`);
+  // Main stem height handles must sit ON the stem top center & joint center (not floating off to the left)
+  const hTop = fT.handles.find((h) => h.p === 'st.0.top');
+  const hBot = fT.handles.find((h) => h.p === 'st.0.bot');
+  const g0 = r0.G.SG[0];
+  assert.ok(hTop && hTop.x >= g0.xf1 - 1e-6 && hTop.x <= g0.xb1 + 1e-6 && Math.abs(hTop.z - g0.top) < 1e-6, 'Wall stem top handle must sit on Stem 1 top center');
+  assert.ok(hBot && hBot.x >= g0.xf0 - 1e-6 && hBot.x <= g0.xb0 + 1e-6 && Math.abs(hBot.z - g0.bot) < 1e-6, 'Stem joint handle must sit on Stem 1/2 joint center');
+
+  console.log(`  PASS  Figure SVG (${fT.handles.length} T handles / ${fTer.handles.length} multi-stem handles), Terrace soil, Stem & Soil Handle Placement/Drag, Add/Delete/Split Stems & L→T auto-conversion`);
 }
 
 console.log('\n=== 6. DETAILED CALCULATION STEPS (SECTIONS 5, 6, 7 & 8) ===');

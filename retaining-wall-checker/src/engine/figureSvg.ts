@@ -1005,15 +1005,22 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     ) => HD.push({ p, ax, k, v: +v, x, z, anc: 'toe', min: -1e9, max: 1e9, d: 2, ...o2 });
 
     if (S.bon) add('@H', 'z', 1, Hr - Zb, Math.min(xr - 0.6, B + 0.7), Hr, { min: 0, max: 1e9, lab: 'Retained ground level' });
-    if (n) add('st.0.top', 'z', 1, top, xl + 1.1, top, { min: +S.st[0].bot, lab: 'Wall top' });
     const fo = !isG(S);
     if (S.ty !== 'L' && fo) add('Lt', 'x', -1, +S.Lt, 0, hm, { anc: 'xb', min: 0, lab: 'Toe (base front end)' });
     if (S.ty !== 'Li' && fo) add('Lh', 'x', 1, +S.Lh, B, hm, { min: 0, lab: 'Heel (base back end)' });
-    add('tb', 'z', 1, +S.tb, hl > 0.3 ? (xb + B) / 2 : Lt > 0.3 ? Lt / 2 : xb - 0.15, bt, {
-      min: 0.2,
-      max: n ? +S.st[n - 1].top - 0.2 : 1e9,
-      lab: isG(S) ? 'Block height' : 'Base t',
-    });
+    add(
+      'tb',
+      'z',
+      1,
+      +S.tb,
+      isG(S) ? gtx_ + +S.gBt * (n ? 0.25 : 0.5) : hl > 0.3 ? (xb + B) / 2 : Lt > 0.3 ? Lt / 2 : xb - 0.15,
+      bt,
+      {
+        min: 0.2,
+        max: n ? +S.st[n - 1].top - 0.2 : 1e9,
+        lab: isG(S) ? 'Block height' : 'Base t',
+      },
+    );
     if (isG(S)) {
       const bf = gbf_;
       const br = gbr_;
@@ -1030,30 +1037,47 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
       const sup = i < n - 1 ? c.G.SG[i + 1] : null;
       const a = sup ? sup.xf1 : isG(S) ? gtx_ : 0;
       const b = sup ? sup.xb1 : isG(S) ? gtx_ + +S.gBt : B;
-      if (i < n - 1) add(`st.${i}.bot`, 'z', 1, sg.bot, xl + 1.1, sg.bot, { min: +S.st[i + 1].bot, max: sg.top, lab: `${N} bottom (joint)` });
-      if (!(sg.h > 0.05)) return;
-      const z1 = sg.bot + 0.5 * sg.h;
-      const fz = (z: number) => (z - sg.bot) / sg.h;
-      add('@tf.' + i, 'x', -1, sg.t, sg.xf0 + sg.fb * fz(z1), z1, {
-        anc: bot && S.ty === 'L' ? 'xb' : 'toe',
-        min: Math.max(0.1, sg.fb + sg.rb + 0.05),
-        max: bot ? (S.ty === 'L' ? 1e9 : sg.t + +S.Lt) : sg.t + Math.max(0, sg.xf0 - a),
-        lab: `${N} front face (width)`,
-      });
-      add('@tw.' + i, 'x', 1, sg.t, sg.xb0 - sg.rb * fz(z1), z1, {
-        min: Math.max(0.1, sg.fb + sg.rb + 0.05),
-        max: bot ? (S.ty === 'Li' ? 1e9 : sg.t + +S.Lh) : Math.max(0.1, b - sg.xf0),
-        lab: `${N} back face (width)`,
-      });
-      add(`st.${i}.fb`, 'x', 1, sg.fb, sg.xf1, sg.top - Math.min(0.08, sg.h / 8), { min: 0, max: Math.max(0, sg.t - sg.rb - 0.05), lab: `${N} front batter` });
-      add(`st.${i}.rb`, 'x', -1, sg.rb, sg.xb1, sg.top - Math.min(0.08, sg.h / 8), { min: 0, max: Math.max(0, sg.t - sg.fb - 0.05), lab: `${N} rear batter` });
-      const zc = sg.bot + 0.3 * sg.h;
-      if (bot) {
-        if (S.ty === 'T') add('@mv', 'x', 1, +S.Lt, sg.xc, zc, { min: 0, max: +S.Lt + +S.Lh, lab: `${N} position (toe ↔ heel)` });
-      } else {
-        add(`st.${i}.of`, 'x', 1, +sg.s.of || 0, sg.xc, sg.bot + 0.15 * sg.h, { min: 0, max: Math.max(0, b - a - sg.t), lab: `${N} position (front offset)` });
+      if (sg.h > 0.05) {
+        const z1 = sg.bot + 0.5 * sg.h;
+        const fz = (z: number) => (z - sg.bot) / sg.h;
+        const zBat = sg.top - Math.min(0.25, sg.h * 0.22);
+        const fBat = fz(zBat);
+        add('@tf.' + i, 'x', -1, sg.t, sg.xf0 + sg.fb * fz(z1), z1, {
+          anc: bot && S.ty === 'L' ? 'xb' : 'toe',
+          min: Math.max(0.1, sg.fb + sg.rb + 0.05),
+          max: bot ? (S.ty === 'L' ? 1e9 : sg.t + +S.Lt) : sg.t + Math.max(0, sg.xf0 - a),
+          lab: `${N} front face (width)`,
+        });
+        add('@tw.' + i, 'x', 1, sg.t, sg.xb0 - sg.rb * fz(z1), z1, {
+          min: Math.max(0.1, sg.fb + sg.rb + 0.05),
+          max: bot ? (S.ty === 'Li' ? 1e9 : sg.t + +S.Lh) : Math.max(0.1, b - sg.xf0),
+          lab: `${N} back face (width)`,
+        });
+        add(`st.${i}.fb`, 'x', 1, sg.fb, sg.xf0 + sg.fb * fBat, zBat, { min: 0, max: Math.max(0, sg.t - sg.rb - 0.05), lab: `${N} front batter` });
+        add(`st.${i}.rb`, 'x', -1, sg.rb, sg.xb0 - sg.rb * fBat, zBat, { min: 0, max: Math.max(0, sg.t - sg.fb - 0.05), lab: `${N} rear batter` });
+        const zc = sg.bot + 0.3 * sg.h;
+        if (bot) {
+          if (S.ty === 'T') add('@mv', 'x', 1, +S.Lt, sg.xc, zc, { min: 0, max: +S.Lt + +S.Lh, lab: `${N} position (toe ↔ heel)` });
+        } else {
+          add(`st.${i}.of`, 'x', 1, +sg.s.of || 0, sg.xc, sg.bot + 0.15 * sg.h, { min: 0, max: Math.max(0, b - a - sg.t), lab: `${N} position (front offset)` });
+        }
+      }
+      if (i < n - 1) {
+        add(`st.${i}.bot`, 'z', 1, sg.bot, (sg.xf0 + sg.xb0) / 2, sg.bot, {
+          min: +(+S.st[i + 1].bot + 0.05).toFixed(3),
+          max: +Math.max(+S.st[i + 1].bot + 0.05, sg.top - 0.05).toFixed(3),
+          lab: `${N} bottom (joint)`,
+        });
       }
     });
+    if (n && c.G.SG[0]) {
+      const g0 = c.G.SG[0];
+      add('st.0.top', 'z', 1, top, (g0.xf1 + g0.xb1) / 2, top, {
+        min: +(+S.st[0].bot + 0.05).toFixed(3),
+        max: 1e9,
+        lab: 'Wall stem top',
+      });
+    }
     XS.forEach((a, j) => {
       const nx = j < XS.length - 1 ? XS[j + 1].x0 : Lt;
       const pv = j > 0 ? XS[j - 1].x1 : 0;
