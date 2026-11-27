@@ -1,4 +1,4 @@
-// Desktop shell for Retaining Wall Design & Checker v9.0.
+// Desktop shell for Retaining Wall Design & Checker v13.
 // The whole calculation runs in src/index.html; Rust only reads / writes .rwall project files.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 

@@ -1,0 +1,10 @@
+const { chromium } = require('playwright');const fs=require('fs'),path=require('path');
+const [model,rw]=process.argv.slice(2);
+(async()=>{const b=await chromium.launch(),pg=await b.newPage({viewport:{width:1400,height:1000},deviceScaleFactor:2});const errs=[];pg.on('pageerror',e=>errs.push(String(e)));pg.on('dialog',d=>d.dismiss());
+await pg.goto('file://'+path.resolve(model));await pg.waitForTimeout(800);
+await pg.evaluate(t=>{const m=document.getElementById('mdl');if(m)m.remove();rwLoad(t,'x.rwall');goStep(4)},fs.readFileSync(rw,'utf8'));await pg.waitForTimeout(500);
+const cb=pg.locator('input[data-p=fdl]');console.log('checkbox',await cb.count());await cb.scrollIntoViewIfNeeded();await cb.click();await pg.waitForTimeout(700);
+console.log('S.fdl',await pg.evaluate(()=>S.fdl),'fdP visible',await pg.locator('input[data-p=fdP]').isVisible(),'fdS visible',await pg.locator('input[data-p=fdS]').isVisible());
+await pg.fill('input[data-p=fdS]','3.26');await pg.press('input[data-p=fdS]','Tab');await pg.waitForTimeout(700);
+console.log('wf text',await pg.locator('#fdwt').innerText(),'| N row',(await pg.evaluate(()=>document.getElementById('r5').innerText)).match(/Wf1[^\n]{0,120}/)?.[0]);
+await pg.locator('input[data-p=fdP]').scrollIntoViewIfNeeded();await pg.screenshot({path:'ui_fdl.png'});console.log('errors',errs);await b.close()})();
