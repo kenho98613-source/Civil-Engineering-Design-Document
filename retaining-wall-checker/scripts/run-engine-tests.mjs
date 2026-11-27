@@ -444,7 +444,36 @@ console.log('\n=== 5. FIGURE SVG, ALL DRAG HANDLES & MULTI-STEM MUTATIONS ===');
   const conv = addExtraStem(sL);
   assert.ok(conv.ok && conv.convertedFromL && sL.ty === 'T');
 
-  console.log(`  PASS  Figure SVG (${fT.handles.length} T handles / ${fTer.handles.length} multi-stem handles), Terrace soil, Add/Delete/Split Stems & L→T auto-conversion`);
+  // Soil height drag handles: Retained soil (@H) must drag UP (raising wall top) & DOWN (to Zb); Terrace soil (xs.0.zt) must drag UP (raising SB1) & stay visible at bt
+  const hRet = fT.handles.find((h) => h.p === '@H');
+  assert.ok(hRet && hRet.min === 0 && hRet.max > hRet.v, 'Retained soil handle (@H) must allow dragging both up and down');
+  const sUp = structuredClone(s);
+  engine.setVirtualParam(sUp, '@H', 5.2);
+  engine.syncState(sUp);
+  engine.linkLevels(sUp, '@H');
+  assert.equal(sUp.Hr, 11.2);
+  assert.equal(sUp.st[0].top, 11.2, 'Dragging retained soil UP must raise wall top cleanly');
+  assert.ok(!calcAll(sUp).err, 'Raised retained soil must pass validation');
+
+  const sDn = structuredClone(s);
+  engine.setVirtualParam(sDn, '@H', 2.0);
+  engine.syncState(sDn);
+  engine.linkLevels(sDn, '@H');
+  assert.equal(sDn.Hr, 8.0);
+  assert.equal(sDn.st[0].top, 10.0, 'Dragging retained soil DOWN keeps wall top intact');
+  assert.ok(!calcAll(sDn).err);
+
+  const sTer2 = loadDefaultDesign('T', { acc: 'fc' });
+  addExtraStem(sTer2);
+  const fTer2 = renderFigureSvg(sTer2, figureInputFromResult(sTer2, calcAll(sTer2)));
+  const hZt = fTer2.handles.find((h) => h.p === 'xs.0.zt');
+  assert.ok(hZt && hZt.max > hZt.v, 'Terrace soil handle (xs.0.zt) must allow dragging UP above initial SB1 top');
+  engine.setVirtualParam(sTer2, 'xs.0.zt', 9.2);
+  engine.syncState(sTer2);
+  engine.linkLevels(sTer2, 'xs.0.zt');
+  assert.ok(!calcAll(sTer2).err && calcAll(sTer2).G.XS[0].top >= 9.2 - 1e-6, 'Dragging terrace soil UP must raise SB1 top');
+
+  console.log(`  PASS  Figure SVG (${fT.handles.length} T handles / ${fTer.handles.length} multi-stem handles), Terrace soil, Soil Handle Up/Down Drag, Add/Delete/Split Stems & L→T auto-conversion`);
 }
 
 console.log('\n=== 6. DETAILED CALCULATION STEPS (SECTIONS 5, 6, 7 & 8) ===');

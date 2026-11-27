@@ -281,8 +281,11 @@ export function SectionCanvas({
             backgroundColor: 'var(--accent-cobalt)',
           }}
         >
-          {drag.h.lab} = {dd(drag.v)}
-          {drag.h.p === '@WL' || drag.h.p === 'fw' || /\.(top|bot|zt)$/.test(drag.h.p) ? ' mPD' : ' m'}
+          {drag.h.p === '@H'
+            ? `${drag.h.lab} = +${dd(+S.Zb + drag.v)} mPD (H = ${dd(drag.v)} m)`
+            : drag.h.p === '@Df'
+              ? `${drag.h.lab} = +${dd(+S.Zb + drag.v)} mPD (Df = ${dd(drag.v)} m)`
+              : `${drag.h.lab} = ${dd(drag.v)}${drag.h.p === '@WL' || drag.h.p === 'fw' || /\.(top|bot|zt)$/.test(drag.h.p) ? ' mPD' : ' m'}`}
         </div>
       )}
     </div>

@@ -162,7 +162,18 @@ export function setVirtualParam(S: WallState, pRaw: string, v: number): WallStat
 export function linkLevels(S: WallState, p: string): WallState {
   const G = geo(S);
   const XS = G.XS || [];
-  if (S.bon && +S.Hr > G.top + 1e-6) S.Hr = +G.top.toFixed(3);
+  if (S.bon && +S.Hr > G.top + 1e-6) {
+    if (p === '@H' || p === 'Hr') {
+      if (S.st.length) {
+        S.st[0].top = +(+S.Hr).toFixed(3);
+      } else if (isG(S)) {
+        S.gBh = +Math.max(0.2, +S.Hr - +S.Zb).toFixed(3);
+        S.tb = S.gBh;
+      }
+    } else {
+      S.Hr = +G.top.toFixed(3);
+    }
+  }
   if (+S.Hf > +S.Hr) S.Hf = +S.Hr;
   if (XS[0] && S.fon && +S.Hf > XS[0].top + 1e-6) {
     if (p === '@Df' || p === 'Hf') {

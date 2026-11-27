@@ -1004,7 +1004,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
       o2: Partial<FigureHandle> & { lab: string },
     ) => HD.push({ p, ax, k, v: +v, x, z, anc: 'toe', min: -1e9, max: 1e9, d: 2, ...o2 });
 
-    if (S.bon) add('@H', 'z', 1, Hr - Zb, Math.min(xr - 0.6, B + 0.7), Hr, { min: +S.tb + 0.3, max: +(top - Zb).toFixed(3), lab: 'Retained ground level' });
+    if (S.bon) add('@H', 'z', 1, Hr - Zb, Math.min(xr - 0.6, B + 0.7), Hr, { min: 0, max: 1e9, lab: 'Retained ground level' });
     if (n) add('st.0.top', 'z', 1, top, xl + 1.1, top, { min: +S.st[0].bot, lab: 'Wall top' });
     const fo = !isG(S);
     if (S.ty !== 'L' && fo) add('Lt', 'x', -1, +S.Lt, 0, hm, { anc: 'xb', min: 0, lab: 'Toe (base front end)' });
@@ -1065,9 +1065,9 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
         add(`${sg.p}.h`, 'z', 1, sg.h, sg.x0 + sg.t / 2, sg.top, { min: 0.2, max: +Math.max(0.2, top - sg.bot).toFixed(3), lab: `${N} segment ${sg.k + 1} height` });
         add(`${sg.p}.t`, 'x', isU(S) ? -1 : 1, sg.t, isU(S) ? sg.x0 : sg.x1, sg.bot + 0.5 * sg.h, { min: 0.15, max: 3, lab: `${N} segment ${sg.k + 1} width` });
       });
-      if (!C.UU && a.zt > bt + 1e-6) {
-        const xe = j < XS.length - 1 ? XS[j + 1].x0 : pX(c.G.frM, a.zt);
-        add(`xs.${j}.zt`, 'z', 1, a.zt, (a.x1 + xe) / 2, a.zt, { min: +bt.toFixed(3), max: +a.top.toFixed(3), lab: `Terrace ${j + 1} level` });
+      if (!C.UU) {
+        const xe = j < XS.length - 1 ? XS[j + 1].x0 : pX(c.G.frM, Math.max(bt, a.zt));
+        add(`xs.${j}.zt`, 'z', 1, a.zt, (a.x1 + xe) / 2, a.zt, { min: +bt.toFixed(3), max: +Math.max(a.top, top).toFixed(3), lab: `Terrace ${j + 1} level` });
       }
     });
     if (S.bon && +S.br > 0 && +S.brL > 0) {
@@ -1076,7 +1076,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     }
     if (S.bon) add('@WL', 'z', 1, C.wb > 0 ? C.Wb : Zb, xr - 1.1, C.wb > 0 ? C.Wb : Zb, { min: Zb, max: Hr, lab: 'Design WL' });
     if (S.fon) add('fw', 'z', 1, +S.fw, xl + 1.1, Math.max(+S.fw, Zb - 0.3), { max: Hf, lab: 'Front GWL' });
-    if (Hf > Zb || S.fon) add('@Df', 'z', 1, Hf - Zb, xl + 2, Hf, { min: 0, lab: 'Front soil Df' });
+    if (Hf > Zb || S.fon) add('@Df', 'z', 1, Hf - Zb, xl + 2, Hf, { min: 0, max: +Math.max(0, Hr - Zb).toFixed(3), lab: 'Front soil Df' });
     if (KG && KG.dk > 0) {
       add('skd', 'z', -1, KG.dk, KG.xk + KG.Bk / 2, Zb - KG.dk, { min: 0.1, lab: 'Key depth' });
       add('skx', 'x', 1, KG.xk, KG.xk, Zb - KG.dk / 2, { min: 0, max: B - KG.Bk, lab: 'Key position' });
