@@ -170,13 +170,13 @@ export function SectionCanvas({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       >
-        {/* Floating Translucent Pill Layer & Mode Bar */}
+        {/* Sleek Single-Row Floating Layer & Mode Bar */}
         <div
-          className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 m-2.5 mb-0 rounded-full border shadow-sm backdrop-blur-md"
+          className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 m-2.5 mb-0 rounded-xl border shadow-sm backdrop-blur-md"
           style={{ backgroundColor: 'var(--float-pill)', borderColor: 'var(--border-hairline)' }}
         >
           <div
-            className="inline-flex items-center p-0.5 rounded-full border"
+            className="inline-flex items-center p-0.5 rounded-lg border shrink-0"
             style={{ backgroundColor: 'var(--surface-subtle)', borderColor: 'var(--border-muted)' }}
           >
             {(
@@ -192,7 +192,7 @@ export function SectionCanvas({
                   key={m}
                   type="button"
                   onClick={() => setMode(m)}
-                  className="px-2.5 py-0.5 rounded-full text-[11px] cursor-pointer transition-colors"
+                  className="px-2.5 py-0.5 rounded-md text-[11px] cursor-pointer transition-colors"
                   style={{
                     backgroundColor: on ? 'var(--chrome-dark)' : 'transparent',
                     color: on ? '#ffffff' : 'var(--text-secondary)',
@@ -213,7 +213,7 @@ export function SectionCanvas({
                   key={k}
                   type="button"
                   onClick={() => setLayers((prev) => ({ ...prev, [k]: !prev[k] }))}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] cursor-pointer transition-all border"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] cursor-pointer transition-all border"
                   style={{
                     borderColor: on ? 'var(--accent-cobalt)' : 'var(--border-muted)',
                     backgroundColor: on ? 'var(--accent-cobalt-soft)' : 'var(--surface-panel)',
@@ -222,7 +222,7 @@ export function SectionCanvas({
                   }}
                 >
                   <span
-                    className="w-2 h-2 rounded-full"
+                    className="w-1.5 h-1.5 rounded-full"
                     style={{ backgroundColor: on ? 'var(--accent-cobalt)' : 'var(--border-hairline)' }}
                   />
                   {lab}
@@ -231,7 +231,7 @@ export function SectionCanvas({
             })}
           </div>
 
-          <label className="inline-flex items-center gap-1.5 text-[11px] pl-1" style={{ color: 'var(--text-muted)' }}>
+          <label className="inline-flex items-center gap-1.5 text-[11px] pl-1 shrink-0" style={{ color: 'var(--text-muted)' }}>
             <span>Scale</span>
             <input
               type="range"
@@ -240,7 +240,7 @@ export function SectionCanvas({
               step={0.1}
               value={asc}
               onChange={(e) => onForceScaleChange(+e.target.value)}
-              className="w-16 accent-blue-600"
+              className="w-14 accent-blue-600"
             />
             <span className="font-mono-eng w-7 text-right font-semibold" style={{ color: 'var(--text-primary)' }}>
               {asc.toFixed(1)}×

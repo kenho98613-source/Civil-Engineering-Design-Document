@@ -37,15 +37,18 @@ interface CenterWorkspaceProps {
   onAutoBars: (only?: string) => void;
 }
 
-const TABS: { id: WorkspaceTab; label: string }[] = [
-  { id: 'figure', label: 'Figure' },
+const REPORT_TABS: { id: WorkspaceTab; label: string }[] = [
+  { id: 'figure', label: '1. Figure' },
+  { id: 'register', label: '2. Summary' },
+  { id: 'calc5', label: '5. Loads & Ka' },
+  { id: 'stab6', label: '6. Stability' },
+  { id: 'rc7', label: '7. Structural' },
+];
+
+const TOOL_TABS: { id: WorkspaceTab; label: string }[] = [
   { id: 'rcd', label: 'RC Diagram' },
   { id: 'bmd', label: 'BMD / SFD' },
   { id: 'tools', label: 'Design Tools' },
-  { id: 'register', label: 'Check Register' },
-  { id: 'calc5', label: '5. Loads & Ka' },
-  { id: 'stab6', label: '6. Stability Steps' },
-  { id: 'rc7', label: '7. Structural Steps' },
   { id: 'limits8', label: '8. Limits' },
 ];
 
@@ -118,25 +121,66 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
 
   return (
     <main className="flex-1 min-w-0 flex flex-col min-h-0">
-      {/* Workspace Sub-Tab Bar (Direction A Underline Navigation) */}
+      {/* Workspace Sub-Tab Bar — Primary: Report Submission Sections | Secondary: Workbench Tools & Internal */}
       <div
-        className="flex items-center gap-1 px-3.5 border-b overflow-x-auto shrink-0"
+        className="flex items-center gap-1 px-3 border-b overflow-x-auto shrink-0"
         style={{
           backgroundColor: 'var(--surface-panel)',
           borderColor: 'var(--border-hairline)',
         }}
       >
-        {TABS.map((t) => {
+        <span
+          className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded mr-1 shrink-0"
+          style={{
+            backgroundColor: 'var(--accent-cobalt-soft)',
+            color: 'var(--accent-cobalt)',
+          }}
+          title="Sections included in the printed A4 PDF submission report"
+        >
+          Report
+        </span>
+        {REPORT_TABS.map((t) => {
           const on = activeTab === t.id;
           return (
             <button
               key={t.id}
               type="button"
               onClick={() => props.onTabChange(t.id)}
-              className="px-3 h-8 text-xs whitespace-nowrap cursor-pointer border-b-2 transition-colors"
+              className="px-2.5 h-9 text-xs whitespace-nowrap cursor-pointer border-b-2 transition-colors"
               style={{
                 borderColor: on ? 'var(--accent-cobalt)' : 'transparent',
-                color: on ? 'var(--accent-cobalt)' : 'var(--text-secondary)',
+                color: on ? 'var(--accent-cobalt)' : 'var(--text-primary)',
+                fontWeight: on ? 700 : 600,
+              }}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+
+        <span className="w-px h-4 mx-2 shrink-0" style={{ backgroundColor: 'var(--border-hairline)' }} />
+
+        <span
+          className="text-[9.5px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded mr-1 shrink-0"
+          style={{
+            backgroundColor: 'var(--surface-subtle)',
+            color: 'var(--text-muted)',
+          }}
+          title="Interactive engineering tools & internal notes (not printed in report)"
+        >
+          Tools
+        </span>
+        {TOOL_TABS.map((t) => {
+          const on = activeTab === t.id;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => props.onTabChange(t.id)}
+              className="px-2.5 h-9 text-[11.5px] whitespace-nowrap cursor-pointer border-b-2 transition-colors"
+              style={{
+                borderColor: on ? 'var(--text-secondary)' : 'transparent',
+                color: on ? 'var(--text-primary)' : 'var(--text-muted)',
                 fontWeight: on ? 600 : 500,
               }}
             >

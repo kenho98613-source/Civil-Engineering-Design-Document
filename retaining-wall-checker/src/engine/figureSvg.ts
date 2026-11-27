@@ -148,19 +148,19 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
   };
 
   const CL: Record<string, string> = {
-    a: '#a16207',
-    q: '#9333ea',
-    p: '#2e9e5b',
+    a: '#dc2626',
+    q: '#d97706',
+    p: '#16a34a',
     w: '#2563eb',
-    g: '#475569',
+    g: '#334155',
     l: '#9333ea',
     wd: '#0891b2',
-    b: '#dc2626',
-    u: '#f59e0b',
-    n: '#111827',
-    e: '#0d9488',
+    b: '#be123c',
+    u: '#ea580c',
+    n: '#0f172a',
+    e: '#2563eb',
     r: '#0f172a',
-    x: '#be123c',
+    x: '#dc2626',
   };
 
   const P = c.C.it.filter((i) => i.dir === 'h');
@@ -266,21 +266,26 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     );
   };
 
-  const CONC = 'fill="var(--cad-concrete-fill, #cfd6dd)" stroke="var(--cad-concrete-stroke, #64748b)" stroke-width="1.3"';
+  const CONC = 'fill="var(--cad-concrete-fill, #e2e8f0)" stroke="var(--cad-concrete-stroke, #1e293b)" stroke-width="1.9" stroke-linejoin="miter"';
   const soil = (x1: number, z1: number, x2: number, z2: number) =>
-    rc(x1, z1, x2, z2, 'fill="var(--cad-soil-fill, #f2e8cf)"') + rc(x1, z1, x2, z2, `fill="url(#${FI}dots)"`);
+    rc(x1, z1, x2, z2, 'fill="var(--cad-soil-fill, #faf8f3)"') + rc(x1, z1, x2, z2, `fill="url(#${FI}dots)"`);
   const wat = (x1: number, z1: number, x2: number, z2: number) =>
-    rc(x1, z1, x2, z2, 'fill="#3b82f6" fill-opacity=".16"');
+    rc(x1, z1, x2, z2, 'fill="#2563eb" fill-opacity=".10"');
   const ln = (x1: number, x2: number, z: number, col: string, d?: number) =>
-    `<line x1="${f(X(x1), 1)}" x2="${f(X(x2), 1)}" y1="${f(Y(z), 1)}" y2="${f(Y(z), 1)}" stroke="${col}" stroke-width="1.2"${d ? ' stroke-dasharray="6 3"' : ''}/>`;
+    `<line x1="${f(X(x1), 1)}" x2="${f(X(x2), 1)}" y1="${f(Y(z), 1)}" y2="${f(Y(z), 1)}" stroke="${col}" stroke-width="${d ? '1.3' : '1.7'}"${d ? ' stroke-dasharray="6 3"' : ''}/>`;
   const PT = (pts: [number, number][]) => pts.map((p) => `${f(X(p[0]), 1)},${f(Y(p[1]), 1)}`).join(' ');
+  const gwlSym = (x: number, z: number) => {
+    const px = X(x);
+    const py = Y(z);
+    return `<polygon points="${f(px - 5, 1)},${f(py - 8, 1)} ${f(px + 5, 1)},${f(py - 8, 1)} ${f(px, 1)},${f(py, 1)}" fill="${CL.w}"/><line x1="${f(px - 6, 1)}" y1="${f(py + 3, 1)}" x2="${f(px + 6, 1)}" y2="${f(py + 3, 1)}" stroke="${CL.w}" stroke-width="1.1"/><line x1="${f(px - 3.5, 1)}" y1="${f(py + 6, 1)}" x2="${f(px + 3.5, 1)}" y2="${f(py + 6, 1)}" stroke="${CL.w}" stroke-width="1.1"/>`;
+  };
 
   let o = `<svg viewBox="0 0 ${W} ${H}" class="rw-fig-svg"><defs>${Object.entries(CL)
     .map(
       ([k, v]) =>
-        `<marker id="${FI}mk${k}" markerWidth="5" markerHeight="5" refX="4.6" refY="2.5" orient="auto"><path d="M0,0L5,2.5L0,5z" fill="${v}"/></marker>`,
+        `<marker id="${FI}mk${k}" markerWidth="5.5" markerHeight="5.5" refX="4.8" refY="2.75" orient="auto"><path d="M0,0.4L5.2,2.75L0,5.1z" fill="${v}"/></marker>`,
     )
-    .join('')}<pattern id="${FI}dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".9" fill="#b8a56f"/><circle cx="6.5" cy="6.5" r=".9" fill="#b8a56f"/></pattern><pattern id="${FI}hat" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0,8L8,0" stroke="#a79f8a" stroke-width=".8"/></pattern><pattern id="${FI}hat2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#8a7f5a" stroke-width="1.1"/></pattern></defs>`;
+    .join('')}<pattern id="${FI}dots" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M0,6L6,0M0,12L12,0M6,12L12,6M12,18L18,12M12,24L24,12M18,24L24,18" stroke="var(--cad-soil-hatch, #cbc5b9)" stroke-width=".75" fill="none"/><path d="M12,6L18,12M15,3L21,9M18,0L24,6M0,18L6,24M3,15L9,21M6,12L12,18" stroke="var(--cad-soil-hatch, #cbc5b9)" stroke-width=".75" fill="none"/></pattern><pattern id="${FI}hat" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0,10L10,0" stroke="var(--cad-fdn-hatch, #c6c1b7)" stroke-width=".75"/></pattern><pattern id="${FI}hat2" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#94a3b8" stroke-width="1"/></pattern><pattern id="${FI}qhat" width="6" height="6" patternUnits="userSpaceOnUse"><line x1="3" y1="0" x2="3" y2="6" stroke="#d97706" stroke-width=".9" stroke-opacity=".55"/></pattern></defs>`;
 
   type LabelTuple = [number, number, string, string | null, string | null, string | null, EditSpec | null?];
   interface ForceArrow {
@@ -304,17 +309,17 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
   const pas = C.pasOK;
 
   if (LY.soil) {
-    o += rc(xl, y0, xr, Zb, 'fill="var(--cad-front-soil, #e6e0d0)"') + rc(xl, y0, xr, Zb, `fill="url(#${FI}hat)"`);
+    o += rc(xl, y0, xr, Zb, 'fill="var(--cad-front-soil, #f3f1ec)"') + rc(xl, y0, xr, Zb, `fill="url(#${FI}hat)"`);
   } else {
     o += ln(xl, xr, Zb, '#94a3b8', 1);
   }
 
   const SP = (pts: [number, number][] | null) =>
     pts
-      ? `<polygon points="${PT(pts)}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${PT(pts)}" fill="url(#${FI}dots)"/>`
+      ? `<polygon points="${PT(pts)}" fill="var(--cad-soil-fill, #faf8f3)"/><polygon points="${PT(pts)}" fill="url(#${FI}dots)"/>`
       : '';
   const WP = (pts: [number, number][] | null) =>
-    pts ? `<polygon points="${PT(pts)}" fill="#3b82f6" fill-opacity=".16"/>` : '';
+    pts ? `<polygon points="${PT(pts)}" fill="#2563eb" fill-opacity=".10"/>` : '';
   const reg = (P0: [number, number][], side: 'b' | 'f', z1: number, z2: number, ztop?: number) => {
     if (!(z2 > z1 + 1e-9)) return null;
     const pts: [number, number][] = [[pX(P0, z2), z2]];
@@ -334,12 +339,12 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
       const bkR = reg(c.G.bk, 'b', Zb, Hr);
       o +=
         bfOn(S) && bkR
-          ? `<polygon points="${PT(bkR)}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${PT(bkR)}" fill="url(#${FI}hat2)" fill-opacity=".45"/>` +
-            (SG_ ? (lb.push([X((pXl(c.G.bk, (Zb + Hr) / 2) + B) / 2), Y((Zb + Hr) / 2) + 4, 'Backfill', 'middle', '#6b5b2a', 'lv']), '') : '')
+          ? `<polygon points="${PT(bkR)}" fill="var(--cad-soil-fill, #faf8f3)"/><polygon points="${PT(bkR)}" fill="url(#${FI}hat2)" fill-opacity=".45"/>` +
+            (SG_ ? (lb.push([X((pXl(c.G.bk, (Zb + Hr) / 2) + B) / 2), Y((Zb + Hr) / 2) + 4, 'Backfill', 'middle', '#475569', 'lv']), '') : '')
           : SP(bkR);
       if (C.wb > 0) o += wat(B, Zb, xr, C.Wb) + WP(reg(c.G.bk, 'b', Zb, Math.min(Hr, C.Wb)));
     }
-    o += ln(xbH, xr, Hr, '#8a7f5a');
+    o += ln(xbH, xr, Hr, 'var(--cad-concrete-stroke, #1e293b)');
   }
 
   // Front soil: always drawn when above founding level; hatched when passive ignored
@@ -367,11 +372,11 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     const TR = reg(c.G.fr, 'f', Zb, Hf, tf ? zf(0) : Hf);
     if (LY.soil) {
       if (pas) {
-        o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${poly}" fill="url(#${FI}dots)"/>${SP(TR)}`;
+        o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #faf8f3)"/><polygon points="${poly}" fill="url(#${FI}dots)"/>${SP(TR)}`;
       } else {
-        o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #f2e8cf)" fill-opacity=".45" stroke="#8a7f5a" stroke-dasharray="5 3" stroke-width="1"/><polygon points="${poly}" fill="url(#${FI}hat2)" fill-opacity=".55"/>`;
+        o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #faf8f3)" fill-opacity=".65" stroke="#94a3b8" stroke-dasharray="5 3" stroke-width="1"/><polygon points="${poly}" fill="url(#${FI}hat2)" fill-opacity=".45"/>`;
         if (TR) {
-          o += `<polygon points="${PT(TR)}" fill="var(--cad-soil-fill, #f2e8cf)" fill-opacity=".45"/><polygon points="${PT(TR)}" fill="url(#${FI}hat2)" fill-opacity=".55"/>`;
+          o += `<polygon points="${PT(TR)}" fill="var(--cad-soil-fill, #faf8f3)" fill-opacity=".65"/><polygon points="${PT(TR)}" fill="url(#${FI}hat2)" fill-opacity=".45"/>`;
         }
         if (SG_) {
           lb.push([
@@ -384,7 +389,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
                   : `Front soil (Df = ${f(Df)} m): not considered in the calculation.`,
               ),
             'start',
-            '#8a5a00',
+            '#b45309',
             'lv',
           ]);
         }
@@ -396,13 +401,13 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
             [xl, zf(xl)],
             [xc_, Hf],
             [xF, Hf],
-          ])}" fill="none" stroke="#8a7f5a" stroke-width="1.2"/>` +
-          (SG_ ? (lb.push([X(xc_), Y(Hf) - 8, `crest, b = ${f(+S.scb)} m`, 'middle', '#8a5a00', 'lv']), '') : '')
-        : `<line x1="${f(X(xl), 1)}" y1="${f(Y(zf(xl)), 1)}" x2="${f(X(xF), 1)}" y2="${f(Y(Hf), 1)}" stroke="#8a7f5a" stroke-width="1.2"/>`;
+          ])}" fill="none" stroke="var(--cad-concrete-stroke, #1e293b)" stroke-width="1.6"/>` +
+          (SG_ ? (lb.push([X(xc_), Y(Hf) - 8, `crest, b = ${f(+S.scb)} m`, 'middle', '#b45309', 'lv']), '') : '')
+        : `<line x1="${f(X(xl), 1)}" y1="${f(Y(zf(xl)), 1)}" x2="${f(X(xF), 1)}" y2="${f(Y(Hf), 1)}" stroke="var(--cad-concrete-stroke, #1e293b)" stroke-width="1.6"/>`;
       if (SG_) lb.push([X(xl) + 6, Y(zf(xl)) - 20, `β_f = ${f(S.bf, 1)}°`, 'start', null, 'lv']);
     }
     if (LY.soil && S.fon && C.wf > 0) o += wat(xl, Zb, 0, Zb + C.wf) + WP(reg(c.G.fr, 'f', Zb, Math.min(Hf, Zb + C.wf)));
-    o += tf ? '' : ln(xl, xF, Hf, '#8a7f5a');
+    o += tf ? '' : ln(xl, xF, Hf, 'var(--cad-concrete-stroke, #1e293b)');
     if (LY.soil && S.fon && S.dp > 0) {
       const zd = Math.max(Zb, Hf - S.dp);
       o += rc(xl, zd, xF, Hf, 'fill="#d97706" fill-opacity=".10"') + ln(xl, xF, zd, '#b45309', 1);
@@ -457,13 +462,39 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
       });
     }
     if (!SP_) return '';
-    return `<polygon points="${PT([[b0, Zb + zt], ...pts.map(([pv, z]): [number, number] => [b0 + dir * pv * psc, Zb + z]), [b0, Zb + zl]])}" fill="${CL[k]}" fill-opacity=".16" stroke="${CL[k]}" stroke-width="1"/><line x1="${f(X(b0), 1)}" x2="${f(X(b0), 1)}" y1="${f(Y(Zb + zt), 1)}" y2="${f(Y(Zb + zl), 1)}" stroke="${CL[k]}" stroke-dasharray="3 3" stroke-width=".8"/>`;
+    // Architectural CAD interior horizontal pressure vector arrows inside polygon
+    const zSpan = Math.abs(zt - zl);
+    const nArr = Math.max(4, Math.min(9, Math.round(zSpan * 2.2)));
+    const interpP = (zVal: number): number => {
+      for (let i = 0; i < pts.length - 1; i++) {
+        const [p1, z1] = pts[i];
+        const [p2, z2] = pts[i + 1];
+        if ((zVal <= z1 + 1e-6 && zVal >= z2 - 1e-6) || (zVal >= z1 - 1e-6 && zVal <= z2 + 1e-6)) {
+          const dz = z2 - z1;
+          return Math.abs(dz) < 1e-9 ? Math.max(p1, p2) : p1 + ((p2 - p1) * (zVal - z1)) / dz;
+        }
+      }
+      return 0;
+    };
+    let arrSvg = '';
+    if (zSpan > 1e-6) {
+      for (let i = 1; i <= nArr; i++) {
+        const zVal = zl + (zSpan * i) / (nArr + 0.4);
+        const pv = interpP(zVal);
+        if (pv * psc * s < 6) continue;
+        const xOuter = X(b0 + dir * pv * psc);
+        const xInner = X(b0);
+        const yPos = Y(Zb + zVal);
+        arrSvg += `<line x1="${f(xOuter, 1)}" y1="${f(yPos, 1)}" x2="${f(xInner + dir * 2, 1)}" y2="${f(yPos, 1)}" stroke="${CL[k]}" stroke-width="1" stroke-opacity=".75" marker-end="url(#${FI}mk${k})"/>`;
+      }
+    }
+    return `<polygon points="${PT([[b0, Zb + zt], ...pts.map(([pv, z]): [number, number] => [b0 + dir * pv * psc, Zb + z]), [b0, Zb + zl]])}" fill="${CL[k]}" fill-opacity=".15" stroke="${CL[k]}" stroke-width="1.25"/>${arrSvg}<line x1="${f(X(b0), 1)}" x2="${f(X(b0), 1)}" y1="${f(Y(Zb + zt), 1)}" y2="${f(Y(Zb + zl), 1)}" stroke="${CL[k]}" stroke-dasharray="3 3" stroke-width=".9"/>`;
   };
 
   const A = P.filter((p) => p.cat !== 'wind' && p.cat !== 'bar');
-  const bs = B + (mq > 0 ? mq * psc + 0.12 : 0);
-  const bw = bs + (ms > 0 ? ms * psc + 0.12 : 0);
-  const bp = -(pc + mp) * psc - 0.15;
+  const bs = B + (mq > 0 ? mq * psc + 0.14 : 0);
+  const bw = bs + (ms > 0 ? ms * psc + 0.14 : 0);
+  const bp = -(pc + mp) * psc - 0.16;
 
   if (C.al > 0) {
     const zt = Zb + C.hs;
@@ -485,27 +516,28 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     const cap = +S.brL > 0 ? +S.brL * tb : Math.max(1, 0.35 * (Hr - Zb));
     const xk = tb > 0 ? xbH + cap / tb : 1e9;
     const zs = (x: number) => Hr + Math.min((x - xbH) * tb, cap);
-    const QB = 'fill="#3b82f6" fill-opacity=".18" stroke="#3b82f6" stroke-width=".8"';
+    const QB = `fill="#d97706" fill-opacity=".18" stroke="#d97706" stroke-width="1"`;
     const band = (x1: number, x2: number) => {
       const xs = [x1, ...(xk > x1 && xk < x2 ? [xk] : []), x2];
-      return `<polygon points="${PT([...xs.map((x): [number, number] => [x, zs(x)]), ...xs.slice().reverse().map((x): [number, number] => [x, zs(x) + 0.22])])}" ${QB}/>`;
+      const ptsStr = PT([...xs.map((x): [number, number] => [x, zs(x)]), ...xs.slice().reverse().map((x): [number, number] => [x, zs(x) + 0.24])]);
+      return `<polygon points="${ptsStr}" ${QB}/><polygon points="${ptsStr}" fill="url(#${FI}qhat)"/>`;
     };
     if (S.bon && tb > 0) {
       const SPp = PT([[xbH, Hr], ...(xk < xr ? ([[xk, zs(xk)]] as [number, number][]) : []), [xr, zs(xr)], [xr, Hr]]);
       o +=
-        `<polygon points="${SPp}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${SPp}" fill="url(#${FI}dots)"/>` +
+        `<polygon points="${SPp}" fill="var(--cad-soil-fill, #faf8f3)"/><polygon points="${SPp}" fill="url(#${FI}dots)"/>` +
         (xk < xr
-          ? `<line x1="${f(X(xk), 1)}" y1="${f(Y(zs(xk)), 1)}" x2="${f(X(Math.min(xr, xk + 0.6)), 1)}" y2="${f(Y(zs(xk) + 0.35), 1)}" stroke="#8a7f5a" stroke-dasharray="3 3"/>`
+          ? `<line x1="${f(X(xk), 1)}" y1="${f(Y(zs(xk)), 1)}" x2="${f(X(Math.min(xr, xk + 0.6)), 1)}" y2="${f(Y(zs(xk) + 0.35), 1)}" stroke="var(--cad-concrete-stroke, #1e293b)" stroke-dasharray="3 3"/>`
           : '');
     }
     if (S.bon && q > 0) {
       const x0 = B;
       o += band(x0, xr);
-      lb.push([X((x0 + xr) / 2), Y(zs((x0 + xr) / 2) + 0.22) - 5, `q = ${f(q, 2)} kPa`, 'middle', CL.w, 'lv']);
+      lb.push([X((x0 + xr) / 2), Y(zs((x0 + xr) / 2) + 0.24) - 5, `q = ${f(q, 2)} kPa`, 'middle', CL.q, 'lv']);
     }
     if (S.bon && C.qi > 0) {
-      o += band(xbH, B).replace(QB, `fill="url(#${FI}hat2)" fill-opacity=".55" stroke="#6b7280" stroke-width=".8" stroke-dasharray="4 2"`);
-      lb.push([X(xbH) + 4, Y(zs(xb) + 0.22) - 5, `q_in = ${f(C.qi, 2)} kPa (bearing & RC only)`, 'start', '#6b7280', 'lv']);
+      o += band(xbH, B).replace(QB, `fill="url(#${FI}hat2)" fill-opacity=".55" stroke="#64748b" stroke-width=".85" stroke-dasharray="4 2"`);
+      lb.push([X(xbH) + 4, Y(zs(xb) + 0.24) - 5, `q_in = ${f(C.qi, 2)} kPa (bearing & RC only)`, 'start', '#64748b', 'lv']);
     }
     if (S.bon && tb > 0) {
       lb.push([X(Math.min(xr, xk)) - 6, Y(zs(Math.min(xr, xk))) - 20, `β = ${f(S.br, 1)}°${xk < xr ? ' (slope continues)' : ''}`, 'end', null, 'lv']);
@@ -525,7 +557,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
   }
 
   if (S.bon) {
-    if (C.wb > 0) o += ln(B, xr, C.Wb, CL.w, 1);
+    if (C.wb > 0) o += ln(B, xr, C.Wb, CL.w, 1) + gwlSym(Math.min(xr - 0.55, B + (xr - B) * 0.58), C.Wb);
     if (SG_) {
       lb.push([
         X(xr) - 6,
@@ -538,7 +570,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
       ]);
     }
   }
-  if (S.fon && C.wf > 0) o += ln(xl, 0, Zb + C.wf, CL.w, 1);
+  if (S.fon && C.wf > 0) o += ln(xl, 0, Zb + C.wf, CL.w, 1) + gwlSym(xl + 0.65, Zb + C.wf);
   if (S.fon && SG_) {
     lb.push([
       X(xl) + 6,
@@ -575,7 +607,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
         return pts;
       };
       if (a.zt > bt + 1e-9) {
-        o += SP(poly(a.zt)) + ln(a.x1, nx(a.zt), a.zt, '#8a7f5a');
+        o += SP(poly(a.zt)) + ln(a.x1, nx(a.zt), a.zt, 'var(--cad-concrete-stroke, #1e293b)');
         const Wt = Math.min(C.Wb, a.zt);
         if (Wt > bt + 1e-9) o += WP(poly(Wt));
         if (SG_) {
@@ -688,7 +720,17 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
         .reverse()
         .map((x) => `${f(X(x), 1)},${f(Y(Zb - g2(x) * sq), 1)}`)
         .join(' ');
-    o += `<polygon points="${Pt(() => 0, ux)}" fill="${CL.u}" fill-opacity=".22" stroke="${CL.u}" stroke-width="1"/><polygon points="${Pt(ux, (x) => ux(x) + qb(x))}" fill="${CL.e}" fill-opacity=".2" stroke="${CL.e}" stroke-width="1"/>`;
+    const qHatch = xs
+      .filter((_, idx) => idx > 0 && idx < xs.length - 1 && idx % 2 === 0)
+      .map((x) => {
+        const yTop = Y(Zb - ux(x) * sq);
+        const yBot = Y(Zb - (ux(x) + qb(x)) * sq);
+        return yBot - yTop > 3
+          ? `<line x1="${f(X(x), 1)}" y1="${f(yBot, 1)}" x2="${f(X(x), 1)}" y2="${f(yTop, 1)}" stroke="${CL.e}" stroke-width=".9" stroke-opacity=".55"/>`
+          : '';
+      })
+      .join('');
+    o += `<polygon points="${Pt(() => 0, ux)}" fill="${CL.u}" fill-opacity=".20" stroke="${CL.u}" stroke-width="1.1"/><polygon points="${Pt(ux, (x) => ux(x) + qb(x))}" fill="${CL.e}" fill-opacity=".18" stroke="${CL.e}" stroke-width="1.2"/>${qHatch}`;
     const sB = c.sB;
     const qB = sB && sB.N > 0 ? qDist(sB.N, sB.e, B) : null;
     const qBm = qB ? Math.max(qB(0), qB(B)) : 0;
@@ -738,11 +780,11 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
 
   // Full CAD Dimension Chains & Editable Labels
   if (SG_) {
-    const DC = '#64748b';
+    const DC = '#475569';
     const ln2 = (x1: number, y1: number, x2: number, y2: number, d?: number) =>
-      `<line x1="${f(x1, 1)}" y1="${f(y1, 1)}" x2="${f(x2, 1)}" y2="${f(y2, 1)}" stroke="${DC}" stroke-width=".8"${d ? ' stroke-dasharray="2 2"' : ''}/>`;
-    const tk = (x: number, y: number, hz?: number) =>
-      hz ? ln2(x - 3.5, y, x + 3.5, y) : ln2(x, y - 3.5, x, y + 3.5);
+      `<line x1="${f(x1, 1)}" y1="${f(y1, 1)}" x2="${f(x2, 1)}" y2="${f(y2, 1)}" stroke="${d ? '#94a3b8' : DC}" stroke-width="${d ? '.7' : '.9'}"${d ? ' stroke-dasharray="2 2"' : ''}/>`;
+    const tk = (x: number, y: number, _hz?: number) =>
+      `<line x1="${f(x - 3.6, 1)}" y1="${f(y + 3.6, 1)}" x2="${f(x + 3.6, 1)}" y2="${f(y - 3.6, 1)}" stroke="${DC}" stroke-width="1.35"/>`;
     const dv = (x: number, z1: number, z2: number, t: string, an: string, ed?: EditSpec | null) => {
       o += ln2(X(x), Y(z1), X(x), Y(z2)) + tk(X(x), Y(z1), 1) + tk(X(x), Y(z2), 1);
       lb.push([X(x) + (an === 'end' ? -6 : 6), Y((z1 + z2) / 2) + 4, t, an, DC, 'lv', ed]);
@@ -1112,7 +1154,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     }
     o += HD.map(
       (h, i) =>
-        `<g class="hd ${h.ax}" data-h="${i}"><title>${h.lab} = ${dd(h.v)}${h.p === '@WL' || h.p === 'fw' || /\.(top|bot|zt)$/.test(h.p) ? ' mPD' : ' m'} – drag to change (Alt = fine 0.01 m)</title><circle cx="${f(X(h.x), 1)}" cy="${f(Y(h.z), 1)}" r="11" fill="transparent"/><circle class="hk" cx="${f(X(h.x), 1)}" cy="${f(Y(h.z), 1)}" r="5.5"/></g>`,
+        `<g class="hd ${h.ax}" data-h="${i}"><title>${h.lab} = ${dd(h.v)}${h.p === '@WL' || h.p === 'fw' || /\.(top|bot|zt)$/.test(h.p) ? ' mPD' : ' m'} – drag to change (Alt = fine 0.01 m)</title><circle cx="${f(X(h.x), 1)}" cy="${f(Y(h.z), 1)}" r="11" fill="transparent"/><rect class="hk" x="${f(X(h.x) - 3.6, 1)}" y="${f(Y(h.z) - 3.6, 1)}" width="7.2" height="7.2" rx="1.6"/></g>`,
     ).join('');
   }
 
