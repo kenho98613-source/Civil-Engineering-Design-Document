@@ -1,6 +1,6 @@
 # Retaining Wall Design & Checker – desktop app
 
-Tauri 2 wrapper around `src/index.html` (the single-file v13.8.12 tool). All calculations run in the page; the Rust side only opens / saves `.rwall` project files.
+Tauri 2 wrapper around `src/index.html` (the single-file v14.0.1 tool). All calculations run in the page; the Rust side only opens / saves `.rwall` project files.
 
 ## Build
 Push to `main` (or run the workflow manually). GitHub Actions builds on `windows-latest` and uploads:
