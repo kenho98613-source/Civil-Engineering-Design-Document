@@ -19,4 +19,5 @@ export * from './tools';
 export * from './dxfParser';
 export * from './dxfExport';
 export * from './figureSvg';
+export * from './calcSteps';
 export * from './benchmarks';

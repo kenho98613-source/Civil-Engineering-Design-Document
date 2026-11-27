@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  DEFAULT_FIGURE_LAYERS,
   dd,
   figureInputFromResult,
   renderFigureSvg,
@@ -8,6 +9,7 @@ import type {
   CalcAllResult,
   FigureFreeze,
   FigureHandle,
+  FigureLayers,
   FigureMode,
   WallState,
 } from '../engine';
@@ -42,6 +44,7 @@ export function SectionCanvas({
   onForceScaleChange,
 }: SectionCanvasProps) {
   const [mode, setMode] = useState<FigureMode>(() => (S.fgm as FigureMode) || 'all');
+  const [layers, setLayers] = useState<FigureLayers>(() => ({ ...DEFAULT_FIGURE_LAYERS }));
   const [drag, setDrag] = useState<ActiveDragState | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<ActiveDragState | null>(null);
@@ -53,11 +56,12 @@ export function SectionCanvas({
       S,
       figureInputFromResult(S, result, {
         mode,
+        layers,
         freeze: drag?.freeze ?? null,
         noEdit: false,
       }),
     );
-  }, [S, result, mode, drag?.freeze]);
+  }, [S, result, mode, layers, drag?.freeze]);
 
   // Bind exact v14.0.1 pointer drag physics (FZ frozen transform + anc:'xb' anchor shifting + 0.05m / Alt 0.01m snap)
   useEffect(() => {
@@ -142,70 +146,22 @@ export function SectionCanvas({
   };
 
   const asc = +S.asc || 1;
+  const layerDefs: [keyof FigureLayers, string][] = [
+    ['dims', 'Dimensions'],
+    ['handles', `Handles (${rendered ? rendered.handles.length : 0})`],
+    ['pressures', 'Pressures'],
+    ['forces', 'Forces'],
+    ['soil', 'Soil & GWL'],
+    ['bearing', 'Bearing'],
+    ['rebar', 'Rebar'],
+  ];
 
   return (
     <div className="flex flex-col gap-2">
-      {/* CAD Figure Mode Bar (All / Geometry / Loads + Arrow Scale) */}
-      <div
-        className="flex flex-wrap items-center justify-between gap-2 px-3 py-1.5 rounded-md border"
-        style={{ backgroundColor: 'var(--surface-panel)', borderColor: 'var(--border-hairline)' }}
-      >
-        <div className="inline-flex items-center gap-1">
-          {(
-            [
-              ['all', 'Combined (Geometry + Loads)'],
-              ['geo', 'Geometry & Handles'],
-              ['load', 'Loads & Base Pressure'],
-            ] as [FigureMode, string][]
-          ).map(([m, label]) => {
-            const on = mode === m;
-            return (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setMode(m)}
-                className="px-2.5 py-0.5 rounded-full border text-[11px] cursor-pointer transition-colors"
-                style={{
-                  borderColor: on ? 'var(--accent-cobalt)' : 'var(--border-hairline)',
-                  backgroundColor: on ? 'var(--accent-cobalt-soft)' : 'transparent',
-                  color: on ? 'var(--accent-cobalt)' : 'var(--text-muted)',
-                  fontWeight: on ? 600 : 400,
-                }}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="flex items-center gap-3">
-          {rendered && (
-            <span className="font-mono-eng text-[11px]" style={{ color: 'var(--text-muted)' }}>
-              {rendered.handles.length} drag handles active
-            </span>
-          )}
-          <label className="inline-flex items-center gap-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
-            <span>Arrow scale</span>
-            <input
-              type="range"
-              min={0.5}
-              max={2}
-              step={0.1}
-              value={asc}
-              onChange={(e) => onForceScaleChange(+e.target.value)}
-              className="w-20 accent-blue-600"
-            />
-            <span className="font-mono-eng w-8 text-right font-semibold" style={{ color: 'var(--text-primary)' }}>
-              {asc.toFixed(1)}×
-            </span>
-          </label>
-        </div>
-      </div>
-
-      {/* Exact v14.0.1 Engineering SVG Figure */}
+      {/* Direction C Architectural Drafting Canvas + Direction A Floating Translucent Pill Control Bar */}
       <div
         ref={wrapRef}
-        className="relative rounded-md border overflow-hidden p-1"
+        className="relative rounded-xl border overflow-hidden shadow-sm drafting-grid"
         style={{
           backgroundColor: 'var(--cad-bg)',
           borderColor: drag ? 'var(--accent-cobalt)' : 'var(--border-hairline)',
@@ -214,13 +170,96 @@ export function SectionCanvas({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       >
+        {/* Floating Translucent Pill Layer & Mode Bar */}
+        <div
+          className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 m-2.5 mb-0 rounded-full border shadow-sm backdrop-blur-md"
+          style={{ backgroundColor: 'var(--float-pill)', borderColor: 'var(--border-hairline)' }}
+        >
+          <div
+            className="inline-flex items-center p-0.5 rounded-full border"
+            style={{ backgroundColor: 'var(--surface-subtle)', borderColor: 'var(--border-muted)' }}
+          >
+            {(
+              [
+                ['all', 'Combined'],
+                ['geo', 'Geometry'],
+                ['load', 'Loads'],
+              ] as [FigureMode, string][]
+            ).map(([m, label]) => {
+              const on = mode === m;
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMode(m)}
+                  className="px-2.5 py-0.5 rounded-full text-[11px] cursor-pointer transition-colors"
+                  style={{
+                    backgroundColor: on ? 'var(--chrome-dark)' : 'transparent',
+                    color: on ? '#ffffff' : 'var(--text-secondary)',
+                    fontWeight: on ? 600 : 500,
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1">
+            {layerDefs.map(([k, lab]) => {
+              const on = layers[k];
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => setLayers((prev) => ({ ...prev, [k]: !prev[k] }))}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] cursor-pointer transition-all border"
+                  style={{
+                    borderColor: on ? 'var(--accent-cobalt)' : 'var(--border-muted)',
+                    backgroundColor: on ? 'var(--accent-cobalt-soft)' : 'var(--surface-panel)',
+                    color: on ? 'var(--accent-cobalt)' : 'var(--text-muted)',
+                    fontWeight: on ? 600 : 500,
+                  }}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: on ? 'var(--accent-cobalt)' : 'var(--border-hairline)' }}
+                  />
+                  {lab}
+                </button>
+              );
+            })}
+          </div>
+
+          <label className="inline-flex items-center gap-1.5 text-[11px] pl-1" style={{ color: 'var(--text-muted)' }}>
+            <span>Scale</span>
+            <input
+              type="range"
+              min={0.5}
+              max={2}
+              step={0.1}
+              value={asc}
+              onChange={(e) => onForceScaleChange(+e.target.value)}
+              className="w-16 accent-blue-600"
+            />
+            <span className="font-mono-eng w-7 text-right font-semibold" style={{ color: 'var(--text-primary)' }}>
+              {asc.toFixed(1)}×
+            </span>
+          </label>
+        </div>
+
+        {/* Exact v14.0.1 Engineering SVG Figure */}
         {rendered ? (
           <>
-            <div dangerouslySetInnerHTML={{ __html: rendered.svgHtml }} />
+            <div className="p-2" dangerouslySetInnerHTML={{ __html: rendered.svgHtml }} />
             {rendered.notesHtml && (
               <div
-                className="px-3 pb-2 text-[11px] leading-relaxed"
-                style={{ color: 'var(--text-secondary)' }}
+                className="px-4 pb-3 pt-1.5 border-t text-[11px] leading-relaxed"
+                style={{
+                  borderColor: 'var(--border-muted)',
+                  color: 'var(--text-secondary)',
+                  backgroundColor: 'var(--surface-panel)',
+                }}
                 dangerouslySetInnerHTML={{ __html: rendered.notesHtml }}
               />
             )}

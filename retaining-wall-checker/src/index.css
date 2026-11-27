@@ -7,16 +7,20 @@
 
 :root,
 :root[data-theme="light"] {
-  --surface-canvas: #f8fafc;
+  --chrome-dark: #1e293b;
+  --chrome-dark-tx: #f8fafc;
+  --surface-chrome: #f6f5f2;
+  --surface-canvas: #f2f1ed;
   --surface-panel: #ffffff;
-  --surface-subtle: #f1f5f9;
+  --surface-subtle: #f1f0ec;
   --surface-elevated: #ffffff;
-  --border-hairline: #cbd5e1;
-  --border-muted: #e2e8f0;
+  --float-pill: rgba(255, 255, 255, 0.9);
+  --border-hairline: #d6d3cd;
+  --border-muted: #e7e5e0;
   --text-primary: #0f172a;
   --text-secondary: #334155;
   --text-muted: #64748b;
-  --status-pass: #16a34a;
+  --status-pass: #15803d;
   --status-pass-bg: #f0fdf4;
   --status-pass-bd: #bbf7d0;
   --status-fail: #dc2626;
@@ -26,7 +30,7 @@
   --status-warn-bg: #fffbeb;
   --status-warn-bd: #fde68a;
   --status-na: #64748b;
-  --status-na-bg: #f1f5f9;
+  --status-na-bg: #f1f0ec;
   --accent-cobalt: #2563eb;
   --accent-cobalt-hover: #1d4ed8;
   --accent-cobalt-soft: rgba(37, 99, 235, 0.1);
@@ -35,12 +39,12 @@
 
   /* CAD SVG Palette */
   --cad-bg: #ffffff;
-  --cad-grid: #f1f5f9;
-  --cad-concrete-fill: #cbd5e1;
-  --cad-concrete-stroke: #334155;
-  --cad-soil-fill: #f5efe0;
+  --cad-grid: rgba(148, 163, 184, 0.16);
+  --cad-concrete-fill: #cfd6dd;
+  --cad-concrete-stroke: #475569;
+  --cad-soil-fill: #f3ead3;
   --cad-soil-stroke: #a1885f;
-  --cad-front-soil: #e8efe5;
+  --cad-front-soil: #e8e2d2;
   --cad-water: #0284c7;
   --cad-water-fill: rgba(14, 165, 233, 0.1);
   --cad-force-active: #dc2626;
@@ -54,10 +58,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme="system"] {
+    --chrome-dark: #090e1a;
+    --chrome-dark-tx: #f8fafc;
+    --surface-chrome: #0f172a;
     --surface-canvas: #0b1120;
     --surface-panel: #111827;
     --surface-subtle: #1e293b;
     --surface-elevated: #1e293b;
+    --float-pill: rgba(17, 24, 39, 0.9);
     --border-hairline: #334155;
     --border-muted: #1e293b;
     --text-primary: #f1f5f9;
@@ -81,12 +89,12 @@
     --accent-teal-hover: #0d9488;
 
     --cad-bg: #0f172a;
-    --cad-grid: #1e293b;
+    --cad-grid: rgba(148, 163, 184, 0.08);
     --cad-concrete-fill: #475569;
     --cad-concrete-stroke: #cbd5e1;
-    --cad-soil-fill: #27221a;
+    --cad-soil-fill: #28231a;
     --cad-soil-stroke: #856d47;
-    --cad-front-soil: #1a2822;
+    --cad-front-soil: #1b221e;
     --cad-water: #38bdf8;
     --cad-water-fill: rgba(56, 189, 248, 0.12);
     --cad-force-active: #f87171;
@@ -100,10 +108,14 @@
 }
 
 :root[data-theme="dark"] {
+  --chrome-dark: #090e1a;
+  --chrome-dark-tx: #f8fafc;
+  --surface-chrome: #0f172a;
   --surface-canvas: #0b1120;
   --surface-panel: #111827;
   --surface-subtle: #1e293b;
   --surface-elevated: #1e293b;
+  --float-pill: rgba(17, 24, 39, 0.9);
   --border-hairline: #334155;
   --border-muted: #1e293b;
   --text-primary: #f1f5f9;
@@ -127,12 +139,12 @@
   --accent-teal-hover: #0d9488;
 
   --cad-bg: #0f172a;
-  --cad-grid: #1e293b;
+  --cad-grid: rgba(148, 163, 184, 0.08);
   --cad-concrete-fill: #475569;
   --cad-concrete-stroke: #cbd5e1;
-  --cad-soil-fill: #27221a;
+  --cad-soil-fill: #28231a;
   --cad-soil-stroke: #856d47;
-  --cad-front-soil: #1a2822;
+  --cad-front-soil: #1b221e;
   --cad-water: #38bdf8;
   --cad-water-fill: rgba(56, 189, 248, 0.12);
   --cad-force-active: #f87171;
@@ -274,4 +286,49 @@ body,
   font-weight: 700;
   color: var(--accent-cobalt);
 }
+
+.drafting-grid {
+  background-image:
+    linear-gradient(to right, var(--cad-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--cad-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Direction C Architectural Drafting Calculation Sheet Styles (Sections 5, 6, 7 & 8) */
+.calc-sheet { font-size: 12.5px; line-height: 1.5; color: var(--text-primary); }
+.calc-sheet h2 { font-size: 15px; font-weight: 700; margin: 0 0 8px; padding-bottom: 6px; border-bottom: 1.5px solid var(--border-hairline); letter-spacing: -0.01em; }
+.calc-sheet h3 { font-size: 13px; font-weight: 700; margin: 16px 0 6px; display: flex; align-items: center; gap: 6px; }
+.calc-sheet p { margin: 4px 0 8px; }
+.calc-sheet .mu { color: var(--text-muted); font-size: 11.5px; }
+.calc-sheet .err { color: var(--status-fail); font-weight: 600; }
+.calc-sheet .warn { color: var(--status-warn); font-weight: 600; }
+.calc-sheet .xp { display: none; }
+.calc-sheet.full .xp { display: inline; }
+.calc-sheet.full div.xp { display: block; }
+.calc-sheet .tw { overflow-x: auto; margin: 6px 0 12px; border: 1px solid var(--border-hairline); border-radius: 7px; background: var(--surface-panel); }
+.calc-sheet table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+.calc-sheet th { text-align: left; padding: 6px 9px; background: var(--surface-chrome); color: var(--text-secondary); font-weight: 600; font-size: 11px; border-bottom: 1px solid var(--border-hairline); white-space: nowrap; }
+.calc-sheet td { padding: 5.5px 9px; border-bottom: 1px solid var(--border-muted); vertical-align: top; }
+.calc-sheet tr:last-child td { border-bottom: none; }
+.calc-sheet table.ctab td:first-child { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-weight: 600; color: var(--accent-cobalt); white-space: nowrap; width: 105px; }
+.calc-sheet table.ctab td:last-child { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; text-align: right; white-space: nowrap; font-weight: 600; }
+.calc-sheet table.ctab th:last-child { text-align: right; }
+.calc-sheet table.ctab tr.res td { background: var(--surface-subtle); font-weight: 700; border-top: 1.5px solid var(--border-hairline); }
+.calc-sheet table.rct td:first-child { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-weight: 700; color: var(--text-muted); width: 42px; text-align: center; }
+.calc-sheet table.rct td:nth-child(4), .calc-sheet table.rct td:nth-child(5) { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-size: 11.5px; }
+.calc-sheet .blk { margin: 12px 0; padding: 12px 14px; border: 1px solid var(--border-hairline); border-left: 4px solid var(--border-hairline); border-radius: 8px; background: var(--surface-panel); }
+.calc-sheet .blk.ok { border-left-color: var(--status-pass); }
+.calc-sheet .blk.no { border-left-color: var(--status-fail); }
+.calc-sheet .blk.na { border-left-color: var(--text-muted); }
+.calc-sheet .blk.rv { border-left-color: var(--status-warn); }
+.calc-sheet .blk .bh { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 7px; margin-bottom: 8px; border-bottom: 1px solid var(--border-muted); font-size: 13px; }
+.calc-sheet .blk .bh span { font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+.calc-sheet .rcb { margin: 14px 0; padding: 12px 14px; border: 1px solid var(--border-hairline); border-radius: 8px; background: var(--surface-panel); }
+.calc-sheet .rcb h3 { margin-top: 0; }
+.calc-sheet .lamp { display: inline-flex; align-items: center; padding: 1.5px 7px; border-radius: 999px; font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; }
+.calc-sheet .lamp.okq { background: var(--status-pass-bg); color: var(--status-pass); border: 1px solid var(--status-pass-bd); }
+.calc-sheet .lamp.no { background: var(--status-fail-bg); color: var(--status-fail); border: 1px solid var(--status-fail-bd); }
+.calc-sheet .lamp.na { background: var(--surface-subtle); color: var(--text-muted); border: 1px solid var(--border-hairline); }
+.calc-sheet .lamp.rv { background: var(--status-warn-bg); color: var(--status-warn); border: 1px solid var(--status-warn-bd); }
+.calc-sheet .lamp.nc { background: var(--surface-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline); }
 

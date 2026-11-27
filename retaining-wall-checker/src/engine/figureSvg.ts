@@ -55,6 +55,26 @@ export interface FigureViewMeta {
   H: number;
 }
 
+export interface FigureLayers {
+  dims: boolean;
+  handles: boolean;
+  pressures: boolean;
+  forces: boolean;
+  soil: boolean;
+  bearing: boolean;
+  rebar: boolean;
+}
+
+export const DEFAULT_FIGURE_LAYERS: FigureLayers = {
+  dims: true,
+  handles: true,
+  pressures: true,
+  forces: true,
+  soil: true,
+  bearing: true,
+  rebar: false,
+};
+
 export interface FigureRenderInput {
   G: GeometryResult;
   C: CompResult;
@@ -62,6 +82,7 @@ export interface FigureRenderInput {
   sB?: EvalResult | null;
   fa?: LoadFactors | null;
   mode?: FigureMode;
+  layers?: Partial<FigureLayers>;
   noEdit?: boolean;
   freeze?: FigureFreeze | null;
   figId?: string;
@@ -80,7 +101,7 @@ let figCounter = 0;
 export function figureInputFromResult(
   S: WallState,
   R0: CalcAllSuccessResult,
-  opts?: { mode?: FigureMode; noEdit?: boolean; freeze?: FigureFreeze | null },
+  opts?: { mode?: FigureMode; layers?: Partial<FigureLayers>; noEdit?: boolean; freeze?: FigureFreeze | null },
 ): FigureRenderInput {
   const sls = R0.A.sls;
   const brS = R0.P ? R0.A.br.b : R0.Fc.br.b;
@@ -91,12 +112,13 @@ export function figureInputFromResult(
     sB: brS,
     fa: sls.fa,
     mode: opts?.mode ?? ((S.fgm as FigureMode) || 'all'),
+    layers: opts?.layers,
     noEdit: opts?.noEdit,
     freeze: opts?.freeze ?? null,
   };
 }
 
-/** Exact 1:1 port of v14.0.1 fig(c) */
+/** Exact 1:1 port of v14.0.1 fig(c) with optional CAD layer flags */
 export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRenderOutput {
   const FI = c.figId || `f${++figCounter}`;
   const f = (v: number, d?: number) => (d == null ? dd(v) : F0(v, d));
@@ -110,8 +132,13 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
   const NE = !!c.noEdit;
   const KG = c.C.KG;
   const MD: FigureMode = c.mode || (NE ? 'all' : ((S.fgm as FigureMode) || 'all'));
-  const SG_ = MD !== 'load';
+  const LY: FigureLayers = { ...DEFAULT_FIGURE_LAYERS, ...(c.layers || {}) };
+  const SG_ = MD !== 'load' && LY.dims;
   const SL_ = MD !== 'geo';
+  const SP_ = SL_ && LY.pressures;
+  const SF_ = SL_ && LY.forces;
+  const SB_ = SL_ && LY.bearing;
+  const SH_ = !NE && MD !== 'load' && LY.handles;
   const NT: string[] = [];
   const NM: string[] = [];
   const SY = '①②③④⑤⑥⑦⑧⑨';
@@ -276,7 +303,11 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
   const q = C.q;
   const pas = C.pasOK;
 
-  o += rc(xl, y0, xr, Zb, 'fill="var(--cad-front-soil, #e6e0d0)"') + rc(xl, y0, xr, Zb, `fill="url(#${FI}hat)"`);
+  if (LY.soil) {
+    o += rc(xl, y0, xr, Zb, 'fill="var(--cad-front-soil, #e6e0d0)"') + rc(xl, y0, xr, Zb, `fill="url(#${FI}hat)"`);
+  } else {
+    o += ln(xl, xr, Zb, '#94a3b8', 1);
+  }
 
   const SP = (pts: [number, number][] | null) =>
     pts
@@ -298,14 +329,16 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
   const xF = pX(c.G.fr, Hf);
 
   if (S.bon) {
-    o += soil(B, Zb, xr, Hr);
-    const bkR = reg(c.G.bk, 'b', Zb, Hr);
-    o +=
-      bfOn(S) && bkR
-        ? `<polygon points="${PT(bkR)}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${PT(bkR)}" fill="url(#${FI}hat2)" fill-opacity=".45"/>` +
-          (SG_ ? (lb.push([X((pXl(c.G.bk, (Zb + Hr) / 2) + B) / 2), Y((Zb + Hr) / 2) + 4, 'Backfill', 'middle', '#6b5b2a', 'lv']), '') : '')
-        : SP(bkR);
-    if (C.wb > 0) o += wat(B, Zb, xr, C.Wb) + WP(reg(c.G.bk, 'b', Zb, Math.min(Hr, C.Wb)));
+    if (LY.soil) {
+      o += soil(B, Zb, xr, Hr);
+      const bkR = reg(c.G.bk, 'b', Zb, Hr);
+      o +=
+        bfOn(S) && bkR
+          ? `<polygon points="${PT(bkR)}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${PT(bkR)}" fill="url(#${FI}hat2)" fill-opacity=".45"/>` +
+            (SG_ ? (lb.push([X((pXl(c.G.bk, (Zb + Hr) / 2) + B) / 2), Y((Zb + Hr) / 2) + 4, 'Backfill', 'middle', '#6b5b2a', 'lv']), '') : '')
+          : SP(bkR);
+      if (C.wb > 0) o += wat(B, Zb, xr, C.Wb) + WP(reg(c.G.bk, 'b', Zb, Math.min(Hr, C.Wb)));
+    }
     o += ln(xbH, xr, Hr, '#8a7f5a');
   }
 
@@ -332,27 +365,29 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     const poly = PT(polyPts);
     const Df = Hf - Zb;
     const TR = reg(c.G.fr, 'f', Zb, Hf, tf ? zf(0) : Hf);
-    if (pas) {
-      o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${poly}" fill="url(#${FI}dots)"/>${SP(TR)}`;
-    } else {
-      o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #f2e8cf)" fill-opacity=".45" stroke="#8a7f5a" stroke-dasharray="5 3" stroke-width="1"/><polygon points="${poly}" fill="url(#${FI}hat2)" fill-opacity=".55"/>`;
-      if (TR) {
-        o += `<polygon points="${PT(TR)}" fill="var(--cad-soil-fill, #f2e8cf)" fill-opacity=".45"/><polygon points="${PT(TR)}" fill="url(#${FI}hat2)" fill-opacity=".55"/>`;
-      }
-      if (SG_) {
-        lb.push([
-          X(xl) + 6,
-          Y((Hf + Zb) / 2) + 4,
-          'Front soil ' +
-            nt(
-              S.fon
-                ? `Front soil (Df = ${f(Df)} m): passive resistance ignored (hatched).`
-                : `Front soil (Df = ${f(Df)} m): not considered in the calculation.`,
-            ),
-          'start',
-          '#8a5a00',
-          'lv',
-        ]);
+    if (LY.soil) {
+      if (pas) {
+        o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #f2e8cf)"/><polygon points="${poly}" fill="url(#${FI}dots)"/>${SP(TR)}`;
+      } else {
+        o += `<polygon points="${poly}" fill="var(--cad-soil-fill, #f2e8cf)" fill-opacity=".45" stroke="#8a7f5a" stroke-dasharray="5 3" stroke-width="1"/><polygon points="${poly}" fill="url(#${FI}hat2)" fill-opacity=".55"/>`;
+        if (TR) {
+          o += `<polygon points="${PT(TR)}" fill="var(--cad-soil-fill, #f2e8cf)" fill-opacity=".45"/><polygon points="${PT(TR)}" fill="url(#${FI}hat2)" fill-opacity=".55"/>`;
+        }
+        if (SG_) {
+          lb.push([
+            X(xl) + 6,
+            Y((Hf + Zb) / 2) + 4,
+            'Front soil ' +
+              nt(
+                S.fon
+                  ? `Front soil (Df = ${f(Df)} m): passive resistance ignored (hatched).`
+                  : `Front soil (Df = ${f(Df)} m): not considered in the calculation.`,
+              ),
+            'start',
+            '#8a5a00',
+            'lv',
+          ]);
+        }
       }
     }
     if (tf) {
@@ -366,9 +401,9 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
         : `<line x1="${f(X(xl), 1)}" y1="${f(Y(zf(xl)), 1)}" x2="${f(X(xF), 1)}" y2="${f(Y(Hf), 1)}" stroke="#8a7f5a" stroke-width="1.2"/>`;
       if (SG_) lb.push([X(xl) + 6, Y(zf(xl)) - 20, `β_f = ${f(S.bf, 1)}°`, 'start', null, 'lv']);
     }
-    if (S.fon && C.wf > 0) o += wat(xl, Zb, 0, Zb + C.wf) + WP(reg(c.G.fr, 'f', Zb, Math.min(Hf, Zb + C.wf)));
+    if (LY.soil && S.fon && C.wf > 0) o += wat(xl, Zb, 0, Zb + C.wf) + WP(reg(c.G.fr, 'f', Zb, Math.min(Hf, Zb + C.wf)));
     o += tf ? '' : ln(xl, xF, Hf, '#8a7f5a');
-    if (S.fon && S.dp > 0) {
+    if (LY.soil && S.fon && S.dp > 0) {
       const zd = Math.max(Zb, Hf - S.dp);
       o += rc(xl, zd, xF, Hf, 'fill="#d97706" fill-opacity=".10"') + ln(xl, xF, zd, '#b45309', 1);
       if (SG_) {
@@ -405,12 +440,12 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     items: typeof P,
     id: string,
   ) => {
-    if (!SL_ || pts.every((pt) => pt[0] < 1e-6)) return '';
+    if ((!SP_ && !SF_) || pts.every((pt) => pt[0] < 1e-6)) return '';
     const zt = pts[0][1];
     const zl = pts[pts.length - 1][1];
     const F_ = items.reduce((t, p) => t + p.F, 0);
     const z_ = F_ > 0 ? items.reduce((t, p) => t + p.F * p.arm, 0) / F_ : 0;
-    if (F_ > 1e-9) {
+    if (SF_ && F_ > 1e-9) {
       fr.push({
         a: [X(b0 + dir * len(F_)), Y(Zb + z_), X(b0), Y(Zb + z_)],
         k,
@@ -421,6 +456,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
         col: dir,
       });
     }
+    if (!SP_) return '';
     return `<polygon points="${PT([[b0, Zb + zt], ...pts.map(([pv, z]): [number, number] => [b0 + dir * pv * psc, Zb + z]), [b0, Zb + zl]])}" fill="${CL[k]}" fill-opacity=".16" stroke="${CL[k]}" stroke-width="1"/><line x1="${f(X(b0), 1)}" x2="${f(X(b0), 1)}" y1="${f(Y(Zb + zt), 1)}" y2="${f(Y(Zb + zl), 1)}" stroke="${CL[k]}" stroke-dasharray="3 3" stroke-width=".8"/>`;
   };
 
@@ -618,8 +654,27 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     }
   }
 
+  // Schematic Rebar Overlay (when Rebar layer is toggled ON)
+  if (LY.rebar && !isG(S)) {
+    o += '<g stroke="var(--cad-rebar, #c2410c)" stroke-width="1.6" fill="none" stroke-linecap="round">';
+    c.G.SG.filter((sg) => sg.h > 1e-9).forEach((sg) => {
+      o += `<line x1="${f(X(sg.xb0 - 0.06), 1)}" y1="${f(Y(sg.bot), 1)}" x2="${f(X(sg.xb1 - 0.06), 1)}" y2="${f(Y(sg.top - 0.05), 1)}"/>`;
+      o += `<line x1="${f(X(sg.xf0 + 0.06), 1)}" y1="${f(Y(sg.bot), 1)}" x2="${f(X(sg.xf1 + 0.06), 1)}" y2="${f(Y(sg.top - 0.05), 1)}" stroke-dasharray="3 2"/>`;
+    });
+    XS.forEach((a) => {
+      a.segs.forEach((sg) => {
+        if (!(sg.h > 1e-9)) return;
+        o += `<line x1="${f(X(sg.x1 - 0.05), 1)}" y1="${f(Y(sg.bot), 1)}" x2="${f(X(sg.x1 - 0.05), 1)}" y2="${f(Y(sg.top - 0.05), 1)}"/>`;
+        o += `<line x1="${f(X(sg.x0 + 0.05), 1)}" y1="${f(Y(sg.bot), 1)}" x2="${f(X(sg.x0 + 0.05), 1)}" y2="${f(Y(sg.top - 0.05), 1)}" stroke-dasharray="3 2"/>`;
+      });
+    });
+    o += `<line x1="${f(X(0.06), 1)}" y1="${f(Y(Zb + 0.07), 1)}" x2="${f(X(B - 0.06), 1)}" y2="${f(Y(Zb + 0.07), 1)}"/>`;
+    o += `<line x1="${f(X(0.06), 1)}" y1="${f(Y(bt - 0.07), 1)}" x2="${f(X(B - 0.06), 1)}" y2="${f(Y(bt - 0.07), 1)}"/>`;
+    o += '</g>';
+  }
+
   // Base uplift (orange) + effective bearing pressure (teal) + middle-third + inclined resultant R
-  if (SL_ && c.s.N > 0) {
+  if (SB_ && c.s.N > 0) {
     const ux = (x: number) => C.uf + ((C.ub - C.uf) * x) / B;
     const qb = qDist(c.s.N, c.s.e, B);
     const qm = Math.max(qb(0), qb(B));
@@ -657,11 +712,13 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
     );
   }
 
-  if (SL_) {
+  if (SB_ || SF_) {
     const mt = Math.abs(c.s.e) <= B / 6 + 1e-9 && c.s.N > 0;
-    o += `<rect x="${f(X(B / 3), 1)}" y="${f(Y(Zb) - 3, 1)}" width="${f((B / 3) * s, 1)}" height="6" fill="#16a34a" fill-opacity=".55" stroke="#15803d" stroke-width=".8"/>`;
-    NT.push(`Green band = middle third of the base, ${f(B / 3)}–${f((2 * B) / 3)} m from the toe (GG1 §9.2.4).`);
-    if (c.s.N > 0 && Number.isFinite(c.s.xbar)) {
+    if (SB_) {
+      o += `<rect x="${f(X(B / 3), 1)}" y="${f(Y(Zb) - 3, 1)}" width="${f((B / 3) * s, 1)}" height="6" fill="#16a34a" fill-opacity=".55" stroke="#15803d" stroke-width=".8"/>`;
+      NT.push(`Green band = middle third of the base, ${f(B / 3)}–${f((2 * B) / 3)} m from the toe (GG1 §9.2.4).`);
+    }
+    if (SF_ && c.s.N > 0 && Number.isFinite(c.s.xbar)) {
       const Hn = c.s.H - (S.ppO ? c.s.Hp : 0);
       const Rm = Math.hypot(Hn, c.s.N);
       const L = Math.max(0.6, len(Rm));
@@ -795,7 +852,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
   const L = P.find((p) => p.cat === 'wind' || p.cat === 'bar');
   const xf = fxc + 0.05;
   let FBx: ReturnType<typeof barCalc> | null = null;
-  if (SL_) {
+  if (SF_) {
     if (L) {
       fr.push({
         a: [X(xf + len(L.F)), Y(Zb + L.arm), X(xf), Y(Zb + L.arm)],
@@ -933,7 +990,7 @@ export function renderFigureSvg(S: WallState, c: FigureRenderInput): FigureRende
       .join('');
 
   // ALL ~20+ Interactive Drag Handles (exact v14.0.1 lines 1391-1422)
-  if (!NE && MD !== 'load') {
+  if (SH_) {
     const n = S.st.length;
     const hm = (Zb + bt) / 2;
     const hb = bt - Zb;

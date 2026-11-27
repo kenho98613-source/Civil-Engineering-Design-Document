@@ -65,6 +65,10 @@ const {
   deleteExtraStemSeg,
   renderFigureSvg,
   figureInputFromResult,
+  renderCalcSec5,
+  renderStabSec6,
+  renderStructSec7,
+  renderLimitsSec8,
   fillDef,
   syncState,
 } = engine;
@@ -443,4 +447,48 @@ console.log('\n=== 5. FIGURE SVG, ALL DRAG HANDLES & MULTI-STEM MUTATIONS ===');
   console.log(`  PASS  Figure SVG (${fT.handles.length} T handles / ${fTer.handles.length} multi-stem handles), Terrace soil, Add/Delete/Split Stems & L→T auto-conversion`);
 }
 
-console.log(`\nALL ENGINE VERIFICATIONS PASSED (${benchResults.length} benchmarks / ${totalQty} quantities + ${parityCount} full parity scenarios + DXF + Tools + Figure/Stems).`);
+console.log('\n=== 6. DETAILED CALCULATION STEPS (SECTIONS 5, 6, 7 & 8) ===');
+{
+  const checkSuite = (label, S) => {
+    const R0 = calcAll(S);
+    assert.ok(!R0.err, `${label}: calcAll failed`);
+    const s5 = renderCalcSec5(S, R0);
+    const s6 = renderStabSec6(S, R0);
+    const s7 = renderStructSec7(S, R0);
+    const s8 = renderLimitsSec8(S, R0);
+    assert.ok(s5.includes('5.0 Earth pressure coefficients') && s5.includes('5.1 Active side') && s5.includes('5.4 Vertical loads'), `${label}: sec5 incomplete`);
+    assert.ok(s6.includes('6. Stability') && s6.includes('<table class="ctab">') && s6.includes('Eccentricity – middle third'), `${label}: sec6 incomplete`);
+    assert.ok(s7.includes('7. Structural design'), `${label}: sec7 incomplete`);
+    assert.ok(s8.includes('8.1 NOT CHECKED') && s8.includes('8.2 Basis adopted') && s8.includes('8.3 REQUIRES VERIFICATION'), `${label}: sec8 incomplete`);
+    return { s5, s6, s7, s8 };
+  };
+
+  // FC 2017 T-wall
+  const sFc = loadDefaultDesign('T', { acc: 'fc' });
+  const rFc = checkSuite('T-wall FC 2017', sFc);
+  assert.ok(rFc.s6.includes('Global factor of safety') && rFc.s6.includes('ΣH_O') && rFc.s6.includes('Uplift') && rFc.s6.includes('ζqi / ζγi / ζci'));
+  assert.ok(rFc.s7.includes('11') && rFc.s7.includes('Starter bars into the base'));
+
+  // GG1 T-wall + Shear Key + Slope Crest + Vehicle Impact (structural only -> 6.2 accidental)
+  const sGg = loadDefaultDesign('T', { acc: 'gg1' });
+  sGg.skon = 1; sGg.skd = 0.8; sGg.skw = 0.6;
+  sGg.bf = -18; sGg.scon = 1; sGg.scb = 1.0;
+  sGg.bro = 1; sGg.brc = 'v6A'; sGg.vSO = 1; sGg.accI = 1;
+  const rGg = checkSuite('T-wall GG1 + Key + Slope Crest + Acc Impact', sGg);
+  assert.ok(rGg.s6.includes('Kah,f / Kah') && rGg.s6.includes('GG1 Fig. 42 mechanism 1') && rGg.s6.includes('6.2 Accidental case – vehicle impact'));
+
+  // Stepped Gravity wall + RC stem + anti-crack mesh
+  const sGr = loadDefaultDesign('G', { acc: 'fc' });
+  sGr.gmr = 'cc'; sGr.gmb = '965';
+  sGr.st = [
+    { t: 0.4, fb: 0, rb: 0, of: 0.2, top: 10.2, bot: 9.2, rc: 1 },
+    { t: 0.8, fb: 0, rb: 0, of: 0.2, top: 9.2, bot: 8.4, rc: 0 },
+  ];
+  const rGr = checkSuite('Stepped Gravity + RC stem + Mesh', sGr);
+  assert.ok(rGr.s6.includes('Changes in section (GG1 §9.2.3(2), Fig. 40)'));
+  assert.ok(rGr.s7.includes('7.2 RC elements') && rGr.s7.includes('7.3') && rGr.s7.includes('Starter bar anchorage'));
+
+  console.log('  PASS  Sections 5, 6 (GG1 & FC 2017, Shear Key Fig. 42, Stepped Fig. 40, Slope Crest, 6.2 Accidental), 7 (12-step RCT, Starter Bars, Mesh, Curtailment) & 8');
+}
+
+console.log(`\nALL ENGINE VERIFICATIONS PASSED (${benchResults.length} benchmarks / ${totalQty} quantities + ${parityCount} full parity scenarios + DXF + Tools + Figure/Stems + CalcSteps).`);
