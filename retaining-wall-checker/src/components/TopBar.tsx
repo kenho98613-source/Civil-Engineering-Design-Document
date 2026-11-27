@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import {
   Check,
   ChevronDown,
+  Compass,
+  FileCode2,
   FileDown,
   FlaskConical,
   FolderOpen,
@@ -12,6 +14,7 @@ import {
   Redo2,
   RotateCcw,
   Save,
+  Sparkles,
   Sun,
   SunMoon,
   Undo2,
@@ -42,7 +45,10 @@ interface TopBarProps {
   onReportModeChange: (m: ReportMode) => void;
   onOpenFile: (text: string, name: string) => void;
   onSaveFile: () => void;
+  onOpenDxfImport: () => void;
   onExportDxf: (scale: number) => void;
+  onOpenWizard: () => void;
+  onOpenAutoDesign: () => void;
   onLoadDefault: () => void;
   onOpenBenchmarks: () => void;
   onReset: () => void;
@@ -138,13 +144,28 @@ export function TopBar(props: TopBarProps) {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={props.onAutoBars}
+            onClick={props.onOpenWizard}
+            className="inline-flex items-center gap-1.5 px-2.5 h-7 rounded border text-xs font-medium cursor-pointer transition-colors"
+            style={{
+              borderColor: 'var(--border-hairline)',
+              backgroundColor: 'var(--surface-panel)',
+              color: 'var(--text-primary)',
+            }}
+            title="7-step guided Setup Wizard"
+          >
+            <Compass className="w-3.5 h-3.5" style={{ color: 'var(--accent-cobalt)' }} />
+            <span className="hidden lg:inline">Setup Wizard</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={props.onOpenAutoDesign}
             className="inline-flex items-center gap-1.5 px-2.5 h-7 rounded text-xs font-medium text-white cursor-pointer transition-colors"
             style={{ backgroundColor: 'var(--accent-teal)' }}
-            title="Automatically select lightest passing RC reinforcement set"
+            title="Two-pass Auto Design: repair geometry, optimise width, and select lightest passing bars"
           >
-            <Wand2 className="w-3.5 h-3.5" />
-            <span>Auto-Bars</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Auto Design</span>
           </button>
 
           <div className="w-px h-5 mx-1" style={{ backgroundColor: 'var(--border-hairline)' }} />
@@ -186,7 +207,7 @@ export function TopBar(props: TopBarProps) {
             </button>
             {openMenu === 'file' && (
               <div
-                className="absolute right-0 mt-1 w-52 rounded-md border shadow-lg py-1 z-50"
+                className="absolute right-0 mt-1 w-56 rounded-md border shadow-lg py-1 z-50"
                 style={{
                   backgroundColor: 'var(--surface-elevated)',
                   borderColor: 'var(--border-hairline)',
@@ -208,6 +229,17 @@ export function TopBar(props: TopBarProps) {
                   className="w-full px-3 py-1.5 text-left text-xs flex items-center gap-2 hover:opacity-80 cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5 opacity-70" /> Save `.rwall` project
+                </button>
+                <div className="my-1 border-t" style={{ borderColor: 'var(--border-muted)' }} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    props.onOpenDxfImport();
+                    setOpenMenu(null);
+                  }}
+                  className="w-full px-3 py-1.5 text-left text-xs flex items-center gap-2 hover:opacity-80 cursor-pointer"
+                >
+                  <FileCode2 className="w-3.5 h-3.5 opacity-70" /> Import CAD DXF (Offline)…
                 </button>
                 <div className="my-1 border-t" style={{ borderColor: 'var(--border-muted)' }} />
                 <button
@@ -254,12 +286,22 @@ export function TopBar(props: TopBarProps) {
             </button>
             {openMenu === 'more' && (
               <div
-                className="absolute right-0 mt-1 w-52 rounded-md border shadow-lg py-1 z-50"
+                className="absolute right-0 mt-1 w-56 rounded-md border shadow-lg py-1 z-50"
                 style={{
                   backgroundColor: 'var(--surface-elevated)',
                   borderColor: 'var(--border-hairline)',
                 }}
               >
+                <button
+                  type="button"
+                  onClick={() => {
+                    props.onAutoBars();
+                    setOpenMenu(null);
+                  }}
+                  className="w-full px-3 py-1.5 text-left text-xs flex items-center gap-2 hover:opacity-80 cursor-pointer"
+                >
+                  <Wand2 className="w-3.5 h-3.5 opacity-70" /> Auto-Bars (Lightest Passing)
+                </button>
                 <button
                   type="button"
                   onClick={() => {

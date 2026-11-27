@@ -3,12 +3,15 @@ import {
   ABD,
   ABS,
   REFS,
+  anch,
+  ancRC,
   benchRun,
   f,
   kaEq,
   kpEq,
   rcv,
   scRows,
+  windCalc,
 } from '../engine';
 import type {
   CalcAllResult,
@@ -19,6 +22,8 @@ import type {
 } from '../engine';
 import type { WorkspaceTab } from '../hooks/useProjectStore';
 import { BmdSfdView } from './BmdSfdView';
+import { DesignToolsView } from './DesignToolsView';
+import { RcDiagramView } from './RcDiagramView';
 import { SectionCanvas } from './SectionCanvas';
 
 interface CenterWorkspaceProps {
@@ -31,13 +36,18 @@ interface CenterWorkspaceProps {
   hoveredField: string | null;
   onTabChange: (tab: WorkspaceTab) => void;
   onEditFigureParam: (param: string, value: number) => void;
+  onPreviewFigureParam: (param: string, value: number) => void;
+  onCommitFigureDrag: (label: string) => void;
   onCommit: (mutator: (draft: WallState) => void, opts?: { forceHistory?: boolean; message?: string }) => void;
+  onReplaceState: (next: WallState, msg: string) => void;
   onAutoBars: (only?: string) => void;
 }
 
 const TABS: { id: WorkspaceTab; label: string }[] = [
   { id: 'figure', label: 'Figure' },
+  { id: 'rcd', label: 'RC Diagram' },
   { id: 'bmd', label: 'BMD / SFD' },
+  { id: 'tools', label: 'Design Tools' },
   { id: 'register', label: 'Check Register' },
   { id: 'calc5', label: '5. Calculation' },
   { id: 'stab6', label: '6. Stability' },
@@ -96,7 +106,18 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
             result={result}
             hoveredField={props.hoveredField}
             onEditParam={props.onEditFigureParam}
+            onPreviewParam={props.onPreviewFigureParam}
+            onCommitDrag={props.onCommitFigureDrag}
             onForceScaleChange={(v) => props.onCommit((d) => { d.asc = v; })}
+          />
+        )}
+
+        {activeTab === 'rcd' && !result.err && (
+          <RcDiagramView
+            state={S}
+            result={result}
+            onCommit={props.onCommit}
+            onAutoBars={props.onAutoBars}
           />
         )}
 
@@ -106,6 +127,14 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
             result={result}
             diagrams={props.diagrams}
             curtailments={props.curtailments}
+          />
+        )}
+
+        {activeTab === 'tools' && (
+          <DesignToolsView
+            state={S}
+            onApplyState={(mutator, msg) => props.onCommit(mutator, { forceHistory: true, message: msg })}
+            onReplaceState={props.onReplaceState}
           />
         )}
 
@@ -267,6 +296,39 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
                 </table>
               </div>
             </div>
+
+            {!!S.wo && (() => {
+              const wc = windCalc(S, result.G);
+              return (
+                <div
+                  className="rounded-md border overflow-hidden"
+                  style={{ backgroundColor: 'var(--surface-panel)', borderColor: 'var(--border-hairline)' }}
+                >
+                  <div
+                    className="px-3 py-2 text-xs font-semibold border-b flex items-center justify-between"
+                    style={{ backgroundColor: 'var(--surface-subtle)', borderColor: 'var(--border-hairline)' }}
+                  >
+                    <span>5.2 Fence Wind Load (Code of Practice on Wind Effects in HK 2019)</span>
+                    <span className="font-mono-eng" style={{ color: 'var(--accent-cobalt)' }}>
+                      F_w = {f(wc.F, 2)} kN/m at +{f(wc.z, 2)} mPD
+                    </span>
+                  </div>
+                  <table className="w-full text-xs border-collapse">
+                    <tbody>
+                      {wc.steps.map(([sym, desc, fm, val, cl], idx) => (
+                        <tr key={idx} className="border-b last:border-b-0" style={{ borderColor: 'var(--border-muted)' }}>
+                          <td className="py-1.5 px-3 font-mono-eng font-semibold w-16">{sym}</td>
+                          <td className="py-1.5 px-3">{desc}</td>
+                          <td className="py-1.5 px-3 text-[11px]" style={{ color: 'var(--text-muted)' }}>{fm}</td>
+                          <td className="py-1.5 px-3 text-right font-mono-eng font-semibold">{val}</td>
+                          <td className="py-1.5 px-3 text-[10.5px]" style={{ color: 'var(--text-muted)' }}>{cl}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
           </div>
         )}
 
@@ -276,6 +338,7 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
               const P = result.P;
               const br = P ? result.A.br.r : result.Fc.br.rr;
               const crRows = scRows(br, !P);
+              const km = P ? result.A.sl.km : result.Fc.sl.km;
               return (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -335,6 +398,153 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
                     ))}
                   </div>
 
+                  {/* Shear Key Mechanics (GG1 Fig. 42) */}
+                  {km && km.kOn && (
+                    <div
+                      className="rounded-md border overflow-hidden"
+                      style={{ backgroundColor: 'var(--surface-panel)', borderColor: 'var(--border-hairline)' }}
+                    >
+                      <div
+                        className="px-3 py-2 text-xs font-semibold border-b flex items-center justify-between"
+                        style={{ backgroundColor: 'var(--surface-subtle)', borderColor: 'var(--border-hairline)' }}
+                      >
+                        <span>6.1a Shear Key Sliding Mechanics (GG1 Fig. 42)</span>
+                        <span className="font-mono-eng text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                          dk = {f(km.dk, 2)} m · Bk = {f(km.Bk, 2)} m · xk = {f(km.xk, 2)} m
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-2.5 text-xs font-mono-eng">
+                        <div className="p-2 rounded" style={{ backgroundColor: 'var(--surface-subtle)' }}>
+                          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>ΔPa / ΔPq / ΔPw</div>
+                          <div className="font-bold">{f(km.dPa, 1)} / {f(km.dPq, 1)} / {f(km.dPw, 1)}</div>
+                        </div>
+                        <div className="p-2 rounded" style={{ backgroundColor: 'var(--surface-subtle)' }}>
+                          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Key Passive Rp</div>
+                          <div className="font-bold">{km.usePp ? `${f(km.Rp, 1)} kN/m` : 'excluded'}</div>
+                        </div>
+                        <div className="p-2 rounded" style={{ backgroundColor: 'var(--surface-subtle)' }}>
+                          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Soil-to-Soil Ns</div>
+                          <div className="font-bold">{f(km.Ns, 1)} kN/m</div>
+                        </div>
+                        <div className="p-2 rounded" style={{ backgroundColor: 'var(--surface-subtle)' }}>
+                          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Total Fr / Fa</div>
+                          <div className="font-bold">{f(km.Fr, 1)} / {f(km.Fa, 1)} kN/m</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Stepped Gravity / Unreinforced Section Checks */}
+                  {result.PL.length > 0 && (
+                    <div
+                      className="rounded-md border overflow-hidden"
+                      style={{ backgroundColor: 'var(--surface-panel)', borderColor: 'var(--border-hairline)' }}
+                    >
+                      <div
+                        className="px-3 py-2 text-xs font-semibold border-b"
+                        style={{ backgroundColor: 'var(--surface-subtle)', borderColor: 'var(--border-hairline)' }}
+                      >
+                        6.5 Internal Section Checks (Stepped Gravity / Plain Concrete Joints)
+                      </div>
+                      <table className="w-full text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b text-left text-[11px]" style={{ borderColor: 'var(--border-hairline)', color: 'var(--text-muted)' }}>
+                            <th className="py-1.5 px-3">Section</th>
+                            <th className="py-1.5 px-3 text-right">Width (m)</th>
+                            <th className="py-1.5 px-3 text-right">Overturning FOS</th>
+                            <th className="py-1.5 px-3 text-right">Eccentricity e</th>
+                            <th className="py-1.5 px-3 text-center">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {result.PL.map((pl) => (
+                            <tr key={pl.k} className="border-b last:border-b-0" style={{ borderColor: 'var(--border-muted)' }}>
+                              <td className="py-1.5 px-3 font-medium">{pl.lab}</td>
+                              <td className="py-1.5 px-3 text-right font-mono-eng">{f(pl.Ls, 2)}</td>
+                              <td className="py-1.5 px-3 text-right font-mono-eng">{f(pl.Fot, 2)} ≥ {f(pl.Freq, 2)}</td>
+                              <td className="py-1.5 px-3 text-right font-mono-eng">{f(pl.ek, 3)} / {f(pl.Ls / 6, 3)} m</td>
+                              <td className="py-1.5 px-3 text-center">
+                                <span
+                                  className="font-mono-eng text-[10px] font-bold px-2 py-0.5 rounded"
+                                  style={{
+                                    color: pl.ok ? 'var(--status-pass)' : 'var(--status-fail)',
+                                    backgroundColor: pl.ok ? 'var(--status-pass-bg)' : 'var(--status-fail-bg)',
+                                  }}
+                                >
+                                  {pl.na ? 'N/A' : pl.ok ? 'PASS' : 'FAIL'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* Accidental Vehicle Impact Stability Check */}
+                  {result.AI && (
+                    <div
+                      className="rounded-md border p-3"
+                      style={{
+                        backgroundColor: 'var(--surface-panel)',
+                        borderColor: 'var(--border-hairline)',
+                        borderLeftWidth: '4px',
+                        borderLeftColor: result.AI.ok ? 'var(--status-pass)' : 'var(--status-fail)',
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold">6.6 Accidental Vehicle Impact Stability (FOS ≥ 1.00)</span>
+                        <span
+                          className="font-mono-eng text-[10px] font-bold px-2 py-0.5 rounded"
+                          style={{
+                            color: result.AI.ok ? 'var(--status-pass)' : 'var(--status-fail)',
+                            backgroundColor: result.AI.ok ? 'var(--status-pass-bg)' : 'var(--status-fail-bg)',
+                          }}
+                        >
+                          {result.AI.ok ? 'PASS' : 'FAIL'}
+                        </span>
+                      </div>
+                      <div className="font-mono-eng text-xs flex flex-wrap gap-4">
+                        <span>Sliding FOS = <b>{f(result.AI.Fs, 2)}</b></span>
+                        <span>Overturning FOS = <b>{f(result.AI.Fo, 2)}</b></span>
+                        <span>Bearing FOS = <b>{f(result.AI.br.F, 2)}</b></span>
+                        <span>Impact F = <b>{f(result.AI.b.F, 1)} kN/m</b></span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sensitivity Check: Wall Friction delta = 0 */}
+                  {result.D0 && (
+                    <div
+                      className="rounded-md border p-3"
+                      style={{
+                        backgroundColor: 'var(--surface-panel)',
+                        borderColor: 'var(--border-hairline)',
+                        borderLeftWidth: '4px',
+                        borderLeftColor: result.D0.u.okAll ? 'var(--status-pass)' : 'var(--status-warn)',
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold">6.7 Sensitivity Check: Wall Friction δ = 0° (GG1 §7.4)</span>
+                        <span
+                          className="font-mono-eng text-[10px] font-bold px-2 py-0.5 rounded"
+                          style={{
+                            color: result.D0.u.okAll ? 'var(--status-pass)' : 'var(--status-warn)',
+                            backgroundColor: result.D0.u.okAll ? 'var(--status-pass-bg)' : 'var(--status-warn-bg)',
+                          }}
+                        >
+                          {result.D0.u.okAll ? 'PASS' : 'CHECK'}
+                        </span>
+                      </div>
+                      <div className="font-mono-eng text-xs flex flex-wrap gap-4" style={{ color: 'var(--text-secondary)' }}>
+                        <span>Sliding util = <b>{f(result.D0.u.sl * 100, 1)}%</b></span>
+                        <span>Overturning util = <b>{f(result.D0.u.ot * 100, 1)}%</b></span>
+                        <span>Bearing util = <b>{f(result.D0.u.br * 100, 1)}%</b></span>
+                        <span>Eccentricity util = <b>{f(result.D0.u.ec * 100, 1)}%</b></span>
+                      </div>
+                    </div>
+                  )}
+
                   {crRows.length > 0 && (
                     <div
                       className="rounded-md border overflow-hidden"
@@ -368,9 +578,44 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
 
         {activeTab === 'rc7' && !result.err && (
           <div className="space-y-3">
+            {/* Nominal Cover Schedule (CoP Table 4.2) */}
+            {result.CA.length > 0 && (
+              <div
+                className="rounded-md border overflow-hidden"
+                style={{ backgroundColor: 'var(--surface-panel)', borderColor: 'var(--border-hairline)' }}
+              >
+                <div
+                  className="px-3 py-2 text-xs font-semibold border-b"
+                  style={{ backgroundColor: 'var(--surface-subtle)', borderColor: 'var(--border-hairline)' }}
+                >
+                  7.0 Nominal Concrete Cover (CoP SUC 2013 Table 4.2 · C{S.fcu})
+                </div>
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b text-left text-[11px]" style={{ borderColor: 'var(--border-hairline)', color: 'var(--text-muted)' }}>
+                      <th className="py-1.5 px-3">Face / Element</th>
+                      <th className="py-1.5 px-3">Exposure</th>
+                      <th className="py-1.5 px-3 text-right">Min Req (mm)</th>
+                      <th className="py-1.5 px-3 text-right">Provided (mm)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.CA.map((c, idx) => (
+                      <tr key={idx} className="border-b last:border-b-0" style={{ borderColor: 'var(--border-muted)' }}>
+                        <td className="py-1.5 px-3 font-medium">{c.n}</td>
+                        <td className="py-1.5 px-3 text-[11px]" style={{ color: 'var(--text-muted)' }}>{c.why}</td>
+                        <td className="py-1.5 px-3 text-right font-mono-eng">{c.min ?? '–'}</td>
+                        <td className="py-1.5 px-3 text-right font-mono-eng font-semibold">{c.c}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
             {result.RS.length === 0 ? (
               <div className="rounded-md border p-4 text-xs" style={{ borderColor: 'var(--border-hairline)', color: 'var(--text-muted)' }}>
-                No RC elements active for this configuration.
+                No RC bending/shear elements active for this configuration.
               </div>
             ) : (
               result.RS.map((r) => {
@@ -462,6 +707,98 @@ export function CenterWorkspace(props: CenterWorkspaceProps) {
                 );
               })
             )}
+
+            {/* Gravity Anti-Crack / Min Mesh Schedule */}
+            {result.MS.length > 0 && (
+              <div
+                className="rounded-md border overflow-hidden"
+                style={{ backgroundColor: 'var(--surface-panel)', borderColor: 'var(--border-hairline)' }}
+              >
+                <div
+                  className="px-3 py-2 text-xs font-semibold border-b flex items-center justify-between"
+                  style={{ backgroundColor: 'var(--surface-subtle)', borderColor: 'var(--border-hairline)' }}
+                >
+                  <span>7.5 Gravity Block Surface / Anti-Crack Mesh Schedule ({S.gmb.toUpperCase()})</span>
+                  <span
+                    className="font-mono-eng text-[10px] font-bold px-2 py-0.5 rounded"
+                    style={{
+                      color: result.okMesh ? 'var(--status-pass)' : 'var(--status-fail)',
+                      backgroundColor: result.okMesh ? 'var(--status-pass-bg)' : 'var(--status-fail-bg)',
+                    }}
+                  >
+                    {result.okMesh ? 'ALL PASS' : 'CHECK'}
+                  </span>
+                </div>
+                <table className="w-full text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b text-left text-[11px]" style={{ borderColor: 'var(--border-hairline)', color: 'var(--text-muted)' }}>
+                      <th className="py-1.5 px-3">Face / Direction</th>
+                      <th className="py-1.5 px-3 text-right">As,req (mm²/m)</th>
+                      <th className="py-1.5 px-3 text-right">Provided</th>
+                      <th className="py-1.5 px-3 text-right">As,prov</th>
+                      <th className="py-1.5 px-3 text-center">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.MS.map((m, idx) => (
+                      <tr key={idx} className="border-b last:border-b-0" style={{ borderColor: 'var(--border-muted)' }}>
+                        <td className="py-1.5 px-3 font-medium">{m.lab}</td>
+                        <td className="py-1.5 px-3 text-right font-mono-eng">{f(m.need, 0)}</td>
+                        <td className="py-1.5 px-3 text-right font-mono-eng">T{m.d}@{m.sp}</td>
+                        <td className="py-1.5 px-3 text-right font-mono-eng">{f(m.prov, 0)}</td>
+                        <td className="py-1.5 px-3 text-center">
+                          <span
+                            className="font-mono-eng text-[10px] font-bold px-2 py-0.5 rounded"
+                            style={{
+                              color: m.ok ? 'var(--status-pass)' : 'var(--status-fail)',
+                              backgroundColor: m.ok ? 'var(--status-pass-bg)' : 'var(--status-fail-bg)',
+                            }}
+                          >
+                            {m.ok ? 'PASS' : 'FAIL'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Starter Bar Anchorage Check */}
+            {(() => {
+              const an = anch(S, result.G, result.RS) || ancRC(S, result.G, result.RS);
+              if (!an) return null;
+              return (
+                <div
+                  className="rounded-md border p-3"
+                  style={{
+                    backgroundColor: 'var(--surface-panel)',
+                    borderColor: 'var(--border-hairline)',
+                    borderLeftWidth: '4px',
+                    borderLeftColor: an.ok ? 'var(--status-pass)' : 'var(--status-fail)',
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold">7.6 Stem Starter Bar Anchorage (CoP Cl 8.4.4)</span>
+                    <span
+                      className="font-mono-eng text-[10px] font-bold px-2 py-0.5 rounded"
+                      style={{
+                        color: an.ok ? 'var(--status-pass)' : 'var(--status-fail)',
+                        backgroundColor: an.ok ? 'var(--status-pass-bg)' : 'var(--status-fail-bg)',
+                      }}
+                    >
+                      {an.ok ? 'PASS' : 'CHECK'}
+                    </span>
+                  </div>
+                  <div className="font-mono-eng text-xs flex flex-wrap gap-4" style={{ color: 'var(--text-secondary)' }}>
+                    <span>Bar: <b>T{an.phi}</b></span>
+                    <span>Req l_b = <b>{f(an.lb, 0)} mm</b></span>
+                    <span>Available = <b>{f(an.av, 0)} mm</b></span>
+                    {an.into && <span>Into: <b>{an.into}</b></span>}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 

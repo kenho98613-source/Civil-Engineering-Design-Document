@@ -3,11 +3,15 @@ import { BenchmarkModal, CenterWorkspace } from './components/CenterWorkspace';
 import { LeftStepPanel } from './components/LeftStepPanel';
 import { RightKpiRail } from './components/RightKpiRail';
 import { TopBar } from './components/TopBar';
+import { AutoDesignModal, DxfImportModal, SetupWizardModal } from './components/WizardsModals';
 import { useProjectStore } from './hooks/useProjectStore';
 
 export default function App() {
   const store = useProjectStore();
   const [showBench, setShowBench] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
+  const [showAutoDesign, setShowAutoDesign] = useState(false);
+  const [showDxfImport, setShowDxfImport] = useState(false);
 
   // Desktop keyboard shortcuts (Ctrl+Z, Ctrl+Y, Ctrl+S)
   useEffect(() => {
@@ -53,7 +57,10 @@ export default function App() {
         onReportModeChange={store.setReportMode}
         onOpenFile={store.loadProjectText}
         onSaveFile={store.saveProjectDownload}
+        onOpenDxfImport={() => setShowDxfImport(true)}
         onExportDxf={store.exportDxfSection}
+        onOpenWizard={() => setShowWizard(true)}
+        onOpenAutoDesign={() => setShowAutoDesign(true)}
         onLoadDefault={store.applyDefaultForCurrentForm}
         onOpenBenchmarks={() => setShowBench(true)}
         onReset={store.resetFactory}
@@ -83,7 +90,10 @@ export default function App() {
           hoveredField={store.hoveredField}
           onTabChange={store.setActiveTab}
           onEditFigureParam={store.editFigureParam}
+          onPreviewFigureParam={store.previewFigureParam}
+          onCommitFigureDrag={store.commitFigureDrag}
           onCommit={store.commitState}
+          onReplaceState={(next, msg) => store.replaceActiveState(next, msg)}
           onAutoBars={store.runAutoBarsNow}
         />
 
@@ -96,6 +106,27 @@ export default function App() {
       </div>
 
       {showBench && <BenchmarkModal onClose={() => setShowBench(false)} />}
+      {showWizard && (
+        <SetupWizardModal
+          state={store.state}
+          onApply={(next) => store.replaceActiveState(next, 'Setup Wizard applied')}
+          onClose={() => setShowWizard(false)}
+        />
+      )}
+      {showAutoDesign && (
+        <AutoDesignModal
+          state={store.state}
+          onApply={(next, msg) => store.replaceActiveState(next, msg)}
+          onClose={() => setShowAutoDesign(false)}
+        />
+      )}
+      {showDxfImport && (
+        <DxfImportModal
+          state={store.state}
+          onBuild={(next, name) => store.replaceActiveState(next, `Built wall "${name}" from DXF`, name)}
+          onClose={() => setShowDxfImport(false)}
+        />
+      )}
     </div>
   );
 }

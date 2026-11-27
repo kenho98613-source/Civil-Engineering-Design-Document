@@ -38,7 +38,16 @@ import type {
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 export type ReportMode = 'concise' | 'full';
-export type WorkspaceTab = 'figure' | 'bmd' | 'register' | 'calc5' | 'stab6' | 'rc7' | 'limits8';
+export type WorkspaceTab =
+  | 'figure'
+  | 'rcd'
+  | 'bmd'
+  | 'tools'
+  | 'register'
+  | 'calc5'
+  | 'stab6'
+  | 'rc7'
+  | 'limits8';
 
 const STORAGE_PJ = 'rw14_desktop_pj';
 const STORAGE_THEME = 'rw14_theme';
@@ -307,6 +316,73 @@ export function useProjectStore() {
     [commitState],
   );
 
+  // Live SVG drag preview (updates state without pushing intermediate undo frames)
+  const previewFigureParam = useCallback((paramPath: string, value: number) => {
+    setProject((prev) => {
+      const nextTypes = prev.types.slice();
+      const curEntry = nextTypes[prev.active];
+      const draft = structuredClone(curEntry.S);
+      setVirtualParam(draft, paramPath, value);
+      syncState(draft);
+      linkLevels(draft, paramPath);
+      nextTypes[prev.active] = { ...curEntry, S: draft };
+      return { ...prev, types: nextTypes };
+    });
+  }, []);
+
+  // Commit final state of a pointer drag gesture as a single Undo snapshot
+  const commitFigureDrag = useCallback(
+    (label: string) => {
+      setProject((prev) => {
+        const curS = prev.types[prev.active].S;
+        pushHistory(curS, true);
+        return prev;
+      });
+      notify(label);
+    },
+    [notify, pushHistory],
+  );
+
+  // Replace entire active WallState (Setup Wizard, Auto Design, DXF Import, Scenario Load)
+  const replaceActiveState = useCallback(
+    (next: WallState, msg: string, renameTo?: string) => {
+      setProject((prev) => {
+        const nextTypes = prev.types.slice();
+        const curEntry = nextTypes[prev.active];
+        const clean = syncState(fillDef(structuredClone(next) as unknown as Record<string, unknown>).state);
+        const nextMeta = { ...prev.project };
+        PJF.forEach((k) => {
+          if ((clean as any)[k] !== undefined && (clean as any)[k] !== '') {
+            (nextMeta as any)[k] = (clean as any)[k];
+          } else {
+            (clean as any)[k] = (nextMeta as any)[k] ?? '';
+          }
+        });
+        let nextNameVal = curEntry.name;
+        if (renameTo && renameTo.trim()) {
+          const cand = renameTo.trim();
+          nextNameVal = prev.types.some((t, j) => j !== prev.active && t.name === cand)
+            ? uniqName(prev.types.filter((_, j) => j !== prev.active), cand)
+            : cand;
+        }
+        nextTypes[prev.active] = { ...curEntry, name: nextNameVal, named: renameTo ? 1 : curEntry.named, S: clean };
+        for (let i = 0; i < nextTypes.length; i++) {
+          if (i !== prev.active) {
+            const copy = structuredClone(nextTypes[i].S);
+            PJF.forEach((k) => {
+              (copy as any)[k] = (nextMeta as any)[k];
+            });
+            nextTypes[i] = { ...nextTypes[i], S: copy };
+          }
+        }
+        pushHistory(clean, true);
+        return { ...prev, project: nextMeta, types: nextTypes };
+      });
+      notify(msg);
+    },
+    [notify, pushHistory],
+  );
+
   const applyDefaultForCurrentForm = useCallback(() => {
     commitState(
       (draft) => {
@@ -470,6 +546,9 @@ export function useProjectStore() {
     deleteWallType,
     changeWallForm,
     editFigureParam,
+    previewFigureParam,
+    commitFigureDrag,
+    replaceActiveState,
     applyDefaultForCurrentForm,
     runAutoBarsNow,
     exportDxfSection,

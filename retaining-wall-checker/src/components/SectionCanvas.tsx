@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Check, Eye, EyeOff, Minus, Plus, X } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Check, Eye, EyeOff, Minus, Move, Plus, X } from 'lucide-react';
 import {
   DEG2RAD as R,
+  barCalc,
   dd,
   f,
   gTx,
@@ -20,11 +21,14 @@ interface SectionCanvasProps {
   result: CalcAllResult;
   hoveredField: string | null;
   onEditParam: (param: string, value: number) => void;
+  onPreviewParam?: (param: string, value: number) => void;
+  onCommitDrag?: (label: string) => void;
   onForceScaleChange: (scale: number) => void;
 }
 
 interface LayerFlags {
   dims: boolean;
+  handles: boolean;
   forces: boolean;
   soil: boolean;
   bearing: boolean;
@@ -41,15 +45,46 @@ interface PopoverTarget {
   yPct: number;
 }
 
+interface DragHandleSpec {
+  id: string;
+  param: string;
+  label: string;
+  unit: string;
+  axis: 'x' | 'z';
+  wx: number;
+  wz: number;
+  val0: number;
+  min: number;
+  max: number;
+  /** Sign multiplier from world delta (dx or dz) to parameter delta */
+  sign: 1 | -1;
+}
+
+interface ActiveDrag {
+  handle: DragHandleSpec;
+  /** Frozen SVG view transform so canvas never rescales mid-drag */
+  sc: number;
+  ox: number;
+  oy: number;
+  startClientX: number;
+  startClientY: number;
+  curVal: number;
+  svgX: number;
+  svgY: number;
+}
+
 export function SectionCanvas({
   state: S,
   result,
   hoveredField,
   onEditParam,
+  onPreviewParam,
+  onCommitDrag,
   onForceScaleChange,
 }: SectionCanvasProps) {
   const [layers, setLayers] = useState<LayerFlags>({
     dims: true,
+    handles: true,
     forces: true,
     soil: true,
     bearing: true,
@@ -57,6 +92,8 @@ export function SectionCanvas({
   });
   const [popover, setPopover] = useState<PopoverTarget | null>(null);
   const [draftVal, setDraftVal] = useState<string>('');
+  const [drag, setDrag] = useState<ActiveDrag | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const G = result.G ?? geo(S);
   const Zb = +S.Zb;
@@ -73,7 +110,7 @@ export function SectionCanvas({
   const padL = Math.max(2.2, CR ? sb + 1.8 : 0, 0.55 * Htot);
   const padR = Math.max(2.6, 0.75 * Htot);
   const padB = Math.max(1.8, (KG ? KG.dk : 0) + 1.4);
-  const padT = Math.max(1.4, (S.wo ? +S.wh : 0) + 1.1);
+  const padT = Math.max(1.5, (S.wo ? +S.wh : 0) + (S.bro ? +S.bhb : 0) + 1.1);
 
   const xMin = -padL;
   const xMax = B + padR;
@@ -84,9 +121,14 @@ export function SectionCanvas({
   const H = 520;
   const sx = W / (xMax - xMin);
   const sz = H / (zMax - zMin);
-  const sc = Math.min(sx, sz);
-  const ox = (W - (xMax - xMin) * sc) / 2 - xMin * sc;
-  const oy = (H - (zMax - zMin) * sc) / 2 + zMax * sc;
+  const liveSc = Math.min(sx, sz);
+  const liveOx = (W - (xMax - xMin) * liveSc) / 2 - xMin * liveSc;
+  const liveOy = (H - (zMax - zMin) * liveSc) / 2 + zMax * liveSc;
+
+  // Freeze transform during drag so the figure never jumps beneath the pointer
+  const sc = drag ? drag.sc : liveSc;
+  const ox = drag ? drag.ox : liveOx;
+  const oy = drag ? drag.oy : liveOy;
 
   const X = (x: number) => ox + x * sc;
   const Y = (z: number) => oy - z * sc;
@@ -140,6 +182,26 @@ export function SectionCanvas({
     if (G.Lt0 > 0) frontSoilPts.push([0, G.bt], [G.Lt0, G.bt]);
   }
 
+  // Terrace soil polygons between main stem and extra stems (G.XS)
+  const terraceSoilPolys: [number, number][][] = [];
+  if (G.XS.length > 0 && S.xa === 'ter') {
+    const sorted = [...G.XS].sort((a, b) => a.x0 - b.x0);
+    sorted.forEach((xs, idx) => {
+      const zt = +xs.zt;
+      if (zt <= G.bt + 1e-4) return;
+      const xLeft = idx === 0 ? pX(G.bk, zt) : sorted[idx - 1].x1;
+      const xRight = xs.x0;
+      if (xRight > xLeft + 0.02) {
+        terraceSoilPolys.push([
+          [xLeft, zt],
+          [xRight, zt],
+          [xRight, G.bt],
+          [xLeft, G.bt],
+        ]);
+      }
+    });
+  }
+
   // Force resultant summary for clean arrows
   const Ck = !result.err ? result.Ck : null;
   const asc = +S.asc || 1;
@@ -154,8 +216,200 @@ export function SectionCanvas({
   const pRes = sumCat('p');
   const vRes = sumCat('v');
 
-  const hi = (key: string) => hoveredField === key;
+  // Fence & barrier schematic geometry above wall top
+  const topSeg = G.SG[0];
+  const topMidX = topSeg ? (topSeg.xf1 + topSeg.xb1) / 2 : Gv ? gTx(S) + +S.gBt / 2 : B / 2;
+  const barInfo = S.bro ? barCalc(S, G) : null;
 
+  // Interactive Pointer Drag Handles (●)
+  const handles: DragHandleSpec[] = [
+    ...(!Gv && S.ty !== 'L'
+      ? [
+          {
+            id: 'h-Lt',
+            param: 'Lt',
+            label: 'Toe Lt',
+            unit: 'm',
+            axis: 'x' as const,
+            wx: 0,
+            wz: Zb + +S.tb / 2,
+            val0: +S.Lt,
+            min: 0.1,
+            max: 12,
+            sign: -1 as const,
+          },
+        ]
+      : []),
+    ...(!Gv && S.ty !== 'Li'
+      ? [
+          {
+            id: 'h-Lh',
+            param: 'Lh',
+            label: 'Heel Lh',
+            unit: 'm',
+            axis: 'x' as const,
+            wx: B,
+            wz: Zb + +S.tb / 2,
+            val0: +S.Lh,
+            min: 0.1,
+            max: 15,
+            sign: 1 as const,
+          },
+        ]
+      : []),
+    ...(Gv
+      ? [
+          {
+            id: 'h-gBt',
+            param: 'gBt',
+            label: 'Top width b_t',
+            unit: 'm',
+            axis: 'x' as const,
+            wx: gTx(S) + +S.gBt,
+            wz: G.bt,
+            val0: +S.gBt,
+            min: 0.3,
+            max: 10,
+            sign: 1 as const,
+          },
+        ]
+      : []),
+    {
+      id: 'h-tb',
+      param: 'tb',
+      label: Gv ? 'Block height h_b' : 'Base thickness tb',
+      unit: 'm',
+      axis: 'z',
+      wx: Gv ? gTx(S) + +S.gBt / 2 : G.hl > 0.3 ? G.xb + G.hl * 0.5 : G.Lt * 0.5,
+      wz: G.bt,
+      val0: Gv ? +S.gBh : +S.tb,
+      min: 0.25,
+      max: Gv ? 12 : 3.5,
+      sign: 1,
+    },
+    ...(S.st.length > 0
+      ? [
+          {
+            id: 'h-top',
+            param: 'st.0.top',
+            label: 'Wall top',
+            unit: 'mPD',
+            axis: 'z' as const,
+            wx: topMidX,
+            wz: G.top,
+            val0: +S.st[0].top,
+            min: G.bt + 0.3,
+            max: Zb + 25,
+            sign: 1 as const,
+          },
+        ]
+      : []),
+    ...(S.bon
+      ? [
+          {
+            id: 'h-Hr',
+            param: 'Hr',
+            label: 'Retained GL (Hr)',
+            unit: 'mPD',
+            axis: 'z' as const,
+            wx: B + 0.9,
+            wz: Hr + Math.tan((+S.br || 0) * R) * Math.max(0, B + 0.9 - G.xH),
+            val0: Hr,
+            min: Zb + 0.3,
+            max: Zb + 25,
+            sign: 1 as const,
+          },
+        ]
+      : []),
+    ...(S.fon
+      ? [
+          {
+            id: 'h-Hf',
+            param: 'Hf',
+            label: 'Front GL (Hf)',
+            unit: 'mPD',
+            axis: 'z' as const,
+            wx: -0.9,
+            wz: Hf,
+            val0: Hf,
+            min: Zb,
+            max: Hr,
+            sign: 1 as const,
+          },
+        ]
+      : []),
+    ...(S.bon
+      ? [
+          {
+            id: 'h-wl',
+            param: '@WL',
+            label: 'Retained GWL',
+            unit: 'mPD',
+            axis: 'z' as const,
+            wx: B + 1.5,
+            wz: Math.max(Zb + 0.05, wb),
+            val0: wb,
+            min: Zb,
+            max: Hr,
+            sign: 1 as const,
+          },
+        ]
+      : []),
+  ];
+
+  const startDrag = (e: React.PointerEvent<SVGGElement>, h: DragHandleSpec) => {
+    e.stopPropagation();
+    setPopover(null);
+    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    setDrag({
+      handle: h,
+      sc: liveSc,
+      ox: liveOx,
+      oy: liveOy,
+      startClientX: e.clientX,
+      startClientY: e.clientY,
+      curVal: h.val0,
+      svgX: liveOx + h.wx * liveSc,
+      svgY: liveOy - h.wz * liveSc,
+    });
+  };
+
+  const onDragMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (!drag || !svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const scaleX = W / Math.max(1, rect.width);
+    const scaleY = H / Math.max(1, rect.height);
+    const dSvgX = (e.clientX - drag.startClientX) * scaleX;
+    const dSvgY = (e.clientY - drag.startClientY) * scaleY;
+
+    const { handle } = drag;
+    const dWorld = handle.axis === 'x' ? dSvgX / drag.sc : -dSvgY / drag.sc;
+    const snap = e.altKey ? 0.01 : 0.05;
+    const raw = handle.val0 + handle.sign * dWorld;
+    const snapped = Math.max(handle.min, Math.min(handle.max, Math.round(raw / snap) * snap));
+    const rounded = +snapped.toFixed(3);
+
+    const nextSvgX = handle.axis === 'x' ? drag.ox + (handle.wx + dSvgX / drag.sc) * drag.sc : drag.svgX;
+    const nextSvgY = handle.axis === 'z' ? drag.oy - (handle.wz - dSvgY / drag.sc) * drag.sc : drag.svgY;
+
+    if (Math.abs(rounded - drag.curVal) > 1e-6) {
+      if (onPreviewParam) onPreviewParam(handle.param, rounded);
+      else onEditParam(handle.param, rounded);
+    }
+    setDrag((prev) => (prev ? { ...prev, curVal: rounded, svgX: nextSvgX, svgY: nextSvgY } : null));
+  };
+
+  const endDrag = () => {
+    if (!drag) return;
+    const { handle, curVal } = drag;
+    setDrag(null);
+    if (Math.abs(curVal - handle.val0) > 1e-6) {
+      if (onCommitDrag) onCommitDrag(`Dragged ${handle.label} → ${dd(curVal)} ${handle.unit}`);
+      else onEditParam(handle.param, curVal);
+    }
+  };
+
+  const hi = (key: string) => hoveredField === key;
   const toggleLayer = (k: keyof LayerFlags) => setLayers((prev) => ({ ...prev, [k]: !prev[k] }));
 
   return (
@@ -172,6 +426,7 @@ export function SectionCanvas({
           {(
             [
               ['dims', 'Dimensions'],
+              ['handles', 'Drag Handles'],
               ['forces', 'Forces'],
               ['soil', 'Soil & GWL'],
               ['bearing', 'Bearing & Kern'],
@@ -192,7 +447,13 @@ export function SectionCanvas({
                   fontWeight: on ? 600 : 400,
                 }}
               >
-                {on ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3 opacity-60" />}
+                {k === 'handles' ? (
+                  <Move className="w-3 h-3" />
+                ) : on ? (
+                  <Eye className="w-3 h-3" />
+                ) : (
+                  <EyeOff className="w-3 h-3 opacity-60" />
+                )}
                 {label}
               </button>
             );
@@ -216,15 +477,22 @@ export function SectionCanvas({
         </label>
       </div>
 
-      {/* Main SVG Viewport + Anchored Popover */}
+      {/* Main SVG Viewport + Anchored Popover + Drag Tooltip */}
       <div
         className="relative rounded-md border overflow-hidden"
         style={{
           backgroundColor: 'var(--cad-bg)',
-          borderColor: 'var(--border-hairline)',
+          borderColor: drag ? 'var(--accent-cobalt)' : 'var(--border-hairline)',
         }}
       >
-        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block select-none">
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${W} ${H}`}
+          className="w-full h-auto block select-none touch-none"
+          onPointerMove={onDragMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+        >
           <defs>
             <marker id="arr-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
               <path d="M0,1 L9,5 L0,9 z" fill="var(--cad-force-active)" />
@@ -266,6 +534,20 @@ export function SectionCanvas({
                   />
                 </>
               )}
+              {terraceSoilPolys.map((poly, idx) => (
+                <g key={idx}>
+                  <polygon points={ptsStr(poly)} fill="var(--cad-soil-fill)" fillOpacity="0.85" />
+                  <polygon points={ptsStr(poly)} fill="url(#soil-hatch)" />
+                  <line
+                    x1={X(poly[0][0])}
+                    y1={Y(poly[0][1])}
+                    x2={X(poly[1][0])}
+                    y2={Y(poly[1][1])}
+                    stroke="var(--cad-soil-stroke)"
+                    strokeWidth="1.5"
+                  />
+                </g>
+              ))}
               {frontSoilPts.length > 2 && (
                 <>
                   <polygon points={ptsStr(frontSoilPts)} fill="var(--cad-front-soil)" />
@@ -380,7 +662,6 @@ export function SectionCanvas({
 
           {/* Concrete Wall Geometry */}
           <g>
-            {/* Base / Gravity Block */}
             {Gv ? (
               <polygon
                 points={ptsStr([
@@ -448,6 +729,60 @@ export function SectionCanvas({
                 stroke={hi('key') ? 'var(--accent-cobalt)' : 'var(--cad-concrete-stroke)'}
                 strokeWidth={hi('key') ? 2.4 : 1.5}
               />
+            )}
+
+            {/* Fence Schematic (Wind / Self-Weight) */}
+            {(!!S.wo || !!S.fdl) && +S.wh > 0 && (
+              <g stroke="var(--text-secondary)" strokeWidth="1.4" fill="none">
+                <line x1={X(topMidX)} y1={Y(G.top)} x2={X(topMidX)} y2={Y(G.top + +S.wh)} strokeWidth="2.2" />
+                <line x1={X(topMidX - 0.08)} y1={Y(G.top + +S.wh * 0.35)} x2={X(topMidX + 0.08)} y2={Y(G.top + +S.wh * 0.35)} />
+                <line x1={X(topMidX - 0.08)} y1={Y(G.top + +S.wh * 0.7)} x2={X(topMidX + 0.08)} y2={Y(G.top + +S.wh * 0.7)} />
+                <line x1={X(topMidX - 0.1)} y1={Y(G.top + +S.wh)} x2={X(topMidX + 0.1)} y2={Y(G.top + +S.wh)} />
+                <text
+                  x={X(topMidX) + 8}
+                  y={Y(G.top + +S.wh) + 4}
+                  fontSize="9.5"
+                  fill="var(--text-muted)"
+                  stroke="none"
+                  className="cad-label font-mono-eng"
+                >
+                  Fence {dd(+S.wh)}m
+                </text>
+              </g>
+            )}
+
+            {/* Barrier / Vehicle Impact Schematic */}
+            {!!S.bro && barInfo && (
+              <g>
+                <rect
+                  x={X(topMidX - 0.07)}
+                  y={Y(G.top + barInfo.ha)}
+                  width={Math.max(6, X(topMidX + 0.07) - X(topMidX - 0.07))}
+                  height={Math.max(4, Y(G.top) - Y(G.top + barInfo.ha))}
+                  fill="var(--status-warn-bg)"
+                  stroke="var(--status-warn)"
+                  strokeWidth="1.4"
+                />
+                <line
+                  x1={X(topMidX) + 28}
+                  y1={Y(barInfo.z)}
+                  x2={X(topMidX) + 5}
+                  y2={Y(barInfo.z)}
+                  stroke="var(--status-warn)"
+                  strokeWidth="2"
+                  markerEnd="url(#arr-red)"
+                />
+                <text
+                  x={X(topMidX) + 32}
+                  y={Y(barInfo.z) + 3}
+                  fontSize="9.5"
+                  fontWeight="600"
+                  fill="var(--status-warn)"
+                  className="cad-label font-mono-eng"
+                >
+                  Barrier {f(barInfo.F, 1)} kN/m
+                </text>
+              </g>
             )}
           </g>
 
@@ -561,7 +896,6 @@ export function SectionCanvas({
                 B = {dd(B)} m
               </text>
 
-              {/* Clickable Pill Helper */}
               {[
                 ...(!Gv && S.ty !== 'L'
                   ? [{ param: 'Lt', label: 'Toe Lt', unit: 'm', value: +S.Lt, step: 0.05, x: X(G.Lt / 2), y: Y(G.bt) - 14 }]
@@ -572,11 +906,9 @@ export function SectionCanvas({
                 ...(Gv
                   ? [{ param: 'gBt', label: 'Top b_t', unit: 'm', value: +S.gBt, step: 0.05, x: X(gTx(S) + +S.gBt / 2), y: Y(G.bt) - 14 }]
                   : []),
-                { param: 'tb', label: Gv ? 'Block h_b' : 'Base tb', unit: 'm', value: +S.tb, step: 0.05, x: X(B) + 42, y: Y(Zb + +S.tb / 2) },
-                { param: 'Hr', label: 'GL_r', unit: 'mPD', value: +S.Hr, step: 0.1, x: X(B + 1.25), y: Y(Hr) - 14 },
-                ...(S.fon
-                  ? [{ param: 'Hf', label: 'GL_f', unit: 'mPD', value: +S.Hf, step: 0.1, x: X(-1.1), y: Y(Hf) - 14 }]
-                  : []),
+                { param: 'tb', label: Gv ? 'Block h_b' : 'Base tb', unit: 'm', value: Gv ? +S.gBh : +S.tb, step: 0.05, x: X(B) + 42, y: Y(Zb + (Gv ? +S.gBh : +S.tb) / 2) },
+                ...(S.bon ? [{ param: 'Hr', label: 'GL_r', unit: 'mPD', value: Hr, step: 0.1, x: X(B + 1.25), y: Y(Hr) - 14 }] : []),
+                ...(S.fon ? [{ param: 'Hf', label: 'GL_f', unit: 'mPD', value: Hf, step: 0.1, x: X(-1.1), y: Y(Hf) - 14 }] : []),
               ].map((pill) => (
                 <g
                   key={pill.param}
@@ -608,7 +940,57 @@ export function SectionCanvas({
               ))}
             </g>
           )}
+
+          {/* Interactive Pointer Drag Handles (●) */}
+          {layers.handles && (
+            <g>
+              {handles.map((h) => {
+                const isDragging = drag?.handle.id === h.id;
+                const cx = X(h.wx);
+                const cy = Y(h.wz);
+                return (
+                  <g
+                    key={h.id}
+                    onPointerDown={(e) => startDrag(e, h)}
+                    style={{ cursor: h.axis === 'x' ? 'ew-resize' : 'ns-resize' }}
+                  >
+                    <title>Drag to adjust {h.label} (hold Alt for 0.01 m fine snap)</title>
+                    {/* Generous invisible hit area */}
+                    <circle cx={cx} cy={cy} r={12} fill="transparent" />
+                    {/* Outer halo when active */}
+                    {isDragging && (
+                      <circle cx={cx} cy={cy} r={10} fill="var(--accent-cobalt)" fillOpacity="0.22" />
+                    )}
+                    {/* Visible CAD node handle */}
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={isDragging ? 6 : 4.8}
+                      fill={isDragging ? 'var(--accent-cobalt)' : 'var(--surface-panel)'}
+                      stroke="var(--accent-cobalt)"
+                      strokeWidth="2"
+                    />
+                  </g>
+                );
+              })}
+            </g>
+          )}
         </svg>
+
+        {/* Live Drag Coordinate Tooltip */}
+        {drag && (
+          <div
+            className="pointer-events-none absolute z-30 px-2.5 py-1 rounded shadow-lg text-xs font-mono-eng font-semibold text-white"
+            style={{
+              left: `${Math.max(10, Math.min(86, (drag.svgX / W) * 100))}%`,
+              top: `${Math.max(8, Math.min(86, (drag.svgY / H) * 100))}%`,
+              transform: 'translate(-50%, -140%)',
+              backgroundColor: 'var(--accent-cobalt)',
+            }}
+          >
+            {drag.handle.label}: {dd(drag.curVal)} {drag.handle.unit}
+          </div>
+        )}
 
         {/* Anchored Popover Editor */}
         {popover && (
@@ -691,7 +1073,7 @@ export function SectionCanvas({
       </div>
 
       <div className="flex items-center justify-between text-[11px] px-1" style={{ color: 'var(--text-muted)' }}>
-        <span>Click any blue dimension pill to edit via popover · Hover left-pane fields to highlight elements</span>
+        <span>Drag blue handles (●) directly (Alt = 0.01 m snap) · Click pills to type exact values</span>
         <span className="font-mono-eng">
           Founding +{dd(Zb)} · Top +{dd(G.top)} mPD
         </span>

@@ -1,5 +1,7 @@
 import { ChevronLeft, ChevronRight, Plus, Trash2, Wand2 } from 'lucide-react';
 import {
+  ABD,
+  ABS,
   BCAT,
   CVO,
   QCAT,
@@ -76,6 +78,44 @@ function SectionCard({ title, children }: { title: string; children: React.React
       </div>
       {children}
     </div>
+  );
+}
+
+function AdvancedBlock({
+  title,
+  badge,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  badge?: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <details
+      open={defaultOpen}
+      className="rounded border overflow-hidden"
+      style={{ borderColor: 'var(--border-muted)', backgroundColor: 'var(--surface-subtle)' }}
+    >
+      <summary className="px-2.5 py-1.5 text-[11px] font-semibold cursor-pointer select-none flex items-center justify-between">
+        <span style={{ color: 'var(--text-secondary)' }}>{title}</span>
+        {badge && (
+          <span
+            className="font-mono-eng text-[9.5px] px-1.5 py-0.5 rounded"
+            style={{ backgroundColor: 'var(--accent-cobalt-soft)', color: 'var(--accent-cobalt)' }}
+          >
+            {badge}
+          </span>
+        )}
+      </summary>
+      <div
+        className="p-2.5 space-y-2 border-t"
+        style={{ backgroundColor: 'var(--surface-panel)', borderColor: 'var(--border-muted)' }}
+      >
+        {children}
+      </div>
+    </details>
   );
 }
 
@@ -320,6 +360,69 @@ export function LeftStepPanel({
                 <span>Include structural RC / mesh design (Section 7)</span>
               </label>
             </SectionCard>
+
+            <AdvancedBlock title="Ground Investigation (GI) Statement" badge={S.gis ? 'ON' : undefined}>
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!S.gis}
+                  onChange={(e) => setField('gis', e.target.checked ? 1 : 0, true)}
+                />
+                <span>Include GI report verification note</span>
+              </label>
+              {!!S.gis && (
+                <label className="flex flex-col gap-1 text-xs">
+                  <span style={{ color: 'var(--text-secondary)' }}>GI report reference</span>
+                  <input
+                    type="text"
+                    value={S.gir || ''}
+                    onChange={(e) => setField('gir', e.target.value)}
+                    placeholder="e.g. GI Report No. GI/2025/01"
+                    className="w-full px-2 py-1 rounded border text-xs"
+                    style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                  />
+                </label>
+              )}
+            </AdvancedBlock>
+
+            <AdvancedBlock title="Project Factor γ_proj (Multiplier)" badge={S.gpon ? `×${f(S.gpv, 2)}` : undefined}>
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!S.gpon}
+                  onChange={(e) => setField('gpon', e.target.checked ? 1 : 0, true)}
+                />
+                <span>Apply extra project-specific factor γ_proj</span>
+              </label>
+              {!!S.gpon && (
+                <div className="space-y-1.5 pt-1">
+                  <NumRow label="Factor γ_proj" value={S.gpv} step={0.05} onChange={(v) => setField('gpv', v)} />
+                  <label className="flex items-center gap-2 text-xs cursor-pointer">
+                    <input type="checkbox" checked={!!S.gpS} onChange={(e) => setField('gpS', e.target.checked ? 1 : 0, true)} />
+                    <span>Apply to Sliding</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-xs cursor-pointer">
+                    <input type="checkbox" checked={!!S.gpO} onChange={(e) => setField('gpO', e.target.checked ? 1 : 0, true)} />
+                    <span>Apply to Overturning</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-xs cursor-pointer">
+                    <input type="checkbox" checked={!!S.gpA} onChange={(e) => setField('gpA', e.target.checked ? 1 : 0, true)} />
+                    <span>Apply to RC actions (Mu, Vu)</span>
+                  </label>
+                  <label className="flex flex-col gap-1 text-xs">
+                    <span style={{ color: 'var(--text-secondary)' }}>Source / contract clause</span>
+                    <input
+                      type="text"
+                      value={S.gpsrc || ''}
+                      onChange={(e) => setField('gpsrc', e.target.value)}
+                      placeholder="e.g. Particular Spec Cl. 5.2"
+                      className="w-full px-2 py-1 rounded border text-xs"
+                      style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                    />
+                  </label>
+                </div>
+              )}
+            </AdvancedBlock>
           </>
         )}
 
@@ -449,6 +552,16 @@ export function LeftStepPanel({
                         onChange={(v) => onCommit((d) => { d.st[i].bot = v; })}
                       />
                     )}
+                    <details className="text-[11px] pt-0.5">
+                      <summary className="cursor-pointer select-none" style={{ color: 'var(--text-muted)' }}>
+                        Batters &amp; offset (fb={dd(st.fb)}, rb={dd(st.rb)}, of={dd(st.of)})
+                      </summary>
+                      <div className="space-y-1.5 pt-1.5">
+                        <NumRow label="Front batter fb" value={st.fb} unit="m" step={0.02} onChange={(v) => onCommit((d) => { d.st[i].fb = v; })} />
+                        <NumRow label="Rear batter rb" value={st.rb} unit="m" step={0.02} onChange={(v) => onCommit((d) => { d.st[i].rb = v; })} />
+                        <NumRow label="Rear offset of" value={st.of} unit="m" step={0.02} onChange={(v) => onCommit((d) => { d.st[i].of = v; })} />
+                      </div>
+                    </details>
                   </div>
                 ))}
                 <button
@@ -476,6 +589,77 @@ export function LeftStepPanel({
               </div>
             </SectionCard>
 
+            {!isG(S) && (
+              <AdvancedBlock
+                title="Extra Stems on Base (Terraced / U-Channel)"
+                badge={S.xs.length ? `${S.xs.length} (${S.xa})` : undefined}
+                defaultOpen={S.xs.length > 0}
+              >
+                <label className="flex items-center justify-between text-xs">
+                  <span style={{ color: 'var(--text-secondary)' }}>Layout</span>
+                  <select
+                    value={S.xa}
+                    onChange={(e) => setField('xa', e.target.value as 'ter' | 'U', true)}
+                    className="px-2 py-1 rounded border text-xs"
+                    style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                  >
+                    <option value="ter">Terraced (soil between stems)</option>
+                    <option value="U">U-Channel (open trough)</option>
+                  </select>
+                </label>
+                {S.xs.map((xst, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded border p-2 space-y-1.5"
+                    style={{ borderColor: 'var(--border-muted)', backgroundColor: 'var(--surface-canvas)' }}
+                  >
+                    <div className="flex items-center justify-between text-[11px] font-semibold">
+                      <span>Extra Stem {idx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => onCommit((d) => { d.xs.splice(idx, 1); }, { forceHistory: true })}
+                        className="p-0.5 cursor-pointer"
+                        style={{ color: 'var(--status-fail)' }}
+                        title="Remove extra stem"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <NumRow label="Position x from toe" value={xst.x} unit="m" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].x = v; })} />
+                    <NumRow label="Thickness t" value={xst.t} unit="m" step={0.05} onChange={(v) => onCommit((d) => { d.xs[idx].t = v; })} />
+                    <NumRow label="Height h above base" value={xst.h} unit="m" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].h = v; })} />
+                    {S.xa === 'ter' && (
+                      <>
+                        <NumRow label="Terrace soil zt" value={xst.zt} unit="mPD" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].zt = v; })} />
+                        <label className="flex items-center gap-2 text-xs cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!xst.pp}
+                            onChange={(e) => onCommit((d) => { d.xs[idx].pp = e.target.checked ? 1 : 0; }, { forceHistory: true })}
+                          />
+                          <span>Include terrace passive resistance</span>
+                        </label>
+                      </>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() =>
+                    onCommit((d) => {
+                      const g0 = geo(d);
+                      const nx = +Math.max(g0.xb + 0.3, g0.B - 0.5).toFixed(2);
+                      d.xs.push({ x: nx, t: 0.3, h: Math.max(0.8, +(d.Hr - g0.bt - 0.8).toFixed(2)), zt: +(g0.bt + 0.6).toFixed(2), rc: 1, pp: 0 });
+                    }, { forceHistory: true })
+                  }
+                  className="w-full py-1.5 rounded border border-dashed text-xs flex items-center justify-center gap-1 cursor-pointer"
+                  style={{ borderColor: 'var(--border-hairline)', color: 'var(--text-secondary)' }}
+                >
+                  <Plus className="w-3.5 h-3.5" /> Add extra stem
+                </button>
+              </AdvancedBlock>
+            )}
+
             <SectionCard title="Shear Key (GG1 Fig. 42)">
               <label className="flex items-center gap-2 text-xs cursor-pointer">
                 <input
@@ -490,6 +674,14 @@ export function LeftStepPanel({
                   <NumRow label="Key depth dk" value={S.skd} unit="m" step={0.05} hoverKey="key" onHover={onHoverField} onChange={(v) => setField('skd', v)} />
                   <NumRow label="Key width Bk" value={S.skw} unit="m" step={0.05} hoverKey="key" onHover={onHoverField} onChange={(v) => setField('skw', v)} />
                   <NumRow label="Key x from toe" value={S.skx} unit="m" step={0.05} hoverKey="key" onHover={onHoverField} onChange={(v) => setField('skx', v)} />
+                  <label className="flex items-center gap-2 text-xs cursor-pointer pt-0.5">
+                    <input
+                      type="checkbox"
+                      checked={!!S.kpp}
+                      onChange={(e) => setField('kpp', e.target.checked ? 1 : 0, true)}
+                    />
+                    <span>Include passive earth pressure in front of key</span>
+                  </label>
                 </div>
               )}
             </SectionCard>
@@ -499,9 +691,15 @@ export function LeftStepPanel({
         {activeStep === 3 && (
           <>
             <SectionCard title="Retained Soil">
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.bon} onChange={(e) => setField('bon', e.target.checked ? 1 : 0, true)} />
+                <span>Retained backfill present</span>
+              </label>
               <NumRow label="Friction angle φ′" value={S.r.phi} unit="°" step={0.5} onChange={(v) => onCommit((d) => { d.r.phi = v; })} />
               <NumRow label="Unit weight γ" value={S.r.g} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.r.g = v; })} />
+              <NumRow label="Saturated weight γ_sat" value={S.r.gs} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.r.gs = v; })} />
               <NumRow label="Backfill slope β" value={S.br} unit="°" step={1} hoverKey="br" onHover={onHoverField} onChange={(v) => setField('br', v)} />
+              <NumRow label="Slope extent L_β (0=∞)" value={S.brL} unit="m" step={0.5} onChange={(v) => setField('brL', v)} />
             </SectionCard>
 
             <SectionCard title="Foundation Soil">
@@ -509,6 +707,7 @@ export function LeftStepPanel({
               <NumRow label="Cohesion c′" value={S.f.c} unit="kPa" step={1} onChange={(v) => onCommit((d) => { d.f.c = v; })} />
               <NumRow label="Base friction φ′cv (δb)" value={S.f.cv} unit="°" step={0.5} onChange={(v) => onCommit((d) => { d.f.cv = v; })} />
               <NumRow label="Unit weight γ" value={S.f.g} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.f.g = v; })} />
+              <NumRow label="Saturated weight γ_sat" value={S.f.gs} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.f.gs = v; })} />
             </SectionCard>
 
             <SectionCard title="Earth Pressure & Front Soil">
@@ -531,6 +730,10 @@ export function LeftStepPanel({
                   <NumRow label="Manual Ka (factored)" value={S.kaMf} step={0.01} onChange={(v) => setField('kaMf', v)} />
                 </>
               )}
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.fon} onChange={(e) => setField('fon', e.target.checked ? 1 : 0, true)} />
+                <span>Front soil present (in front of toe)</span>
+              </label>
               <NumRow label="Neglected depth d_p" value={S.dp} unit="m" step={0.1} onChange={(v) => setField('dp', v)} />
               <NumRow label="Front ground slope β_f" value={S.bf} unit="°" step={1} hoverKey="crest" onHover={onHoverField} onChange={(v) => setField('bf', v)} />
               <label className="flex items-center gap-2 text-xs cursor-pointer">
@@ -576,6 +779,127 @@ export function LeftStepPanel({
                 </div>
               )}
             </SectionCard>
+
+            <AdvancedBlock
+              title="Advanced Soil Layers (Backfill / Front)"
+              badge={S.bkfm || S.fsm ? 'CUSTOM' : undefined}
+            >
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.bkfm} onChange={(e) => setField('bkfm', e.target.checked ? 1 : 0, true)} />
+                <span>Separate heel backfill weight (γ_bkf)</span>
+              </label>
+              {!!S.bkfm && (
+                <div className="space-y-1.5 pl-4">
+                  <NumRow label="Backfill γ" value={S.bkf.g} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.bkf.g = v; })} />
+                  <NumRow label="Backfill γ_sat" value={S.bkf.gs} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.bkf.gs = v; })} />
+                </div>
+              )}
+              <label className="flex items-center gap-2 text-xs cursor-pointer pt-1">
+                <input type="checkbox" checked={!!S.fsm} onChange={(e) => setField('fsm', e.target.checked ? 1 : 0, true)} />
+                <span>Separate front soil layer</span>
+              </label>
+              {!!S.fsm && (
+                <div className="space-y-1.5 pl-4">
+                  <NumRow label="Front soil φ′" value={S.fs.phi} unit="°" step={0.5} onChange={(v) => onCommit((d) => { d.fs.phi = v; })} />
+                  <NumRow label="Front soil c′" value={S.fs.c} unit="kPa" step={1} onChange={(v) => onCommit((d) => { d.fs.c = v; })} />
+                  <NumRow label="Front soil γ" value={S.fs.g} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.fs.g = v; })} />
+                  <NumRow label="Front soil γ_sat" value={S.fs.gs} unit="kN/m³" step={0.5} onChange={(v) => onCommit((d) => { d.fs.gs = v; })} />
+                </div>
+              )}
+            </AdvancedBlock>
+
+            <AdvancedBlock title="Wall/Base Friction, Kp & Embedment">
+              <label className="flex items-center justify-between text-xs">
+                <span style={{ color: 'var(--text-secondary)' }}>Wall friction δ (GG1 T14)</span>
+                <select
+                  value={S.dwm}
+                  onChange={(e) => setField('dwm', e.target.value as WallState['dwm'], true)}
+                  className="px-2 py-1 rounded border text-xs"
+                  style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                >
+                  <option value="auto">Auto (GG1 Table 14)</option>
+                  <option value="h">φ′/2 (horizontal)</option>
+                  <option value="t">2φ′/3 (cast in-situ)</option>
+                  <option value="c">Custom δ</option>
+                </select>
+              </label>
+              {S.dwm === 'c' && (
+                <NumRow label="Custom wall δ" value={S.dcw} unit="°" step={0.5} onChange={(v) => setField('dcw', v)} />
+              )}
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.comp} onChange={(e) => setField('comp', e.target.checked ? 1 : 0, true)} />
+                <span>Compressible foundation (δ = 0)</span>
+              </label>
+              <label className="flex items-center justify-between text-xs">
+                <span style={{ color: 'var(--text-secondary)' }}>Base friction δ_b</span>
+                <select
+                  value={S.dbm}
+                  onChange={(e) => setField('dbm', e.target.value as WallState['dbm'], true)}
+                  className="px-2 py-1 rounded border text-xs"
+                  style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                >
+                  <option value="cv">φ′_cv (cast in-situ)</option>
+                  <option value="c">Custom δ_b</option>
+                </select>
+              </label>
+              {S.dbm === 'c' && (
+                <NumRow label="Custom base δ_b" value={S.dcb} unit="°" step={0.5} onChange={(v) => setField('dcb', v)} />
+              )}
+              <label className="flex items-center justify-between text-xs">
+                <span style={{ color: 'var(--text-secondary)' }}>Passive Kp mode</span>
+                <select
+                  value={S.kpm}
+                  onChange={(e) => setField('kpm', e.target.value as WallState['kpm'], true)}
+                  className="px-2 py-1 rounded border text-xs"
+                  style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                >
+                  <option value="a">Auto (GG1 Fig. 18)</option>
+                  <option value="m">Manual Kp</option>
+                </select>
+              </label>
+              {S.kpm === 'm' && (
+                <>
+                  <NumRow label="Manual Kp (char.)" value={S.kpM} step={0.1} onChange={(v) => setField('kpM', v)} />
+                  <NumRow label="Manual Kp (factored)" value={S.kpMf} step={0.1} onChange={(v) => setField('kpMf', v)} />
+                </>
+              )}
+              {!S.nopp && (
+                <div className="space-y-1 pt-1 text-xs">
+                  <div className="text-[10.5px] font-semibold" style={{ color: 'var(--text-muted)' }}>Passive Pp inclusion per check</div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!S.ppS} onChange={(e) => setField('ppS', e.target.checked ? 1 : 0, true)} />
+                    <span>Include Pp in Sliding</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!S.ppO} onChange={(e) => setField('ppO', e.target.checked ? 1 : 0, true)} />
+                    <span>Include Pp in Overturning</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={!!S.ppB} onChange={(e) => setField('ppB', e.target.checked ? 1 : 0, true)} />
+                    <span>Include Pp in Bearing</span>
+                  </label>
+                </div>
+              )}
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.obdp} onChange={(e) => setField('obdp', e.target.checked ? 1 : 0, true)} />
+                <span>Deduct d_p from bearing overburden Df</span>
+              </label>
+              <label className="flex items-center justify-between text-xs">
+                <span style={{ color: 'var(--text-secondary)' }}>Bearing Df datum</span>
+                <select
+                  value={S.dfm}
+                  onChange={(e) => setField('dfm', e.target.value as 'front' | 'ogl', true)}
+                  className="px-2 py-1 rounded border text-xs"
+                  style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                >
+                  <option value="front">Front GL (Hf − Zb)</option>
+                  <option value="ogl">Original GL (OGL − Zb)</option>
+                </select>
+              </label>
+              {S.dfm === 'ogl' && (
+                <NumRow label="Original GL (OGL)" value={S.ogl} unit="mPD" step={0.1} onChange={(v) => setField('ogl', v)} />
+              )}
+            </AdvancedBlock>
           </>
         )}
 
@@ -628,7 +952,33 @@ export function LeftStepPanel({
                 <NumRow label="Custom q_out" value={S.q} unit="kPa" step={1} onChange={(v) => setField('q', v)} />
               )}
               <NumRow label="Heel surcharge q_in" value={S.qin} unit="kPa" step={1} onChange={(v) => setField('qin', v)} />
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.qst} onChange={(e) => setField('qst', e.target.checked ? 1 : 0, true)} />
+                <span>Apply q_out to stability checks</span>
+              </label>
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.qinRC} onChange={(e) => setField('qinRC', e.target.checked ? 1 : 0, true)} />
+                <span>Include q_in in heel RC slab design</span>
+              </label>
             </SectionCard>
+
+            <AdvancedBlock
+              title="Line Load Behind Wall (GG1 Fig. 25)"
+              badge={S.lon ? `${f(S.lQv, 0)}/${f(S.lQh, 0)} kN/m` : undefined}
+              defaultOpen={!!S.lon}
+            >
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.lon} onChange={(e) => setField('lon', e.target.checked ? 1 : 0, true)} />
+                <span>Include surface line load (Qv, Qh)</span>
+              </label>
+              {!!S.lon && (
+                <div className="space-y-1.5 pt-1">
+                  <NumRow label="Vertical Qv" value={S.lQv} unit="kN/m" step={5} onChange={(v) => setField('lQv', v)} />
+                  <NumRow label="Horizontal Qh" value={S.lQh} unit="kN/m" step={5} onChange={(v) => setField('lQh', v)} />
+                  <NumRow label="Distance x behind back" value={S.lx} unit="m" step={0.1} onChange={(v) => setField('lx', v)} />
+                </div>
+              )}
+            </AdvancedBlock>
 
             <SectionCard title="Fence Wind & Self-Weight">
               <label className="flex items-center gap-2 text-xs cursor-pointer">
@@ -640,6 +990,21 @@ export function LeftStepPanel({
                   <NumRow label="Fence height h" value={S.wh} unit="m" step={0.1} onChange={(v) => setField('wh', v)} />
                   <NumRow label="Solidity ratio φ" value={S.wsd} step={0.05} onChange={(v) => setField('wsd', v)} />
                   <NumRow label="Fence length l" value={S.wlen} unit="m" step={1} onChange={(v) => setField('wlen', v)} />
+                  <label className="flex items-center justify-between text-xs">
+                    <span style={{ color: 'var(--text-secondary)' }}>Wind zone (Table 2)</span>
+                    <select
+                      value={S.wz}
+                      onChange={(e) => setField('wz', e.target.value as WallState['wz'], true)}
+                      className="px-2 py-1 rounded border text-xs font-mono-eng"
+                      style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                    >
+                      <option value="A">Zone A (≤ 5 m)</option>
+                      <option value="B">Zone B (5–10 m)</option>
+                      <option value="C">Zone C (10–20 m)</option>
+                      <option value="D">Zone D (&gt; 20 m)</option>
+                    </select>
+                  </label>
+                  <NumRow label="Topography factor S_t" value={S.wSt} step={0.05} onChange={(v) => setField('wSt', v)} />
                 </div>
               )}
               <label className="flex items-center gap-2 text-xs cursor-pointer pt-1">
@@ -650,6 +1015,13 @@ export function LeftStepPanel({
                 <div className="space-y-1.5 pl-4">
                   <NumRow label="Load per post P" value={S.fdP} unit="kN" step={0.5} onChange={(v) => setField('fdP', v)} />
                   <NumRow label="Post spacing s" value={+S.fdS || 0} unit="m" step={0.5} onChange={(v) => setField('fdS', v)} />
+                  <NumRow
+                    label="Post x-offset from centre"
+                    value={+S.fxo || 0}
+                    unit="m"
+                    step={0.05}
+                    onChange={(v) => setField('fxo', v)}
+                  />
                 </div>
               )}
             </SectionCard>
@@ -673,6 +1045,9 @@ export function LeftStepPanel({
                       </option>
                     ))}
                   </select>
+                  {S.brc === 'c' && (
+                    <NumRow label="Custom barrier F" value={S.brF} unit="kN/m" step={0.5} onChange={(v) => setField('brF', v)} />
+                  )}
                   {!isVeh(S) && (
                     <NumRow label="Barrier height" value={S.bhb} unit="m" step={0.1} onChange={(v) => setField('bhb', v)} />
                   )}
@@ -689,6 +1064,37 @@ export function LeftStepPanel({
                           <span>Run accidental stability check (FOS ≥ 1.0)</span>
                         </label>
                       )}
+                      <details className="text-[11px] pt-1">
+                        <summary className="cursor-pointer select-none" style={{ color: 'var(--text-muted)' }}>
+                          Advanced vehicle impact parameters (DIL 6A–6E)
+                        </summary>
+                        <div className="space-y-1.5 pt-2">
+                          <NumRow label="Vehicle mass M" value={S.vM} unit="kg" step={500} onChange={(v) => setField('vM', v)} />
+                          <NumRow label="Barrier deflection δb" value={S.vb} unit="mm" step={5} onChange={(v) => setField('vb', v)} />
+                          <NumRow label="Ramp length Lr" value={S.vR} unit="m" step={1} onChange={(v) => setField('vR', v)} />
+                          <label className="flex items-center gap-2 text-xs cursor-pointer">
+                            <input type="checkbox" checked={!!S.vObl} onChange={(e) => setField('vObl', e.target.checked ? 1 : 0, true)} />
+                            <span>Oblique impact (×0.5)</span>
+                          </label>
+                          <label className="flex items-center justify-between text-xs">
+                            <span style={{ color: 'var(--text-secondary)' }}>Impact floor level</span>
+                            <select
+                              value={S.vFl}
+                              onChange={(e) => setField('vFl', e.target.value as WallState['vFl'], true)}
+                              className="px-2 py-1 rounded border text-xs"
+                              style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                            >
+                              <option value="r">Retained GL (Hr)</option>
+                              <option value="t">Wall top</option>
+                              <option value="c">Custom level</option>
+                            </select>
+                          </label>
+                          {S.vFl === 'c' && (
+                            <NumRow label="Custom floor z" value={S.vFz} unit="mPD" step={0.1} onChange={(v) => setField('vFz', v)} />
+                          )}
+                          <NumRow label="Impact stem index (0=main)" value={S.vStem} step={1} onChange={(v) => setField('vStem', Math.max(0, Math.round(v)))} />
+                        </div>
+                      </details>
                     </>
                   )}
                 </div>
@@ -805,6 +1211,123 @@ export function LeftStepPanel({
                 <Wand2 className="w-3.5 h-3.5" /> Auto-Select Lightest Passing Bars
               </button>
             </SectionCard>
+
+            <AdvancedBlock title="Advanced Ko, Minimum Steel & Stem Basis">
+              <NumRow label="Overconsolidation OCR" value={S.ocr} step={0.5} onChange={(v) => setField('ocr', v)} />
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.kom} onChange={(e) => setField('kom', e.target.checked ? 1 : 0, true)} />
+                <span>Manual Ko override</span>
+              </label>
+              {!!S.kom && (
+                <NumRow label="Manual Ko" value={S.koM} step={0.02} onChange={(v) => setField('koM', v)} />
+              )}
+              <NumRow label="Min steel ratio ρ_min" value={S.rmin} unit="%" step={0.01} onChange={(v) => setField('rmin', v)} />
+              <label className="flex items-center justify-between text-xs">
+                <span style={{ color: 'var(--text-secondary)' }}>Stem min steel basis</span>
+                <select
+                  value={S.smb}
+                  onChange={(e) => setField('smb', e.target.value as 'wall' | 'slab', true)}
+                  className="px-2 py-1 rounded border text-xs"
+                  style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                >
+                  <option value="wall">Wall (CoP Cl 9.6.2 / 9.6.3)</option>
+                  <option value="slab">Slab (CoP Table 9.1)</option>
+                </select>
+              </label>
+              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                <input type="checkbox" checked={!!S.hnr} onChange={(e) => setField('hnr', e.target.checked ? 1 : 0, true)} />
+                <span>Include heel negative moment / uplift check</span>
+              </label>
+            </AdvancedBlock>
+
+            {isG(S) && (
+              <AdvancedBlock
+                title="Gravity Anti-Crack / Min Mesh (CoP 9.6.5 / 9.13)"
+                badge={S.gmr !== 'none' ? S.gmb.toUpperCase() : 'OFF'}
+                defaultOpen={S.gmr !== 'none'}
+              >
+                <label className="flex items-center justify-between text-xs">
+                  <span style={{ color: 'var(--text-secondary)' }}>Surface mesh mode</span>
+                  <select
+                    value={S.gmr}
+                    onChange={(e) => setField('gmr', e.target.value, true)}
+                    className="px-2 py-1 rounded border text-xs"
+                    style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                  >
+                    <option value="none">Plain mass concrete (no mesh)</option>
+                    <option value="cc">Crack-control / minimum mesh</option>
+                  </select>
+                </label>
+                {S.gmr !== 'none' && (
+                  <div className="space-y-1.5 pt-1">
+                    <label className="flex items-center justify-between text-xs">
+                      <span style={{ color: 'var(--text-secondary)' }}>Code basis</span>
+                      <select
+                        value={S.gmb}
+                        onChange={(e) => setField('gmb', e.target.value as WallState['gmb'], true)}
+                        className="px-2 py-1 rounded border text-xs"
+                        style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                      >
+                        <option value="965">CoP 9.6.5 (Surface steel)</option>
+                        <option value="913t">CoP 9.13 (Thermal ρ_crit)</option>
+                        <option value="913f">CoP 9.13 (Full section)</option>
+                      </select>
+                    </label>
+                    <NumRow label="Crack-control ratio ρ" value={S.grho} unit="%" step={0.05} onChange={(v) => setField('grho', v)} />
+                    <NumRow label="Min steel ratio ρ_min" value={S.grmin} unit="%" step={0.01} onChange={(v) => setField('grmin', v)} />
+                    <label className="flex items-center justify-between text-xs">
+                      <span style={{ color: 'var(--text-secondary)' }}>Effective zone h_eff</span>
+                      <select
+                        value={S.heffm}
+                        onChange={(e) => setField('heffm', e.target.value, true)}
+                        className="px-2 py-1 rounded border text-xs"
+                        style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                      >
+                        <option value="a">Auto (min(h/2, 250 mm))</option>
+                        <option value="c">Custom h_eff</option>
+                      </select>
+                    </label>
+                    {S.heffm === 'c' && (
+                      <NumRow label="Custom h_eff" value={S.heff} unit="mm" step={25} onChange={(v) => setField('heff', v)} />
+                    )}
+                    <div className="pt-1 space-y-1.5">
+                      <div className="text-[10.5px] font-semibold" style={{ color: 'var(--text-muted)' }}>Mesh Bar Sizes</div>
+                      {(
+                        [
+                          ['Vertical faces', 'mvd', 'mvs'],
+                          ['Horizontal faces', 'mhd', 'mhs'],
+                          ['Top face', 'mtd', 'mts'],
+                          ['Bottom face', 'mbd', 'mbs'],
+                        ] as const
+                      ).map(([lab, dk, sk]) => (
+                        <div key={dk} className="flex items-center justify-between text-xs">
+                          <span style={{ color: 'var(--text-secondary)' }}>{lab}</span>
+                          <span className="flex items-center gap-1 font-mono-eng">
+                            <select
+                              value={S[dk]}
+                              onChange={(e) => setField(dk, +e.target.value, true)}
+                              className="px-1 py-0.5 rounded border text-xs"
+                              style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                            >
+                              {ABD.map((dm) => <option key={dm} value={dm}>T{dm}</option>)}
+                            </select>
+                            <span>@</span>
+                            <select
+                              value={S[sk]}
+                              onChange={(e) => setField(sk, +e.target.value, true)}
+                              className="px-1 py-0.5 rounded border text-xs"
+                              style={{ borderColor: 'var(--border-hairline)', backgroundColor: 'var(--surface-canvas)' }}
+                            >
+                              {ABS.map((sp) => <option key={sp} value={sp}>{sp}</option>)}
+                            </select>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </AdvancedBlock>
+            )}
           </>
         )}
       </div>
