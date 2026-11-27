@@ -18,4 +18,5 @@ export * from './stateOps';
 export * from './tools';
 export * from './dxfParser';
 export * from './dxfExport';
+export * from './figureSvg';
 export * from './benchmarks';

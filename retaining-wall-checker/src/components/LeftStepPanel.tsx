@@ -5,14 +5,21 @@ import {
   BCAT,
   CVO,
   QCAT,
+  addExtraStem,
+  addExtraStemSeg,
+  addMainStem,
   cvAll,
   dd,
+  deleteExtraStem,
+  deleteExtraStemSeg,
+  deleteMainStem,
   f,
   geo,
   isG,
   isVeh,
   koDesc,
   koVal,
+  linkLevels,
   qVal,
   stepOf,
   wlLev,
@@ -514,9 +521,8 @@ export function LeftStepPanel({
                             type="button"
                             onClick={() =>
                               onCommit((d) => {
-                                if (i === 0 && d.st.length > 1) d.st[1].top = d.st[0].top;
-                                d.st.splice(i, 1);
-                              }, { forceHistory: true })
+                                deleteMainStem(d, i);
+                              }, { forceHistory: true, message: `Removed Stem ${i + 1}` })
                             }
                             className="p-0.5 rounded hover:opacity-70 cursor-pointer"
                             style={{ color: 'var(--status-fail)' }}
@@ -540,7 +546,7 @@ export function LeftStepPanel({
                         value={st.top}
                         unit="mPD"
                         step={0.1}
-                        onChange={(v) => onCommit((d) => { d.st[i].top = v; })}
+                        onChange={(v) => onCommit((d) => { d.st[i].top = v; linkLevels(d, 'st.0.top'); })}
                       />
                     )}
                     {i < S.st.length - 1 && (
@@ -549,7 +555,7 @@ export function LeftStepPanel({
                         value={st.bot}
                         unit="mPD"
                         step={0.1}
-                        onChange={(v) => onCommit((d) => { d.st[i].bot = v; })}
+                        onChange={(v) => onCommit((d) => { d.st[i].bot = v; linkLevels(d, `st.${i}.bot`); })}
                       />
                     )}
                     <details className="text-[11px] pt-0.5">
@@ -559,7 +565,7 @@ export function LeftStepPanel({
                       <div className="space-y-1.5 pt-1.5">
                         <NumRow label="Front batter fb" value={st.fb} unit="m" step={0.02} onChange={(v) => onCommit((d) => { d.st[i].fb = v; })} />
                         <NumRow label="Rear batter rb" value={st.rb} unit="m" step={0.02} onChange={(v) => onCommit((d) => { d.st[i].rb = v; })} />
-                        <NumRow label="Rear offset of" value={st.of} unit="m" step={0.02} onChange={(v) => onCommit((d) => { d.st[i].of = v; })} />
+                        <NumRow label="Front offset of" value={st.of} unit="m" step={0.02} onChange={(v) => onCommit((d) => { d.st[i].of = v; })} />
                       </div>
                     </details>
                   </div>
@@ -568,18 +574,8 @@ export function LeftStepPanel({
                   type="button"
                   onClick={() =>
                     onCommit((d) => {
-                      const bt = +d.Zb + +d.tb;
-                      if (!d.st.length) {
-                        d.st.push({ t: 0.4, fb: 0, rb: 0, of: 0, top: Math.max(+d.Hr, bt + 0.5), bot: bt, rc: 1 });
-                      } else {
-                        const last = d.st[d.st.length - 1];
-                        const hl = +last.top - bt;
-                        if (hl >= 0.4) {
-                          last.bot = +(last.top - hl / 2).toFixed(3);
-                          d.st.push({ t: +(last.t + 0.15).toFixed(2), fb: 0, rb: 0, of: 0, top: last.bot, bot: bt, rc: 1 });
-                        }
-                      }
-                    }, { forceHistory: true })
+                      addMainStem(d);
+                    }, { forceHistory: true, message: 'Added main stem segment' })
                   }
                   className="w-full py-1.5 rounded border border-dashed text-xs flex items-center justify-center gap-1 cursor-pointer"
                   style={{ borderColor: 'var(--border-hairline)', color: 'var(--text-secondary)' }}
@@ -591,7 +587,7 @@ export function LeftStepPanel({
 
             {!isG(S) && (
               <AdvancedBlock
-                title="Extra Stems on Base (Terraced / U-Channel)"
+                title="Stems on Base (Terraced / U-Channel)"
                 badge={S.xs.length ? `${S.xs.length} (${S.xa})` : undefined}
                 defaultOpen={S.xs.length > 0}
               >
@@ -614,48 +610,94 @@ export function LeftStepPanel({
                     style={{ borderColor: 'var(--border-muted)', backgroundColor: 'var(--surface-canvas)' }}
                   >
                     <div className="flex items-center justify-between text-[11px] font-semibold">
-                      <span>Extra Stem {idx + 1}</span>
-                      <button
-                        type="button"
-                        onClick={() => onCommit((d) => { d.xs.splice(idx, 1); }, { forceHistory: true })}
-                        className="p-0.5 cursor-pointer"
-                        style={{ color: 'var(--status-fail)' }}
-                        title="Remove extra stem"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      <span>Stem on Base {idx + 1} (SB{idx + 1})</span>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onCommit((d) => {
+                              addExtraStemSeg(d, idx);
+                            }, { forceHistory: true, message: `Added upper step to SB${idx + 1}` })
+                          }
+                          className="px-1.5 py-0.5 rounded border text-[10px] font-normal cursor-pointer"
+                          style={{ borderColor: 'var(--border-hairline)', color: 'var(--accent-cobalt)' }}
+                          title="Split top segment of this stem on base"
+                        >
+                          + Step
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onCommit((d) => {
+                              deleteExtraStem(d, idx);
+                            }, { forceHistory: true, message: `Removed SB${idx + 1}` })
+                          }
+                          className="p-0.5 cursor-pointer"
+                          style={{ color: 'var(--status-fail)' }}
+                          title="Remove stem on base"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
-                    <NumRow label="Position x from toe" value={xst.x} unit="m" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].x = v; })} />
-                    <NumRow label="Thickness t" value={xst.t} unit="m" step={0.05} onChange={(v) => onCommit((d) => { d.xs[idx].t = v; })} />
-                    <NumRow label="Height h above base" value={xst.h} unit="m" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].h = v; })} />
-                    {S.xa === 'ter' && (
-                      <>
-                        <NumRow label="Terrace soil zt" value={xst.zt} unit="mPD" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].zt = v; })} />
-                        <label className="flex items-center gap-2 text-xs cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={!!xst.pp}
-                            onChange={(e) => onCommit((d) => { d.xs[idx].pp = e.target.checked ? 1 : 0; }, { forceHistory: true })}
-                          />
-                          <span>Include terrace passive resistance</span>
-                        </label>
-                      </>
+                    <NumRow label="Position x from toe" value={xst.x} unit="m" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].x = v; linkLevels(d, `xs.${idx}.x`); })} />
+                    <NumRow label="Base thickness t" value={xst.t} unit="m" step={0.05} onChange={(v) => onCommit((d) => { d.xs[idx].t = v; })} />
+                    <NumRow label="Segment 1 height h" value={xst.h} unit="m" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].h = v; linkLevels(d, `xs.${idx}.h`); })} />
+                    {Array.isArray(xst.up) && xst.up.length > 0 && (
+                      <div className="pl-2 border-l-2 space-y-1.5" style={{ borderColor: 'var(--accent-cobalt)' }}>
+                        {xst.up.map((u, uk) => (
+                          <div key={uk} className="space-y-1 pt-1">
+                            <div className="flex items-center justify-between text-[10.5px] font-semibold" style={{ color: 'var(--text-muted)' }}>
+                              <span>Upper step {uk + 2}</span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  onCommit((d) => {
+                                    deleteExtraStemSeg(d, idx, uk);
+                                  }, { forceHistory: true })
+                                }
+                                className="cursor-pointer"
+                                style={{ color: 'var(--status-fail)' }}
+                              >
+                                ×
+                              </button>
+                            </div>
+                            <NumRow label="Step t" value={u.t} unit="m" step={0.05} onChange={(v) => onCommit((d) => { d.xs[idx].up![uk].t = v; })} />
+                            <NumRow label="Step h" value={u.h} unit="m" step={0.1} onChange={(v) => onCommit((d) => { d.xs[idx].up![uk].h = v; linkLevels(d, `xs.${idx}.up.${uk}.h`); })} />
+                          </div>
+                        ))}
+                      </div>
                     )}
+                    {S.xa === 'ter' && (
+                      <NumRow
+                        label="Terrace soil zt"
+                        value={xst.zt}
+                        unit="mPD"
+                        step={0.1}
+                        onChange={(v) => onCommit((d) => { d.xs[idx].zt = v; linkLevels(d, `xs.${idx}.zt`); })}
+                      />
+                    )}
+                    <label className="flex items-center gap-2 text-xs cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!xst.pp}
+                        onChange={(e) => onCommit((d) => { d.xs[idx].pp = e.target.checked ? 1 : 0; }, { forceHistory: true })}
+                      />
+                      <span>Parapet / barrier on top of SB{idx + 1}</span>
+                    </label>
                   </div>
                 ))}
                 <button
                   type="button"
                   onClick={() =>
                     onCommit((d) => {
-                      const g0 = geo(d);
-                      const nx = +Math.max(g0.xb + 0.3, g0.B - 0.5).toFixed(2);
-                      d.xs.push({ x: nx, t: 0.3, h: Math.max(0.8, +(d.Hr - g0.bt - 0.8).toFixed(2)), zt: +(g0.bt + 0.6).toFixed(2), rc: 1, pp: 0 });
-                    }, { forceHistory: true })
+                      addExtraStem(d);
+                    }, { forceHistory: true, message: 'Added stem on base' })
                   }
                   className="w-full py-1.5 rounded border border-dashed text-xs flex items-center justify-center gap-1 cursor-pointer"
                   style={{ borderColor: 'var(--border-hairline)', color: 'var(--text-secondary)' }}
                 >
-                  <Plus className="w-3.5 h-3.5" /> Add extra stem
+                  <Plus className="w-3.5 h-3.5" /> Add stem on base
                 </button>
               </AdvancedBlock>
             )}

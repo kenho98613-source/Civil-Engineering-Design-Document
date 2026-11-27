@@ -56,6 +56,15 @@ const {
   runSensitivity,
   autoBars,
   loadDefaultDesign,
+  applyWallType,
+  addMainStem,
+  deleteMainStem,
+  addExtraStem,
+  deleteExtraStem,
+  addExtraStemSeg,
+  deleteExtraStemSeg,
+  renderFigureSvg,
+  figureInputFromResult,
   fillDef,
   syncState,
 } = engine;
@@ -393,4 +402,45 @@ console.log('\n=== 4. DESIGN TOOLS & STATELESSNESS ===');
   console.log(`  PASS  lean, fullM, Auto-Optimizer (B=${opt.best.B.toFixed(2)}m, vol=${opt.best.vol.toFixed(3)}m³/m), Critical Limits, Sensitivity, Auto-Bars, Purity`);
 }
 
-console.log(`\nALL ENGINE VERIFICATIONS PASSED (${benchResults.length} benchmarks / ${totalQty} quantities + ${parityCount} full parity scenarios + DXF + Tools).`);
+console.log('\n=== 5. FIGURE SVG, ALL DRAG HANDLES & MULTI-STEM MUTATIONS ===');
+{
+  const s = loadDefaultDesign('T', { acc: 'fc' });
+  const r0 = calcAll(s);
+  assert(!r0.err);
+  const fT = renderFigureSvg(s, figureInputFromResult(s, r0));
+  assert.ok(fT.handles.length >= 16, `Expected >=16 drag handles on T wall, got ${fT.handles.length}`);
+  assert.ok(fT.svgHtml.includes('ΣPa') && fT.svgHtml.includes('ΣPq') && fT.svgHtml.includes('Resultant R'));
+
+  // Main stem split & delete
+  const sStem = structuredClone(s);
+  const n0 = sStem.st.length;
+  assert.ok(addMainStem(sStem).ok);
+  assert.equal(sStem.st.length, n0 + 1);
+  assert.ok(!calcAll(sStem).err);
+  assert.ok(deleteMainStem(sStem, sStem.st.length - 1));
+  assert.equal(sStem.st.length, n0);
+
+  // Multi-stem terraced wall: extra stem on toe side + terrace soil + upper step + L->T conversion
+  const sTer = structuredClone(s);
+  assert.ok(addExtraStem(sTer).ok);
+  assert.equal(sTer.xs.length, 1);
+  assert.ok(sTer.xs[0].x < sTer.Lt, 'Extra stem must sit on toe side (x < Lt)');
+  assert.ok(addExtraStemSeg(sTer, 0).ok);
+  const rTer = calcAll(sTer);
+  assert.ok(!rTer.err);
+  const fTer = renderFigureSvg(sTer, figureInputFromResult(sTer, rTer));
+  assert.ok(fTer.svgHtml.includes('Terrace +'), 'Terrace soil missing in multi-stem figure');
+  assert.ok(fTer.handles.some((h) => h.p === 'xs.0.zt'), 'Terrace level handle missing');
+  assert.ok(fTer.handles.some((h) => h.p === 'xs.0.up.0.h'), 'Extra stem upper step handle missing');
+  assert.ok(deleteExtraStemSeg(sTer, 0, 0));
+  assert.ok(deleteExtraStem(sTer, 0));
+  assert.equal(sTer.xs.length, 0);
+
+  const sL = loadDefaultDesign('L', { acc: 'fc' });
+  const conv = addExtraStem(sL);
+  assert.ok(conv.ok && conv.convertedFromL && sL.ty === 'T');
+
+  console.log(`  PASS  Figure SVG (${fT.handles.length} T handles / ${fTer.handles.length} multi-stem handles), Terrace soil, Add/Delete/Split Stems & L→T auto-conversion`);
+}
+
+console.log(`\nALL ENGINE VERIFICATIONS PASSED (${benchResults.length} benchmarks / ${totalQty} quantities + ${parityCount} full parity scenarios + DXF + Tools + Figure/Stems).`);

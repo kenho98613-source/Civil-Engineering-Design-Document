@@ -193,3 +193,85 @@ body,
   stroke-width: 3px;
   stroke-linejoin: round;
 }
+
+/* Exact v14.0.1 Figure SVG typography, inline dimension editors & drag handles */
+.rw-fig-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+.rw-fig-svg .lb,
+.rw-fig-svg .lv,
+.rw-fig-svg .cap {
+  font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke;
+  stroke: var(--cad-halo);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+.rw-fig-svg .lb {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+.rw-fig-svg .lv {
+  font-size: 10px;
+  fill: var(--text-secondary);
+}
+.rw-fig-svg .cap {
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: var(--text-muted);
+}
+.rw-fig-svg .prt {
+  display: none;
+}
+.rw-fig-svg .fi {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--accent-cobalt);
+  border-radius: 3px;
+  background: var(--surface-panel);
+  color: var(--accent-cobalt);
+  font-family: "Cascadia Mono", "JetBrains Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: right;
+  padding: 0 3px;
+  outline: none;
+}
+.rw-fig-svg .fi:focus {
+  box-shadow: 0 0 0 2px var(--accent-cobalt-soft);
+}
+.rw-fig-svg .hd.x {
+  cursor: ew-resize;
+}
+.rw-fig-svg .hd.z {
+  cursor: ns-resize;
+}
+.rw-fig-svg .hk {
+  fill: var(--surface-panel);
+  stroke: var(--accent-cobalt);
+  stroke-width: 2;
+  transition: r 0.1s ease, fill 0.1s ease;
+}
+.rw-fig-svg .hd:hover .hk {
+  fill: var(--accent-cobalt);
+  r: 6.5;
+}
+.fgn {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.fgn li::before {
+  content: attr(data-n) " ";
+  font-weight: 700;
+  color: var(--accent-cobalt);
+}
+

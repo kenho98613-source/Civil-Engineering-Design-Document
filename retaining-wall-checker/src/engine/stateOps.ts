@@ -4,9 +4,9 @@
  * Preserved verbatim from legacy/Retaining_Wall_Checker_v14.0.1.html (RULES.md #2).
  */
 import { DEFAULT_STATE, DFLT, MODEL_VERSION, PJF } from './constants';
-import { geo } from './geometry';
+import { geo, stemGeo } from './geometry';
 import { fillDef, isG, isU, isVeh, syncState } from './helpers';
-import { dd } from './math';
+import { dd, f } from './math';
 import type { ProjectFile, ProjectMeta, WallState, WallType, WallTypeEntry } from './types';
 
 export const uid = (): string => Math.random().toString(36).slice(2, 9);
@@ -185,6 +185,168 @@ export function linkLevels(S: WallState, p: string): WallState {
   if (S.wl === 'c' && +S.wlZ > +S.Hr) S.wlZ = +S.Hr;
   if (+S.fw > +S.Hf) S.fw = +S.Hf;
   return S;
+}
+
+/* ---------------- Exact v14.0.1 Stem & Extra-Stem Mutations ---------------- */
+
+/** Split bottom main stem in half (or create first stem on gravity block). Exact port of a=='add'. */
+export function addMainStem(S: WallState): { ok: boolean; error?: string } {
+  const bt = +S.Zb + +S.tb;
+  const n = S.st.length;
+  if (!n) {
+    S.st.push({
+      t: isG(S) ? +Math.min(0.5, +S.gBt).toFixed(2) : 1,
+      fb: 0,
+      rb: 0,
+      of: 0,
+      top: Math.max(+S.Hr, bt + 0.5),
+      bot: bt,
+      rc: 1,
+    });
+    syncState(S);
+    return { ok: true };
+  }
+  const l = S.st[n - 1];
+  const hl = +l.top - bt;
+  if (hl < 0.4 - 1e-9) {
+    return {
+      ok: false,
+      error: `The bottom stem is only ${f(Math.max(0, hl))} m high. At least 0.4 m is needed to split it.`,
+    };
+  }
+  l.bot = +(l.top - hl / 2).toFixed(3);
+  let t = +(l.t + 0.15).toFixed(2);
+  const of = +l.of || 0;
+  if (isG(S)) t = +Math.max(+l.t, Math.min(t, +S.gBt - of)).toFixed(2);
+  S.st.push({ t, fb: 0, rb: 0, of, top: l.bot, bot: bt, rc: 1 });
+  l.of = 0;
+  syncState(S);
+  return { ok: true };
+}
+
+/** Delete main stem segment i, re-index RC keys, and keep remaining stems at their physical x positions. Exact port of a=='del'. */
+export function deleteMainStem(S: WallState, i: number): boolean {
+  const n = S.st.length;
+  if (!isG(S) && n < 2) return false;
+  if (i < 0 || i >= n) return false;
+  const old = stemGeo(S).map((g) => g.xf0);
+  const Bo = geo(S).B;
+  if (i === 0 && n > 1) S.st[1].top = S.st[0].top;
+  S.st.splice(i, 1);
+  old.splice(i, 1);
+  for (let j = i; j <= S.st.length; j++) {
+    if (S.rc['s' + (j + 1)]) S.rc['s' + j] = S.rc['s' + (j + 1)];
+    else delete S.rc['s' + j];
+  }
+  syncState(S);
+  const m = S.st.length;
+  for (let k = m - 1; k >= 0; k--) {
+    const s = S.st[k];
+    const d = old[k] - stemGeo(S)[k].xf0;
+    if (Math.abs(d) < 1e-9) continue;
+    if (!isG(S) && k === m - 1) {
+      if (S.ty !== 'L') S.Lt = +Math.max(0, +S.Lt + d).toFixed(4);
+      if (S.ty !== 'Li') S.Lh = +Math.max(0, +S.Lh + Bo - geo(S).B).toFixed(4);
+    } else {
+      s.of = +((+s.of || 0) + d).toFixed(4);
+    }
+  }
+  syncState(S);
+  return true;
+}
+
+/** Add an extra stem on base (toe side, terraced or U-channel). Auto-converts L->T and extends Lt. Exact port of a=='xadd'. */
+export function addExtraStem(S: WallState): { ok: boolean; convertedFromL?: boolean; error?: string } {
+  let convertedFromL = false;
+  if (S.ty === 'L') {
+    S.Lt = 0;
+    applyWallType(S, 'T');
+    convertedFromL = true;
+  }
+  const G = geo(S);
+  const bt = G.bt;
+  const n = S.xs.length;
+  if (S.xa === 'U' && n) {
+    return { ok: false, error: 'U-channel layout already has its front stem.' };
+  }
+  let x: number;
+  const t = 0.3;
+  let h: number;
+  let zt: number;
+  if (S.xa === 'U') {
+    x = 0.2;
+    h = +Math.max(0.5, +S.Hf - bt).toFixed(2);
+    zt = bt;
+    S.fon = 1;
+  } else {
+    const pv = n ? S.xs[n - 1] : null;
+    x = pv ? +(+pv.x + +pv.t + 1.5).toFixed(2) : 0.3;
+    zt = +(pv ? (+pv.zt + +S.Hr) / 2 : bt + Math.max(0.5, (+S.Hr - bt) / 2)).toFixed(2);
+    h = +Math.max(0.3, zt - bt).toFixed(2);
+  }
+  const need = x + t + 1 - +G.Lt;
+  if (need > 1e-6) {
+    const d = +need.toFixed(2);
+    S.Lt = +(+S.Lt + d).toFixed(2);
+  }
+  S.xs.push({ x, t, h, zt, rc: 1 });
+  syncState(S);
+  return { ok: true, convertedFromL };
+}
+
+/** Delete extra stem j and re-index x/M RC keys. Exact port of a=='xdel'. */
+export function deleteExtraStem(S: WallState, i: number): boolean {
+  if (!S.xs[i]) return false;
+  S.xs.splice(i, 1);
+  const RC2: WallState['rc'] = {};
+  for (const [k, v] of Object.entries(S.rc)) {
+    const m = k.match(/^([xM])(\d+)(s\d+)?$/);
+    if (!m) {
+      RC2[k] = v;
+      continue;
+    }
+    const j = +m[2];
+    if (j === i) continue;
+    RC2[m[1] + (j > i ? j - 1 : j) + (m[3] || '')] = v;
+  }
+  S.rc = RC2;
+  syncState(S);
+  return true;
+}
+
+/** Split top segment of extra stem i into an upper stepped segment. Exact port of a=='xseg'. */
+export function addExtraStemSeg(S: WallState, i: number): { ok: boolean; error?: string } {
+  const q = S.xs[i];
+  if (!q) return { ok: false, error: 'Extra stem not found' };
+  q.up = Array.isArray(q.up) ? q.up : [];
+  const last = q.up.length ? q.up[q.up.length - 1] : q;
+  const hh = +last.h;
+  if (!(hh >= 0.4 - 1e-9)) {
+    return { ok: false, error: `Top segment is only ${f(Math.max(0, hh))} m high — at least 0.4 m is needed to split it.` };
+  }
+  last.h = +(hh / 2).toFixed(3);
+  q.up.push({ t: +Math.max(0.2, +last.t - 0.1).toFixed(2), h: +(hh / 2).toFixed(3) });
+  syncState(S);
+  return { ok: true };
+}
+
+/** Delete upper segment k of extra stem i and restore height to segment below. Exact port of a=='xsdel'. */
+export function deleteExtraStemSeg(S: WallState, i: number, k: number): boolean {
+  const q = S.xs[i];
+  const u = q && Array.isArray(q.up) ? q.up : [];
+  if (!u[k]) return false;
+  const below = k ? u[k - 1] : q;
+  below.h = +(+below.h + +u[k].h).toFixed(3);
+  u.splice(k, 1);
+  for (let m = k + 1; m <= u.length + 1; m++) {
+    const o = 'x' + i + 's' + (m + 1);
+    const nn = 'x' + i + 's' + m;
+    if (S.rc[o]) S.rc[nn] = S.rc[o];
+    else delete S.rc[nn];
+    delete S.rc[o];
+  }
+  syncState(S);
+  return true;
 }
 
 /* ---------------- Project (.rwall) helpers ---------------- */
